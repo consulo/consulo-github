@@ -15,21 +15,27 @@
  */
 package org.jetbrains.plugins.github.ui;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 
 /**
  * @author oleg
  * @date 9/27/11
  */
-public class GitHubCreateGistPanel {
+public class GithubCreateGistPanel {
   private JTextArea myDescriptionTextArea;
   private JCheckBox myPrivateCheckBox;
   private JPanel myPanel;
   private JCheckBox myAnonymousCheckBox;
   private JCheckBox myOpenInBrowserCheckBox;
+  private JTextField myFileNameField;
+  private JLabel myFileNameLabel;
 
-  public GitHubCreateGistPanel() {
+  public GithubCreateGistPanel() {
     myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
+    myFileNameLabel.setVisible(false);
+    myFileNameField.setVisible(false);
   }
 
   public boolean isPrivate(){
@@ -51,8 +57,15 @@ public class GitHubCreateGistPanel {
   public void setAnonymous(final boolean anonymous){
     myAnonymousCheckBox.setSelected(anonymous);
   }
+
   public void setOpenInBrowser(final boolean openInBrowser) {
     myOpenInBrowserCheckBox.setSelected(openInBrowser);
+  }
+
+  public void showFileNameField(@NotNull String filename) {
+    myFileNameLabel.setVisible(true);
+    myFileNameField.setVisible(true);
+    myFileNameField.setText(filename);
   }
 
   public JPanel getPanel() {
@@ -63,4 +76,7 @@ public class GitHubCreateGistPanel {
     return myDescriptionTextArea;
   }
 
+  public JTextField getFileNameField() {
+    return myFileNameField;
+  }
 }

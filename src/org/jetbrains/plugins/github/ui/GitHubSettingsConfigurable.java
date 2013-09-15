@@ -4,35 +4,35 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.VcsConfigurableProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.github.GithubSettings;
+import org.jetbrains.plugins.github.util.GithubSettings;
 
 import javax.swing.*;
 
 /**
  * @author oleg
  */
-public class GitHubSettingsConfigurable implements SearchableConfigurable, VcsConfigurableProvider {
-  private static final String DEFAULT_PASSWORD_TEXT = "************";
+public class GithubSettingsConfigurable implements SearchableConfigurable, VcsConfigurableProvider {
   private GithubSettingsPanel mySettingsPane;
   private final GithubSettings mySettings;
 
-  public GitHubSettingsConfigurable() {
+  public GithubSettingsConfigurable() {
     mySettings = GithubSettings.getInstance();
   }
 
+  @NotNull
   public String getDisplayName() {
     return "GitHub";
   }
 
+  @NotNull
   public String getHelpTopic() {
     return "settings.github";
   }
 
+  @NotNull
   public JComponent createComponent() {
     if (mySettingsPane == null) {
       mySettingsPane = new GithubSettingsPanel(mySettings);
@@ -41,33 +41,19 @@ public class GitHubSettingsConfigurable implements SearchableConfigurable, VcsCo
   }
 
   public boolean isModified() {
-    return mySettingsPane != null && (!Comparing.equal(mySettings.getLogin(), mySettingsPane.getLogin()) ||
-                                      isPasswordModified() ||
-           !Comparing.equal(mySettings.getHost(), mySettingsPane.getHost()));
-  }
-
-  private boolean isPasswordModified() {
-    return mySettingsPane.isPasswordModified();
+    return mySettingsPane != null && mySettingsPane.isModified();
   }
 
   public void apply() throws ConfigurationException {
     if (mySettingsPane != null) {
-      mySettings.setLogin(mySettingsPane.getLogin());
-      if (isPasswordModified()) {
-        mySettings.setPassword(mySettingsPane.getPassword());
-        mySettingsPane.resetPasswordModification();
-      }
-      mySettings.setHost(mySettingsPane.getHost());
+      mySettings.setCredentials(mySettingsPane.getHost(), mySettingsPane.getAuthData(), true);
+      mySettingsPane.resetCredentialsModification();
     }
   }
 
   public void reset() {
     if (mySettingsPane != null) {
-      String login = mySettings.getLogin();
-      mySettingsPane.setLogin(login);
-      mySettingsPane.setPassword(StringUtil.isEmptyOrSpaces(login) ? "" : DEFAULT_PASSWORD_TEXT);
-      mySettingsPane.resetPasswordModification();
-      mySettingsPane.setHost(mySettings.getHost());
+      mySettingsPane.reset();
     }
   }
 

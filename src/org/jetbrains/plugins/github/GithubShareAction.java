@@ -15,7 +15,31 @@
  */
 package org.jetbrains.plugins.github;
 
-import com.intellij.openapi.actionSystem.*;
+import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.JComponent;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubRepo;
+import org.jetbrains.plugins.github.api.GithubUserDetailed;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.ui.GithubShareDialog;
+import org.jetbrains.plugins.github.util.GithubAuthData;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import org.jetbrains.plugins.github.util.GithubUtil;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataKey;
+import com.intellij.openapi.actionSystem.DataSink;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.TypeSafeDataProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -41,28 +65,18 @@ import git4idea.GitLocalBranch;
 import git4idea.GitUtil;
 import git4idea.actions.BasicAction;
 import git4idea.actions.GitInit;
-import git4idea.commands.*;
+import git4idea.commands.Git;
+import git4idea.commands.GitCommand;
+import git4idea.commands.GitCommandResult;
+import git4idea.commands.GitHandlerUtil;
+import git4idea.commands.GitLineHandler;
+import git4idea.commands.GitSimpleHandler;
 import git4idea.i18n.GitBundle;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
 import git4idea.util.GitFileUtils;
 import git4idea.util.GitUIUtil;
 import icons.GithubIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.github.api.*;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.ui.GithubShareDialog;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import org.jetbrains.plugins.github.util.GithubUtil;
-
-import javax.swing.*;
-import java.io.IOException;
-import java.util.*;
-
-import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
  * @author oleg
@@ -252,7 +266,7 @@ public class GithubShareAction extends DumbAwareAction {
                                                   @NotNull VirtualFile root,
                                                   @NotNull ProgressIndicator indicator) {
     final GitLineHandler h = new GitLineHandler(project, root, GitCommand.INIT);
-    GitHandlerUtil.runInCurrentThread(h, indicator, true, GitBundle.getString("initializing.title"));
+    GitHandlerUtil.runInCurrentThread(h, indicator, true, GitBundle.message("initializing.title"));
     if (!h.errors().isEmpty()) {
       GitUIUtil.showOperationErrors(project, h.errors(), "git init");
       LOG.info("Failed to create empty git repo: " + h.errors());
@@ -370,7 +384,7 @@ public class GithubShareAction extends DumbAwareAction {
                                        " on GitHub, but initial push failed: no current branch", url);
       return false;
     }
-    GitCommandResult result = git.push(repository, remoteName, remoteUrl, currentBranch.getName(), true);
+    GitCommandResult result = git.push(repository, remoteName, remoteUrl, null, currentBranch.getName(), true);
     if (!result.success()) {
       GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process", "Successfully created project ", "'" + name + "'",
                                        " on GitHub, but initial push failed:<br/>" + result.getErrorOutputAsHtmlString(), url);

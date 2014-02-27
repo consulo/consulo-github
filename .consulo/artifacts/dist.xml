@@ -6,6 +6,7 @@
         <element id="directory" name="lib">
           <element id="zip-archive" name="github.jar">
             <element id="module-output" name="consulo-github" />
+            <element id="module-production-resource-output" name="consulo-github" />
           </element>
         </element>
       </element>

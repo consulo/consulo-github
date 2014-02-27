@@ -146,6 +146,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     }
     final String remoteUrl = remote.getSecond();
     final String remoteName = remote.getFirst().getName();
+	final String puttyKey = remote.getFirst().getPuttyKeyFile();
     String upstreamUrl = GithubUtil.findUpstreamRemote(repository);
     final GithubFullPath upstreamUserAndRepo =
       upstreamUrl == null || !GithubUrlUtil.isGithubUrl(upstreamUrl) ? null : GithubUrlUtil.getUserAndRepositoryFromRemoteUrl(upstreamUrl);
@@ -194,7 +195,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
       public void run(@NotNull ProgressIndicator indicator) {
         LOG.info("Pushing current branch");
         indicator.setText("Pushing current branch...");
-        GitCommandResult result = git.push(repository, remoteName, remoteUrl, currentBranch.getName(), true);
+        GitCommandResult result = git.push(repository, remoteName, remoteUrl, puttyKey, currentBranch.getName(), true);
         if (!result.success()) {
           GithubNotifications.showError(project, CANNOT_CREATE_PULL_REQUEST, "Push failed:<br/>" + result.getErrorOutputAsHtmlString());
           return;

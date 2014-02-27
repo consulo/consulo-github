@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.github.util;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubUserDetailed;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
+import org.jetbrains.plugins.github.ui.GithubBasicLoginDialog;
+import org.jetbrains.plugins.github.ui.GithubLoginDialog;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -35,17 +46,6 @@ import git4idea.i18n.GitBundle;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubUserDetailed;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
-import org.jetbrains.plugins.github.ui.GithubBasicLoginDialog;
-import org.jetbrains.plugins.github.ui.GithubLoginDialog;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Various utility methods for the GutHub plugin.
@@ -320,13 +320,13 @@ public class GithubUtil {
       version = GitVersion.identifyVersion(executable);
     }
     catch (Exception e) {
-      GithubNotifications.showErrorDialog(project, GitBundle.getString("find.git.error.title"), e);
+      GithubNotifications.showErrorDialog(project, GitBundle.message("find.git.error.title"), e);
       return false;
     }
 
     if (!version.isSupported()) {
       GithubNotifications.showWarningDialog(project, GitBundle.message("find.git.unsupported.message", version.toString(), GitVersion.MIN),
-                                            GitBundle.getString("find.git.success.title"));
+                                            GitBundle.message("find.git.success.title"));
       return false;
     }
     return true;

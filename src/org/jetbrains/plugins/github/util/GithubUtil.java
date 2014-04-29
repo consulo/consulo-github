@@ -342,7 +342,7 @@ public class GithubUtil {
   }
 
   @NotNull
-  public static String getErrorTextFromException(@NotNull IOException e) {
+  public static String getErrorTextFromException(@NotNull Exception e) {
     return e.getMessage();
   }
 

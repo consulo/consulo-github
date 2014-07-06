@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.AuthData;
-import git4idea.jgit.GitHttpAuthDataProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.AuthData;
+import git4idea.remote.GitHttpAuthDataProvider;
 
 /**
  * @author Kirill Likhodedov
  */
-public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider {
+public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
+{
 
   @Nullable
   @Override

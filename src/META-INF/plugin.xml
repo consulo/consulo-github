@@ -21,10 +21,6 @@
 							serviceImplementation="org.jetbrains.plugins.github.util.GithubSslSupport"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="com.intellij.xml">
-		<webBrowserUrlProvider implementation="org.jetbrains.plugins.github.extensions.GithubWebBrowserUrlProvider"/>
-	</extensions>
-
 	<extensions defaultExtensionNs="Git4Idea">
 		<GitHttpAuthDataProvider implementation="org.jetbrains.plugins.github.extensions.GithubHttpAuthDataProvider"/>
 	</extensions>

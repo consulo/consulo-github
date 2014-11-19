@@ -1,6 +1,6 @@
 <idea-plugin version="2">
-	<name>GitHub</name>
 	<id>org.jetbrains.plugins.github</id>
+	<name>GitHub</name>
 	<vendor>JetBrains</vendor>
 	<description>GitHub integration</description>
 

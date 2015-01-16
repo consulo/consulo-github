@@ -15,218 +15,282 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
-import com.intellij.ide.passwordSafe.config.PasswordSafeSettings;
-import com.intellij.ide.passwordSafe.impl.PasswordSafeImpl;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
+import static org.jetbrains.plugins.github.util.GithubAuthData.AuthType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.jetbrains.plugins.github.util.GithubAuthData.AuthType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import com.intellij.ide.passwordSafe.PasswordSafe;
+import com.intellij.ide.passwordSafe.PasswordSafeException;
+import com.intellij.ide.passwordSafe.config.PasswordSafeSettings;
+import com.intellij.ide.passwordSafe.impl.PasswordSafeImpl;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.text.StringUtil;
 
 /**
  * @author oleg
  */
 @SuppressWarnings("MethodMayBeStatic")
 @State(
-  name = "GithubSettings",
-  storages = {@Storage(
-    file = StoragePathMacros.APP_CONFIG + "/github_settings.xml")})
-public class GithubSettings implements PersistentStateComponent<GithubSettings.State> {
-  private static final Logger LOG = GithubUtil.LOG;
-  private static final String GITHUB_SETTINGS_PASSWORD_KEY = "GITHUB_SETTINGS_PASSWORD_KEY";
+		name = "GithubSettings",
+		storages = {
+				@Storage(
+						file = StoragePathMacros.APP_CONFIG + "/github_settings.xml")
+		})
+public class GithubSettings implements PersistentStateComponent<GithubSettings.State>
+{
+	private static final Logger LOG = GithubUtil.LOG;
+	private static final String GITHUB_SETTINGS_PASSWORD_KEY = "GITHUB_SETTINGS_PASSWORD_KEY";
 
-  private State myState = new State();
+	private State myState = new State();
 
-  public State getState() {
-    return myState;
-  }
+	public State getState()
+	{
+		return myState;
+	}
 
-  public void loadState(State state) {
-    myState = state;
-  }
+	public void loadState(State state)
+	{
+		myState = state;
+	}
 
-  public static class State {
-    @Nullable public String LOGIN = null;
-    @NotNull public String HOST = GithubApiUtil.DEFAULT_GITHUB_HOST;
-    @NotNull public AuthType AUTH_TYPE = AuthType.ANONYMOUS;
-    public boolean ANONYMOUS_GIST = false;
-    public boolean OPEN_IN_BROWSER_GIST = true;
-    public boolean PRIVATE_GIST = true;
-    public boolean SAVE_PASSWORD = true;
-    @NotNull public Collection<String> TRUSTED_HOSTS = new ArrayList<String>();
-    @Nullable public String CREATE_PULL_REQUEST_DEFAULT_BRANCH = null;
-  }
+	public static class State
+	{
+		@Nullable
+		public String LOGIN = null;
+		@NotNull
+		public String HOST = GithubApiUtil.DEFAULT_GITHUB_HOST;
+		@NotNull
+		public AuthType AUTH_TYPE = AuthType.ANONYMOUS;
+		public boolean ANONYMOUS_GIST = false;
+		public boolean OPEN_IN_BROWSER_GIST = true;
+		public boolean PRIVATE_GIST = true;
+		public boolean SAVE_PASSWORD = true;
+		@NotNull
+		public Collection<String> TRUSTED_HOSTS = new ArrayList<String>();
+		@Nullable
+		public String CREATE_PULL_REQUEST_DEFAULT_BRANCH = null;
+		public boolean VALID_GIT_AUTH = true;
 
-  public static GithubSettings getInstance() {
-    return ServiceManager.getService(GithubSettings.class);
-  }
+	}
 
-  @NotNull
-  public String getHost() {
-    return myState.HOST;
-  }
+	public static GithubSettings getInstance()
+	{
+		return ServiceManager.getService(GithubSettings.class);
+	}
 
-  @Nullable
-  public String getLogin() {
-    return myState.LOGIN;
-  }
+	@NotNull
+	public String getHost()
+	{
+		return myState.HOST;
+	}
 
-  @NotNull
-  public AuthType getAuthType() {
-    return myState.AUTH_TYPE;
-  }
+	@Nullable
+	public String getLogin()
+	{
+		return myState.LOGIN;
+	}
 
-  public boolean isAuthConfigured() {
-    return !myState.AUTH_TYPE.equals(AuthType.ANONYMOUS);
-  }
+	@NotNull
+	public AuthType getAuthType()
+	{
+		return myState.AUTH_TYPE;
+	}
 
-  private void setHost(@NotNull String host) {
-    myState.HOST = StringUtil.notNullize(host, GithubApiUtil.DEFAULT_GITHUB_HOST);
-  }
+	public boolean isAuthConfigured()
+	{
+		return !myState.AUTH_TYPE.equals(AuthType.ANONYMOUS);
+	}
 
-  private void setLogin(@Nullable String login) {
-    myState.LOGIN = login;
-  }
+	private void setHost(@NotNull String host)
+	{
+		myState.HOST = StringUtil.notNullize(host, GithubApiUtil.DEFAULT_GITHUB_HOST);
+	}
 
-  private void setAuthType(@NotNull AuthType authType) {
-    myState.AUTH_TYPE = authType;
-  }
+	private void setLogin(@Nullable String login)
+	{
+		myState.LOGIN = login;
+	}
 
-  public boolean isAnonymousGist() {
-    return myState.ANONYMOUS_GIST;
-  }
+	private void setAuthType(@NotNull AuthType authType)
+	{
+		myState.AUTH_TYPE = authType;
+	}
 
-  public boolean isOpenInBrowserGist() {
-    return myState.OPEN_IN_BROWSER_GIST;
-  }
+	public boolean isAnonymousGist()
+	{
+		return myState.ANONYMOUS_GIST;
+	}
 
-  public boolean isPrivateGist() {
-    return myState.PRIVATE_GIST;
-  }
+	public boolean isOpenInBrowserGist()
+	{
+		return myState.OPEN_IN_BROWSER_GIST;
+	}
 
-  public boolean isSavePassword() {
-    return myState.SAVE_PASSWORD;
-  }
+	public boolean isPrivateGist()
+	{
+		return myState.PRIVATE_GIST;
+	}
 
-  public boolean isSavePasswordMakesSense() {
-    final PasswordSafeImpl passwordSafe = (PasswordSafeImpl)PasswordSafe.getInstance();
-    return passwordSafe.getSettings().getProviderType() == PasswordSafeSettings.ProviderType.MASTER_PASSWORD;
-  }
+	public boolean isValidGitAuth()
+	{
+		return myState.VALID_GIT_AUTH;
+	}
 
-  @Nullable
-  public String getCreatePullRequestDefaultBranch() {
-    return myState.CREATE_PULL_REQUEST_DEFAULT_BRANCH;
-  }
+	public boolean isSavePassword()
+	{
+		return myState.SAVE_PASSWORD;
+	}
 
-  public void setAnonymousGist(final boolean anonymousGist) {
-    myState.ANONYMOUS_GIST = anonymousGist;
-  }
+	public boolean isSavePasswordMakesSense()
+	{
+		final PasswordSafeImpl passwordSafe = (PasswordSafeImpl) PasswordSafe.getInstance();
+		return passwordSafe.getSettings().getProviderType() == PasswordSafeSettings.ProviderType.MASTER_PASSWORD;
+	}
 
-  public void setPrivateGist(final boolean privateGist) {
-    myState.PRIVATE_GIST = privateGist;
-  }
+	@Nullable
+	public String getCreatePullRequestDefaultBranch()
+	{
+		return myState.CREATE_PULL_REQUEST_DEFAULT_BRANCH;
+	}
 
-  public void setSavePassword(final boolean savePassword) {
-    myState.SAVE_PASSWORD = savePassword;
-  }
+	public void setAnonymousGist(final boolean anonymousGist)
+	{
+		myState.ANONYMOUS_GIST = anonymousGist;
+	}
 
-  public void setOpenInBrowserGist(final boolean openInBrowserGist) {
-    myState.OPEN_IN_BROWSER_GIST = openInBrowserGist;
-  }
+	public void setPrivateGist(final boolean privateGist)
+	{
+		myState.PRIVATE_GIST = privateGist;
+	}
 
-  public void setCreatePullRequestDefaultBranch(@NotNull String branch) {
-    myState.CREATE_PULL_REQUEST_DEFAULT_BRANCH = branch;
-  }
+	public void setSavePassword(final boolean savePassword)
+	{
+		myState.SAVE_PASSWORD = savePassword;
+	}
 
-  @NotNull
-  public Collection<String> getTrustedHosts() {
-    return myState.TRUSTED_HOSTS;
-  }
+	public void setOpenInBrowserGist(final boolean openInBrowserGist)
+	{
+		myState.OPEN_IN_BROWSER_GIST = openInBrowserGist;
+	}
 
-  public void addTrustedHost(String host) {
-    if (!myState.TRUSTED_HOSTS.contains(host)) {
-      myState.TRUSTED_HOSTS.add(host);
-    }
-  }
+	public void setCreatePullRequestDefaultBranch(@NotNull String branch)
+	{
+		myState.CREATE_PULL_REQUEST_DEFAULT_BRANCH = branch;
+	}
 
-  @NotNull
-  private String getPassword() {
-    String password;
-    try {
-      password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY);
-    }
-    catch (PasswordSafeException e) {
-      LOG.info("Couldn't get password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
-      password = "";
-    }
+	public void setValidGitAuth(final boolean validGitAuth)
+	{
+		myState.VALID_GIT_AUTH = validGitAuth;
+	}
 
-    return StringUtil.notNullize(password);
-  }
+	@NotNull
+	public Collection<String> getTrustedHosts()
+	{
+		return myState.TRUSTED_HOSTS;
+	}
 
-  private void setPassword(@NotNull String password, boolean rememberPassword) {
-    try {
-      if (rememberPassword) {
-        PasswordSafe.getInstance().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
-      }
-      else {
-        final PasswordSafeImpl passwordSafe = (PasswordSafeImpl)PasswordSafe.getInstance();
-        if (passwordSafe.getSettings().getProviderType() != PasswordSafeSettings.ProviderType.DO_NOT_STORE) {
-          passwordSafe.getMemoryProvider().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
-        }
-      }
-    }
-    catch (PasswordSafeException e) {
-      LOG.info("Couldn't set password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
-    }
-  }
+	public void addTrustedHost(String host)
+	{
+		if(!myState.TRUSTED_HOSTS.contains(host))
+		{
+			myState.TRUSTED_HOSTS.add(host);
+		}
+	}
 
-  @NotNull
-  public GithubAuthData getAuthData() {
-    switch (getAuthType()) {
-      case BASIC:
-        return GithubAuthData.createBasicAuth(getHost(), getLogin(), getPassword());
-      case TOKEN:
-        return GithubAuthData.createTokenAuth(getHost(), getPassword());
-      case ANONYMOUS:
-        return GithubAuthData.createAnonymous();
-      default:
-        throw new IllegalStateException("GithubSettings: getAuthData - wrong AuthType: " + getAuthType());
-    }
-  }
+	@NotNull
+	private String getPassword()
+	{
+		String password;
+		try
+		{
+			password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY);
+		}
+		catch(PasswordSafeException e)
+		{
+			LOG.info("Couldn't get password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
+			password = "";
+		}
 
-  private void setAuthData(@NotNull GithubAuthData auth, boolean rememberPassword) {
-    setAuthType(auth.getAuthType());
+		return StringUtil.notNullize(password);
+	}
 
-    switch (auth.getAuthType()) {
-      case BASIC:
-        assert auth.getBasicAuth() != null;
-        setLogin(auth.getBasicAuth().getLogin());
-        setPassword(auth.getBasicAuth().getPassword(), rememberPassword);
-        break;
-      case TOKEN:
-        assert auth.getTokenAuth() != null;
-        setLogin(null);
-        setPassword(auth.getTokenAuth().getToken(), rememberPassword);
-        break;
-      case ANONYMOUS:
-        setLogin(null);
-        setPassword("", rememberPassword);
-        break;
-      default:
-        throw new IllegalStateException("GithubSettings: setAuthData - wrong AuthType: " + getAuthType());
-    }
-  }
+	private void setPassword(@NotNull String password, boolean rememberPassword)
+	{
+		try
+		{
+			if(rememberPassword)
+			{
+				PasswordSafe.getInstance().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
+			}
+			else
+			{
+				final PasswordSafeImpl passwordSafe = (PasswordSafeImpl) PasswordSafe.getInstance();
+				if(passwordSafe.getSettings().getProviderType() != PasswordSafeSettings.ProviderType.DO_NOT_STORE)
+				{
+					passwordSafe.getMemoryProvider().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
+				}
+			}
+		}
+		catch(PasswordSafeException e)
+		{
+			LOG.info("Couldn't set password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
+		}
+	}
 
-  public void setCredentials(@NotNull String host, @NotNull GithubAuthData auth, boolean rememberPassword) {
-    setHost(host);
-    setAuthData(auth, rememberPassword);
-  }
+	@NotNull
+	public GithubAuthData getAuthData()
+	{
+		switch(getAuthType())
+		{
+			case BASIC:
+				return GithubAuthData.createBasicAuth(getHost(), getLogin(), getPassword());
+			case TOKEN:
+				return GithubAuthData.createTokenAuth(getHost(), getPassword());
+			case ANONYMOUS:
+				return GithubAuthData.createAnonymous();
+			default:
+				throw new IllegalStateException("GithubSettings: getAuthData - wrong AuthType: " + getAuthType());
+		}
+	}
+
+	private void setAuthData(@NotNull GithubAuthData auth, boolean rememberPassword)
+	{
+		setValidGitAuth(true);
+		setAuthType(auth.getAuthType());
+
+		switch(auth.getAuthType())
+		{
+			case BASIC:
+				assert auth.getBasicAuth() != null;
+				setLogin(auth.getBasicAuth().getLogin());
+				setPassword(auth.getBasicAuth().getPassword(), rememberPassword);
+				break;
+			case TOKEN:
+				assert auth.getTokenAuth() != null;
+				setLogin(null);
+				setPassword(auth.getTokenAuth().getToken(), rememberPassword);
+				break;
+			case ANONYMOUS:
+				setLogin(null);
+				setPassword("", rememberPassword);
+				break;
+			default:
+				throw new IllegalStateException("GithubSettings: setAuthData - wrong AuthType: " + getAuthType());
+		}
+	}
+
+	public void setCredentials(@NotNull String host, @NotNull GithubAuthData auth, boolean rememberPassword)
+	{
+		setHost(host);
+		setAuthData(auth, rememberPassword);
+	}
 }

@@ -30,32 +30,48 @@ import git4idea.remote.GitHttpAuthDataProvider;
 public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
 {
 
-  @Nullable
-  @Override
-  public AuthData getAuthData(@NotNull String url) {
-    if (!GithubUrlUtil.isGithubUrl(url)) {
-      return null;
-    }
+	@Nullable
+	@Override
+	public AuthData getAuthData(@NotNull String url)
+	{
+		if(!GithubUrlUtil.isGithubUrl(url))
+		{
+			return null;
+		}
 
-    GithubAuthData auth = GithubSettings.getInstance().getAuthData();
-    switch (auth.getAuthType()) {
-      case BASIC:
-        GithubAuthData.BasicAuth basicAuth = auth.getBasicAuth();
-        assert basicAuth != null;
-        if (StringUtil.isEmptyOrSpaces(basicAuth.getLogin()) || StringUtil.isEmptyOrSpaces(basicAuth.getPassword())) {
-          return null;
-        }
-        return new AuthData(basicAuth.getLogin(), basicAuth.getPassword());
-      case TOKEN:
-        GithubAuthData.TokenAuth tokenAuth = auth.getTokenAuth();
-        assert tokenAuth != null;
-        if (StringUtil.isEmptyOrSpaces(tokenAuth.getToken())) {
-          return null;
-        }
-        return new AuthData(tokenAuth.getToken(), "x-oauth-basic");
-      default:
-        return null;
-    }
-  }
+		GithubSettings settings = GithubSettings.getInstance();
+		GithubAuthData auth = settings.getAuthData();
+		if(!settings.isValidGitAuth())
+		{
+			return null;
+		}
+		switch(auth.getAuthType())
+		{
+			case BASIC:
+				GithubAuthData.BasicAuth basicAuth = auth.getBasicAuth();
+				assert basicAuth != null;
+				if(StringUtil.isEmptyOrSpaces(basicAuth.getLogin()) || StringUtil.isEmptyOrSpaces(basicAuth.getPassword()))
+				{
+					return null;
+				}
+				return new AuthData(basicAuth.getLogin(), basicAuth.getPassword());
+			case TOKEN:
+				GithubAuthData.TokenAuth tokenAuth = auth.getTokenAuth();
+				assert tokenAuth != null;
+				if(StringUtil.isEmptyOrSpaces(tokenAuth.getToken()))
+				{
+					return null;
+				}
+				return new AuthData(tokenAuth.getToken(), "x-oauth-basic");
+			default:
+				return null;
+		}
+	}
+
+	@Override
+	public void forgetPassword(@NotNull String s)
+	{
+		GithubSettings.getInstance().setValidGitAuth(false);
+	}
 
 }

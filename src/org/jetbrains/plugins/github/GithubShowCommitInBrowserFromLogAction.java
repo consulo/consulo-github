@@ -15,84 +15,49 @@
  */
 package org.jetbrains.plugins.github;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import git4idea.GitUtil;
-import git4idea.GitVcs;
-import git4idea.history.browser.GitHeavyCommit;
-import git4idea.repo.GitRepository;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.github.util.GithubUtil;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.project.Project;
+import com.intellij.vcs.log.VcsFullCommitDetails;
+import com.intellij.vcs.log.VcsLog;
+import com.intellij.vcs.log.VcsLogDataKeys;
+import git4idea.GitUtil;
+import git4idea.repo.GitRepository;
 
-/**
- * @author Kirill Likhodedov
- */
-public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction {
+public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction
+{
 
-  @Override
-  public void update(AnActionEvent e) {
-    EventData eventData = collectData(e);
-    e.getPresentation().setVisible(eventData != null && GithubUtil.isRepositoryOnGitHub(eventData.getRepository()));
-    e.getPresentation().setEnabled(eventData != null);
-  }
+	@Override
+	public void update(@NotNull AnActionEvent e)
+	{
+		Project project = e.getData(CommonDataKeys.PROJECT);
+		VcsLog log = e.getData(VcsLogDataKeys.VCS_LOG);
+		if(project == null || log == null)
+		{
+			e.getPresentation().setEnabledAndVisible(false);
+			return;
+		}
+		List<VcsFullCommitDetails> commits = log.getSelectedDetails();
+		if(commits.size() != 1)
+		{
+			e.getPresentation().setEnabledAndVisible(false);
+			return;
+		}
+		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commits.get(0).getRoot());
+		e.getPresentation().setEnabledAndVisible(repository != null && GithubUtil.isRepositoryOnGitHub(repository));
+	}
 
-  @Nullable
-  private static EventData collectData(AnActionEvent e) {
-    Project project = e.getData(PlatformDataKeys.PROJECT);
-    if (project == null || project.isDefault()) {
-      return null;
-    }
-
-    GitHeavyCommit commit = e.getData(GitVcs.GIT_COMMIT);
-    if (commit == null) {
-      return null;
-    }
-
-    VirtualFile root = commit.getRoot();
-    GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(root);
-    if (repository == null) {
-      return null;
-    }
-
-    return new EventData(project, repository, commit);
-  }
-
-  @Override
-  public void actionPerformed(AnActionEvent e) {
-    EventData eventData = collectData(e);
-    if (eventData != null) {
-      openInBrowser(eventData.getProject(), eventData.getRepository(), eventData.getCommit().getHash().getValue());
-    }
-  }
-
-  private static class EventData {
-    @NotNull private final Project myProject;
-    @NotNull private final GitRepository myRepository;
-    @NotNull private final GitHeavyCommit myCommit;
-
-    private EventData(@NotNull Project project, @NotNull GitRepository repository, @NotNull GitHeavyCommit commit) {
-      myProject = project;
-      myRepository = repository;
-      myCommit = commit;
-    }
-
-    @NotNull
-    public Project getProject() {
-      return myProject;
-    }
-
-    @NotNull
-    public GitRepository getRepository() {
-      return myRepository;
-    }
-
-    @NotNull
-    public GitHeavyCommit getCommit() {
-      return myCommit;
-    }
-  }
+	@Override
+	public void actionPerformed(@NotNull AnActionEvent e)
+	{
+		Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+		VcsFullCommitDetails commit = e.getRequiredData(VcsLogDataKeys.VCS_LOG).getSelectedDetails().get(0);
+		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commit.getRoot());
+		openInBrowser(project, repository, commit.getId().asString());
+	}
 
 }

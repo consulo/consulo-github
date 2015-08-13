@@ -15,36 +15,46 @@
  */
 package org.jetbrains.plugins.github.api;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubAuthorizationRaw implements DataConstructor {
-  @Nullable public Long id;
-  @Nullable public String url;
-  @Nullable public String token;
-  @Nullable public String note;
-  @Nullable public String noteUrl;
-  @Nullable public List<String> scopes;
+class GithubAuthorizationRaw implements DataConstructor
+{
+	@Nullable
+	public Long id;
+	@Nullable
+	public String url;
+	@Nullable
+	public String token;
+	@Nullable
+	public String note;
+	@Nullable
+	public String noteUrl;
+	@Nullable
+	public List<String> scopes;
 
-  @SuppressWarnings("ConstantConditions")
-  public GithubAuthorization createAuthorization() {
-    return new GithubAuthorization(token, scopes);
-  }
+	@SuppressWarnings("ConstantConditions")
+	public GithubAuthorization createAuthorization()
+	{
+		return new GithubAuthorization(token, scopes);
+	}
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  @Override
-  public <T> T create(@NotNull Class<T> resultClass) {
-    if (resultClass.isAssignableFrom(GithubAuthorization.class)) {
-      return (T)createAuthorization();
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T create(@NotNull Class<T> resultClass)
+	{
+		if(resultClass.isAssignableFrom(GithubAuthorization.class))
+		{
+			return (T) createAuthorization();
+		}
 
-    throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-  }
+		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+	}
 }

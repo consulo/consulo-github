@@ -21,22 +21,28 @@ import org.jetbrains.annotations.NotNull;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubCommitSha {
-  @NotNull private final String myUrl;
-  @NotNull private final String mySha;
+public class GithubCommitSha
+{
+	@NotNull
+	private final String myUrl;
+	@NotNull
+	private final String mySha;
 
-  public GithubCommitSha(@NotNull String url, @NotNull String sha) {
-    myUrl = url;
-    mySha = sha;
-  }
+	public GithubCommitSha(@NotNull String url, @NotNull String sha)
+	{
+		myUrl = url;
+		mySha = sha;
+	}
 
-  @NotNull
-  public String getUrl() {
-    return myUrl;
-  }
+	@NotNull
+	public String getUrl()
+	{
+		return myUrl;
+	}
 
-  @NotNull
-  public String getSha() {
-    return mySha;
-  }
+	@NotNull
+	public String getSha()
+	{
+		return mySha;
+	}
 }

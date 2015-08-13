@@ -15,45 +15,61 @@
  */
 package org.jetbrains.plugins.github.api;
 
+import java.util.Date;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Date;
 
 /**
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubIssueRaw implements DataConstructor {
-  @Nullable public String url;
-  @Nullable public String htmlUrl;
-  @Nullable public Long number;
-  @Nullable public String state;
-  @Nullable public String title;
-  @Nullable public String body;
+class GithubIssueRaw implements DataConstructor
+{
+	@Nullable
+	public String url;
+	@Nullable
+	public String htmlUrl;
+	@Nullable
+	public Long number;
+	@Nullable
+	public String state;
+	@Nullable
+	public String title;
+	@Nullable
+	public String body;
 
-  @Nullable public GithubUserRaw user;
-  @Nullable public GithubUserRaw assignee;
+	@Nullable
+	public GithubUserRaw user;
+	@Nullable
+	public GithubUserRaw assignee;
 
-  @Nullable public Date closedAt;
-  @Nullable public Date createdAt;
-  @Nullable public Date updatedAt;
+	@Nullable
+	public Date closedAt;
+	@Nullable
+	public Date createdAt;
+	@Nullable
+	public Date updatedAt;
 
-  @SuppressWarnings("ConstantConditions")
-  @NotNull
-  public GithubIssue createIssue() {
-    GithubUser assignee = this.assignee == null ? null : this.assignee.createUser();
-    return new GithubIssue(htmlUrl, number, state, title, body, user.createUser(), assignee, closedAt, createdAt, updatedAt);
-  }
+	@SuppressWarnings("ConstantConditions")
+	@NotNull
+	public GithubIssue createIssue()
+	{
+		GithubUser assignee = this.assignee == null ? null : this.assignee.createUser();
+		return new GithubIssue(htmlUrl, number, state, title, body, user.createUser(), assignee, closedAt, createdAt,
+				updatedAt);
+	}
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  @Override
-  public <T> T create(@NotNull Class<T> resultClass) {
-    if (resultClass.isAssignableFrom(GithubIssue.class)) {
-      return (T)createIssue();
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T create(@NotNull Class<T> resultClass)
+	{
+		if(resultClass.isAssignableFrom(GithubIssue.class))
+		{
+			return (T) createIssue();
+		}
 
-    throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-  }
+		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+	}
 }

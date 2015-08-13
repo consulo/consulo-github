@@ -15,26 +15,30 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubBasicLoginDialog extends GithubLoginDialog {
+public class GithubBasicLoginDialog extends GithubLoginDialog
+{
 
-  public GithubBasicLoginDialog(@Nullable Project project) {
-    super(project);
-    myGithubLoginPanel.lockAuthType(GithubAuthData.AuthType.BASIC);
-  }
+	public GithubBasicLoginDialog(@Nullable Project project)
+	{
+		super(project);
+		myGithubLoginPanel.lockAuthType(GithubAuthData.AuthType.BASIC);
+	}
 
-  @Override
-  protected void saveCredentials(GithubAuthData auth) {
-    final GithubSettings settings = GithubSettings.getInstance();
-    if (settings.getAuthType() != GithubAuthData.AuthType.TOKEN) {
-      settings.setCredentials(myGithubLoginPanel.getHost(), auth, myGithubLoginPanel.isSavePasswordSelected());
-    }
-  }
+	@Override
+	protected void saveCredentials(GithubAuthData auth)
+	{
+		final GithubSettings settings = GithubSettings.getInstance();
+		if(settings.getAuthType() != GithubAuthData.AuthType.TOKEN)
+		{
+			settings.setCredentials(myGithubLoginPanel.getHost(), auth, myGithubLoginPanel.isSavePasswordSelected());
+		}
+	}
 }

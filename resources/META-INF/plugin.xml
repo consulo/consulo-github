@@ -14,7 +14,8 @@
 		<applicationService serviceInterface="org.jetbrains.plugins.github.util.GithubSettings"
 							serviceImplementation="org.jetbrains.plugins.github.util.GithubSettings"/>
 		<vcsAnnotationGutterActionProvider implementation="org.jetbrains.plugins.github.extensions.GithubAnnotationGutterActionProvider"/>
-		<checkoutCompletedListener implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutListener" order="after PlatformProjectCheckoutListener"/>
+		<checkoutCompletedListener implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutListener"
+								   order="after PlatformProjectCheckoutListener"/>
 		<vcsConfigurableProvider implementation="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"/>
 
 		<applicationService serviceInterface="org.jetbrains.plugins.github.util.GithubSslSupport"

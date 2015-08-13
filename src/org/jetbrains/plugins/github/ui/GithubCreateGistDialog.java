@@ -15,102 +15,123 @@
  */
 package org.jetbrains.plugins.github.ui;
 
+import javax.swing.JComponent;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.github.util.GithubSettings;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.github.util.GithubSettings;
-
-import javax.swing.*;
 
 /**
  * @author oleg
  * @date 9/27/11
  */
-public class GithubCreateGistDialog extends DialogWrapper {
-  private final GithubCreateGistPanel myGithubCreateGistPanel;
+public class GithubCreateGistDialog extends DialogWrapper
+{
+	private final GithubCreateGistPanel myGithubCreateGistPanel;
 
-  public GithubCreateGistDialog(@NotNull final Project project, @Nullable Editor editor, @Nullable VirtualFile[] files, @Nullable VirtualFile file) {
-    super(project, true);
-    myGithubCreateGistPanel = new GithubCreateGistPanel();
-    // Use saved settings for controls
-    final GithubSettings settings = GithubSettings.getInstance();
-    myGithubCreateGistPanel.setAnonymous(settings.isAnonymousGist());
-    myGithubCreateGistPanel.setPrivate(settings.isPrivateGist());
-    myGithubCreateGistPanel.setOpenInBrowser(settings.isOpenInBrowserGist());
+	public GithubCreateGistDialog(@NotNull final Project project,
+			@Nullable Editor editor,
+			@Nullable VirtualFile[] files,
+			@Nullable VirtualFile file)
+	{
+		super(project, true);
+		myGithubCreateGistPanel = new GithubCreateGistPanel();
+		// Use saved settings for controls
+		final GithubSettings settings = GithubSettings.getInstance();
+		myGithubCreateGistPanel.setAnonymous(settings.isAnonymousGist());
+		myGithubCreateGistPanel.setPrivate(settings.isPrivateGist());
+		myGithubCreateGistPanel.setOpenInBrowser(settings.isOpenInBrowserGist());
 
-    if (editor != null) {
-      if (file != null) {
-        myGithubCreateGistPanel.showFileNameField(file.getName());
-      }
-      else {
-        myGithubCreateGistPanel.showFileNameField("");
-      }
-    }
-    else if (files != null) {
-      if (files.length == 1 && !files[0].isDirectory()) {
-        myGithubCreateGistPanel.showFileNameField(files[0].getName());
-      }
-    }
-    else if (file != null && !file.isDirectory()) {
-      myGithubCreateGistPanel.showFileNameField(file.getName());
-    }
+		if(editor != null)
+		{
+			if(file != null)
+			{
+				myGithubCreateGistPanel.showFileNameField(file.getName());
+			}
+			else
+			{
+				myGithubCreateGistPanel.showFileNameField("");
+			}
+		}
+		else if(files != null)
+		{
+			if(files.length == 1 && !files[0].isDirectory())
+			{
+				myGithubCreateGistPanel.showFileNameField(files[0].getName());
+			}
+		}
+		else if(file != null && !file.isDirectory())
+		{
+			myGithubCreateGistPanel.showFileNameField(file.getName());
+		}
 
-    setTitle("Create Gist");
-    init();
-  }
+		setTitle("Create Gist");
+		init();
+	}
 
-  @Override
-  protected JComponent createCenterPanel() {
-    return myGithubCreateGistPanel.getPanel();
-  }
+	@Override
+	protected JComponent createCenterPanel()
+	{
+		return myGithubCreateGistPanel.getPanel();
+	}
 
-  @Override
-  protected String getHelpId() {
-    return "github.create.gist.dialog";
-  }
+	@Override
+	protected String getHelpId()
+	{
+		return "github.create.gist.dialog";
+	}
 
-  @Override
-  protected String getDimensionServiceKey() {
-    return "Github.CreateGistDialog";
-  }
+	@Override
+	protected String getDimensionServiceKey()
+	{
+		return "Github.CreateGistDialog";
+	}
 
-  @Override
-  protected void doOKAction() {
-    // Store settings
-    final GithubSettings settings = GithubSettings.getInstance();
-    settings.setAnonymousGist(myGithubCreateGistPanel.isAnonymous());
-    settings.setOpenInBrowserGist(myGithubCreateGistPanel.isOpenInBrowser());
-    settings.setPrivateGist(myGithubCreateGistPanel.isPrivate());
-    super.doOKAction();
-  }
+	@Override
+	protected void doOKAction()
+	{
+		// Store settings
+		final GithubSettings settings = GithubSettings.getInstance();
+		settings.setAnonymousGist(myGithubCreateGistPanel.isAnonymous());
+		settings.setOpenInBrowserGist(myGithubCreateGistPanel.isOpenInBrowser());
+		settings.setPrivateGist(myGithubCreateGistPanel.isPrivate());
+		super.doOKAction();
+	}
 
-  @Override
-  public JComponent getPreferredFocusedComponent() {
-    return myGithubCreateGistPanel.getDescriptionTextArea();
-  }
+	@Override
+	public JComponent getPreferredFocusedComponent()
+	{
+		return myGithubCreateGistPanel.getDescriptionTextArea();
+	}
 
-  public boolean isPrivate() {
-    return myGithubCreateGistPanel.isPrivate();
-  }
+	public boolean isPrivate()
+	{
+		return myGithubCreateGistPanel.isPrivate();
+	}
 
-  public boolean isAnonymous() {
-    return myGithubCreateGistPanel.isAnonymous();
-  }
+	public boolean isAnonymous()
+	{
+		return myGithubCreateGistPanel.isAnonymous();
+	}
 
-  @NotNull
-  public String getDescription() {
-    return myGithubCreateGistPanel.getDescriptionTextArea().getText();
-  }
+	@NotNull
+	public String getDescription()
+	{
+		return myGithubCreateGistPanel.getDescriptionTextArea().getText();
+	}
 
-  @Nullable
-  public String getFileName() {
-    return myGithubCreateGistPanel.getFileNameField().getText();
-  }
+	@Nullable
+	public String getFileName()
+	{
+		return myGithubCreateGistPanel.getFileNameField().getText();
+	}
 
-  public boolean isOpenInBrowser() {
-    return myGithubCreateGistPanel.isOpenInBrowser();
-  }
+	public boolean isOpenInBrowser()
+	{
+		return myGithubCreateGistPanel.isOpenInBrowser();
+	}
 }

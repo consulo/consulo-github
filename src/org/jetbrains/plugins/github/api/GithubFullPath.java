@@ -18,49 +18,70 @@ package org.jetbrains.plugins.github.api;
 import org.jetbrains.annotations.NotNull;
 
 /**
-* @author Aleksey Pivovarov
-*/
-public class GithubFullPath {
-  @NotNull private final String myUserName;
-  @NotNull private final String myRepositoryName;
+ * @author Aleksey Pivovarov
+ */
+public class GithubFullPath
+{
+	@NotNull
+	private final String myUserName;
+	@NotNull
+	private final String myRepositoryName;
 
-  public GithubFullPath(@NotNull String userName, @NotNull String repositoryName) {
-    myUserName = userName;
-    myRepositoryName = repositoryName;
-  }
+	public GithubFullPath(@NotNull String userName, @NotNull String repositoryName)
+	{
+		myUserName = userName;
+		myRepositoryName = repositoryName;
+	}
 
-  @NotNull
-  public String getUser() {
-    return myUserName;
-  }
+	@NotNull
+	public String getUser()
+	{
+		return myUserName;
+	}
 
-  @NotNull
-  public String getRepository() {
-    return myRepositoryName;
-  }
+	@NotNull
+	public String getRepository()
+	{
+		return myRepositoryName;
+	}
 
-  @NotNull
-  public String toString() {
-    return myUserName + '/' + myRepositoryName;
-  }
+	@NotNull
+	public String toString()
+	{
+		return myUserName + '/' + myRepositoryName;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
 
-    GithubFullPath that = (GithubFullPath)o;
+		GithubFullPath that = (GithubFullPath) o;
 
-    if (!myRepositoryName.equals(that.myRepositoryName)) return false;
-    if (!myUserName.equals(that.myUserName)) return false;
+		if(!myRepositoryName.equals(that.myRepositoryName))
+		{
+			return false;
+		}
+		if(!myUserName.equals(that.myUserName))
+		{
+			return false;
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  @Override
-  public int hashCode() {
-    int result = myUserName.hashCode();
-    result = 31 * result + myRepositoryName.hashCode();
-    return result;
-  }
+	@Override
+	public int hashCode()
+	{
+		int result = myUserName.hashCode();
+		result = 31 * result + myRepositoryName.hashCode();
+		return result;
+	}
 }

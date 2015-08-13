@@ -49,7 +49,10 @@ public class GithubNotifications
 		VcsNotifier.getInstance(project).notifyError(title, message);
 	}
 
-	public static void showError(@NotNull Project project, @NotNull String title, @NotNull String message, @NotNull String logDetails)
+	public static void showError(@NotNull Project project,
+			@NotNull String title,
+			@NotNull String message,
+			@NotNull String logDetails)
 	{
 		LOG.warn(title + "; " + message + "; " + logDetails);
 		VcsNotifier.getInstance(project).notifyError(title, message);
@@ -61,15 +64,17 @@ public class GithubNotifications
 		VcsNotifier.getInstance(project).notifyError(title, getErrorTextFromException(e));
 	}
 
-	public static void showInfoURL(@NotNull Project project, @NotNull String title, @NotNull String message, @NotNull String url)
+	public static void showInfoURL(@NotNull Project project,
+			@NotNull String title,
+			@NotNull String message,
+			@NotNull String url)
 	{
 		LOG.info(title + "; " + message + "; " + url);
 		VcsNotifier.getInstance(project).notifyImportantInfo(title, "<a href='" + url + "'>" + message + "</a>",
 				NotificationListener.URL_OPENING_LISTENER);
 	}
 
-	public static void showWarningURL(
-			@NotNull Project project,
+	public static void showWarningURL(@NotNull Project project,
 			@NotNull String title,
 			@NotNull String prefix,
 			@NotNull String highlight,
@@ -77,12 +82,11 @@ public class GithubNotifications
 			@NotNull String url)
 	{
 		LOG.info(title + "; " + prefix + highlight + postfix + "; " + url);
-		VcsNotifier.getInstance(project).notifyImportantWarning(title, prefix + "<a href='" + url + "'>" + highlight + "</a>" + postfix,
-				NotificationListener.URL_OPENING_LISTENER);
+		VcsNotifier.getInstance(project).notifyImportantWarning(title, prefix + "<a href='" + url + "'>" + highlight +
+				"</a>" + postfix, NotificationListener.URL_OPENING_LISTENER);
 	}
 
-	public static void showErrorURL(
-			@NotNull Project project,
+	public static void showErrorURL(@NotNull Project project,
 			@NotNull String title,
 			@NotNull String prefix,
 			@NotNull String highlight,
@@ -90,60 +94,78 @@ public class GithubNotifications
 			@NotNull String url)
 	{
 		LOG.info(title + "; " + prefix + highlight + postfix + "; " + url);
-		VcsNotifier.getInstance(project).notifyError(title, prefix + "<a href='" + url + "'>" + highlight + "</a>" + postfix,
-				NotificationListener.URL_OPENING_LISTENER);
+		VcsNotifier.getInstance(project).notifyError(title, prefix + "<a href='" + url + "'>" + highlight + "</a>" +
+				postfix, NotificationListener.URL_OPENING_LISTENER);
 	}
 
-	public static void showInfoDialog(final @Nullable Project project, final @NotNull String title, final @NotNull String message)
+	public static void showInfoDialog(final @Nullable Project project,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showInfoMessage(project, message, title);
 	}
 
-	public static void showInfoDialog(final @NotNull Component component, final @NotNull String title, final @NotNull String message)
+	public static void showInfoDialog(final @NotNull Component component,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showInfoMessage(component, message, title);
 	}
 
-	public static void showWarningDialog(final @Nullable Project project, final @NotNull String title, final @NotNull String message)
+	public static void showWarningDialog(final @Nullable Project project,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showWarningDialog(project, message, title);
 	}
 
-	public static void showWarningDialog(final @NotNull Component component, final @NotNull String title, final @NotNull String message)
+	public static void showWarningDialog(final @NotNull Component component,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showWarningDialog(component, message, title);
 	}
 
-	public static void showErrorDialog(final @Nullable Project project, final @NotNull String title, final @NotNull String message)
+	public static void showErrorDialog(final @Nullable Project project,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showErrorDialog(project, message, title);
 	}
 
-	public static void showErrorDialog(final @Nullable Project project, final @NotNull String title, final @NotNull Exception e)
+	public static void showErrorDialog(final @Nullable Project project,
+			final @NotNull String title,
+			final @NotNull Exception e)
 	{
 		LOG.warn(title, e);
 		Messages.showErrorDialog(project, getErrorTextFromException(e), title);
 	}
 
-	public static void showErrorDialog(final @NotNull Component component, final @NotNull String title, final @NotNull String message)
+	public static void showErrorDialog(final @NotNull Component component,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		LOG.info(title + "; " + message);
 		Messages.showErrorDialog(component, message, title);
 	}
 
-	public static void showErrorDialog(final @NotNull Component component, final @NotNull String title, final @NotNull Exception e)
+	public static void showErrorDialog(final @NotNull Component component,
+			final @NotNull String title,
+			final @NotNull Exception e)
 	{
 		LOG.info(title, e);
 		Messages.showInfoMessage(component, getErrorTextFromException(e), title);
 	}
 
 	@Messages.YesNoResult
-	public static int showYesNoDialog(final @Nullable Project project, final @NotNull String title, final @NotNull String message)
+	public static int showYesNoDialog(final @Nullable Project project,
+			final @NotNull String title,
+			final @NotNull String message)
 	{
 		return Messages.showYesNoDialog(project, message, title, Messages.getQuestionIcon());
 	}

@@ -15,24 +15,32 @@
  */
 package org.jetbrains.plugins.github.api;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-class GithubAuthorizationRequest {
-  @NotNull private final List<String> scopes;
+@SuppressWarnings({
+		"FieldCanBeLocal",
+		"UnusedDeclaration"
+})
+class GithubAuthorizationRequest
+{
+	@NotNull
+	private final List<String> scopes;
 
-  @Nullable private final String note;
-  @Nullable private final String noteUrl;
+	@Nullable
+	private final String note;
+	@Nullable
+	private final String noteUrl;
 
-  public GithubAuthorizationRequest(@NotNull List<String> scopes, @Nullable String note, @Nullable String noteUrl) {
-    this.scopes = scopes;
-    this.note = note;
-    this.noteUrl = noteUrl;
-  }
+	public GithubAuthorizationRequest(@NotNull List<String> scopes, @Nullable String note, @Nullable String noteUrl)
+	{
+		this.scopes = scopes;
+		this.note = note;
+		this.noteUrl = noteUrl;
+	}
 }

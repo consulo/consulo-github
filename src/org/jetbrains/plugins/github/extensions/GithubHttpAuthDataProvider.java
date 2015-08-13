@@ -50,7 +50,8 @@ public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
 			case BASIC:
 				GithubAuthData.BasicAuth basicAuth = auth.getBasicAuth();
 				assert basicAuth != null;
-				if(StringUtil.isEmptyOrSpaces(basicAuth.getLogin()) || StringUtil.isEmptyOrSpaces(basicAuth.getPassword()))
+				if(StringUtil.isEmptyOrSpaces(basicAuth.getLogin()) || StringUtil.isEmptyOrSpaces(basicAuth
+						.getPassword()))
 				{
 					return null;
 				}

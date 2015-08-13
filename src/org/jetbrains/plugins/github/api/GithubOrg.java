@@ -20,15 +20,19 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubOrg {
-  @NotNull private final String myLogin;
+public class GithubOrg
+{
+	@NotNull
+	private final String myLogin;
 
-  public GithubOrg(@NotNull String login) {
-    myLogin = login;
-  }
+	public GithubOrg(@NotNull String login)
+	{
+		myLogin = login;
+	}
 
-  @NotNull
-  public String getLogin() {
-    return myLogin;
-  }
+	@NotNull
+	public String getLogin()
+	{
+		return myLogin;
+	}
 }

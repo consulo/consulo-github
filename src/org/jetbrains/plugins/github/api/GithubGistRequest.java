@@ -15,39 +15,52 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import com.google.gson.annotations.SerializedName;
-import com.intellij.util.containers.HashMap;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.SerializedName;
+import com.intellij.util.containers.HashMap;
 
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
-class GithubGistRequest {
-  @NotNull private final String description;
-  @NotNull private final Map<String, GistFile> files;
+@SuppressWarnings({
+		"FieldCanBeLocal",
+		"UnusedDeclaration",
+		"MismatchedQueryAndUpdateOfCollection"
+})
+class GithubGistRequest
+{
+	@NotNull
+	private final String description;
+	@NotNull
+	private final Map<String, GistFile> files;
 
-  @SerializedName("public")
-  private final boolean isPublic;
+	@SerializedName("public")
+	private final boolean isPublic;
 
-  public static class GistFile {
-    @NotNull private final String content;
+	public static class GistFile
+	{
+		@NotNull
+		private final String content;
 
-    public GistFile(@NotNull String content) {
-      this.content = content;
-    }
-  }
+		public GistFile(@NotNull String content)
+		{
+			this.content = content;
+		}
+	}
 
-  public GithubGistRequest(@NotNull List<GithubGist.FileContent> files, @NotNull String description, boolean isPublic) {
-    this.description = description;
-    this.isPublic = isPublic;
+	public GithubGistRequest(@NotNull List<GithubGist.FileContent> files, @NotNull String description,
+			boolean isPublic)
+	{
+		this.description = description;
+		this.isPublic = isPublic;
 
-    this.files = new HashMap<String, GistFile>();
-    for (GithubGist.FileContent file : files) {
-      this.files.put(file.getFileName(), new GistFile(file.getContent()));
-    }
-  }
+		this.files = new HashMap<String, GistFile>();
+		for(GithubGist.FileContent file : files)
+		{
+			this.files.put(file.getFileName(), new GistFile(file.getContent()));
+		}
+	}
 }

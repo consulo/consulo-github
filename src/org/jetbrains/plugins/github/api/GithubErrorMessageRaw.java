@@ -15,38 +15,50 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubErrorMessageRaw {
-  @Nullable public String message;
-  @Nullable public List<Error> errors;
+class GithubErrorMessageRaw
+{
+	@Nullable
+	public String message;
+	@Nullable
+	public List<Error> errors;
 
-  private static class Error {
-    @Nullable public String resource;
-    @Nullable public String field;
-    @Nullable public String code;
-    @Nullable public String message;
-  }
+	private static class Error
+	{
+		@Nullable
+		public String resource;
+		@Nullable
+		public String field;
+		@Nullable
+		public String code;
+		@Nullable
+		public String message;
+	}
 
-  @Nullable
-  public String getMessage() {
-    if (errors == null) {
-      return message;
-    }
-    else {
-      StringBuilder s = new StringBuilder(message);
-      for (Error e : errors) {
-        s.append("<br/>").append("[").append(e.resource).append(";").append(e.field).append("]").append(e.code).append(": ")
-          .append(e.message);
-      }
-      return s.toString();
-    }
-  }
+	@Nullable
+	public String getMessage()
+	{
+		if(errors == null)
+		{
+			return message;
+		}
+		else
+		{
+			StringBuilder s = new StringBuilder(message);
+			for(Error e : errors)
+			{
+				s.append("<br/>").append("[").append(e.resource).append(";").append(e.field).append("]").append(e
+						.code).append(": ").append(e.message);
+			}
+			return s.toString();
+		}
+	}
 }
 

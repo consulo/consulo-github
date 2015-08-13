@@ -15,43 +15,48 @@
  */
 package org.jetbrains.plugins.github;
 
+import org.jetbrains.plugins.github.api.GithubFullPath;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import icons.GithubIcons;
-import org.jetbrains.plugins.github.api.GithubFullPath;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import org.jetbrains.plugins.github.util.GithubUtil;
 
 /**
  * @author Kirill Likhodedov
  */
-abstract class GithubShowCommitInBrowserAction extends DumbAwareAction {
+abstract class GithubShowCommitInBrowserAction extends DumbAwareAction
+{
 
-  public GithubShowCommitInBrowserAction() {
-    super("Open on GitHub", "Open the selected commit in browser", GithubIcons.Github_icon);
-  }
+	public GithubShowCommitInBrowserAction()
+	{
+		super("Open on GitHub", "Open the selected commit in browser", GithubIcons.Github_icon);
+	}
 
-  protected static void openInBrowser(Project project, GitRepository repository, String revisionHash) {
-    String url = GithubUtil.findGithubRemoteUrl(repository);
-    if (url == null) {
-      GithubUtil.LOG.info(String.format("Repository is not under GitHub. Root: %s, Remotes: %s", repository.getRoot(),
-                                           GitUtil.getPrintableRemotes(repository.getRemotes())));
-      return;
-    }
-    GithubFullPath userAndRepository = GithubUrlUtil.getUserAndRepositoryFromRemoteUrl(url);
-    if (userAndRepository == null) {
-      GithubNotifications
-        .showError(project, GithubOpenInBrowserAction.CANNOT_OPEN_IN_BROWSER, "Cannot extract info about repository: " + url);
-      return;
-    }
+	protected static void openInBrowser(Project project, GitRepository repository, String revisionHash)
+	{
+		String url = GithubUtil.findGithubRemoteUrl(repository);
+		if(url == null)
+		{
+			GithubUtil.LOG.info(String.format("Repository is not under GitHub. Root: %s, Remotes: %s",
+					repository.getRoot(), GitUtil.getPrintableRemotes(repository.getRemotes())));
+			return;
+		}
+		GithubFullPath userAndRepository = GithubUrlUtil.getUserAndRepositoryFromRemoteUrl(url);
+		if(userAndRepository == null)
+		{
+			GithubNotifications.showError(project, GithubOpenInBrowserAction.CANNOT_OPEN_IN_BROWSER,
+					"Cannot extract info about repository: " + url);
+			return;
+		}
 
-    String githubUrl = GithubUrlUtil.getGitHost() + '/' + userAndRepository.getUser() + '/'
-                       + userAndRepository.getRepository() + "/commit/" + revisionHash;
-    BrowserUtil.launchBrowser(githubUrl);
-  }
+		String githubUrl = GithubUrlUtil.getGitHost() + '/' + userAndRepository.getUser() + '/' + userAndRepository
+				.getRepository() + "/commit/" + revisionHash;
+		BrowserUtil.launchBrowser(githubUrl);
+	}
 
 }

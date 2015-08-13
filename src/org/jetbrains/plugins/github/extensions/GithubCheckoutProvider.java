@@ -59,13 +59,14 @@ public class GithubCheckoutProvider implements CheckoutProvider
 		List<GithubRepo> availableRepos;
 		try
 		{
-			availableRepos = GithubUtil.computeValueInModal(project, "Access to GitHub", new ThrowableConvertor<ProgressIndicator, List<GithubRepo>,
-					IOException>()
+			availableRepos = GithubUtil.computeValueInModal(project, "Access to GitHub",
+					new ThrowableConvertor<ProgressIndicator, List<GithubRepo>, IOException>()
 			{
 				@Override
 				public List<GithubRepo> convert(ProgressIndicator indicator) throws IOException
 				{
-					return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData, List<GithubRepo>, IOException>()
+					return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData,
+							List<GithubRepo>, IOException>()
 					{
 						@Override
 						public List<GithubRepo> convert(GithubAuthData authData) throws IOException
@@ -108,7 +109,8 @@ public class GithubCheckoutProvider implements CheckoutProvider
 			return;
 		}
 		dialog.rememberSettings();
-		final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog.getParentDirectory()));
+		final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog
+				.getParentDirectory()));
 		if(destinationParent == null)
 		{
 			return;
@@ -119,7 +121,8 @@ public class GithubCheckoutProvider implements CheckoutProvider
 		final String puttyKey = dialog.getPuttyKeyFile();
 
 		Git git = ServiceManager.getService(Git.class);
-		GitCheckoutProvider.clone(project, git, listener, destinationParent, sourceRepositoryURL, directoryName, parentDirectory, puttyKey);
+		GitCheckoutProvider.clone(project, git, listener, destinationParent, sourceRepositoryURL, directoryName,
+				parentDirectory, puttyKey);
 	}
 
 	@Override

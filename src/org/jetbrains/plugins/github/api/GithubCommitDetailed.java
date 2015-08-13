@@ -24,54 +24,65 @@ import java.util.List;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubCommitDetailed extends GithubCommit {
-  @NotNull private final CommitStats myStats;
-  @NotNull private final List<GithubFile> myFiles;
+public class GithubCommitDetailed extends GithubCommit
+{
+	@NotNull
+	private final CommitStats myStats;
+	@NotNull
+	private final List<GithubFile> myFiles;
 
-  public static class CommitStats {
-    private final int myAdditions;
-    private final int myDeletions;
-    private final int myTotal;
+	public static class CommitStats
+	{
+		private final int myAdditions;
+		private final int myDeletions;
+		private final int myTotal;
 
-    public CommitStats(int additions, int deletions, int total) {
-      myAdditions = additions;
-      myDeletions = deletions;
-      myTotal = total;
-    }
+		public CommitStats(int additions, int deletions, int total)
+		{
+			myAdditions = additions;
+			myDeletions = deletions;
+			myTotal = total;
+		}
 
-    public int getAdditions() {
-      return myAdditions;
-    }
+		public int getAdditions()
+		{
+			return myAdditions;
+		}
 
-    public int getDeletions() {
-      return myDeletions;
-    }
+		public int getDeletions()
+		{
+			return myDeletions;
+		}
 
-    public int getTotal() {
-      return myTotal;
-    }
-  }
+		public int getTotal()
+		{
+			return myTotal;
+		}
+	}
 
-  public GithubCommitDetailed(@NotNull String url,
-                              @NotNull String sha,
-                              @Nullable GithubUser author,
-                              @Nullable GithubUser committer,
-                              @NotNull List<GithubCommitSha> parents,
-                              @NotNull GitCommit commit,
-                              @NotNull CommitStats stats,
-                              @NotNull List<GithubFile> files) {
-    super(url, sha, author, committer, parents, commit);
-    myStats = stats;
-    myFiles = files;
-  }
+	public GithubCommitDetailed(@NotNull String url,
+			@NotNull String sha,
+			@Nullable GithubUser author,
+			@Nullable GithubUser committer,
+			@NotNull List<GithubCommitSha> parents,
+			@NotNull GitCommit commit,
+			@NotNull CommitStats stats,
+			@NotNull List<GithubFile> files)
+	{
+		super(url, sha, author, committer, parents, commit);
+		myStats = stats;
+		myFiles = files;
+	}
 
-  @NotNull
-  public CommitStats getStats() {
-    return myStats;
-  }
+	@NotNull
+	public CommitStats getStats()
+	{
+		return myStats;
+	}
 
-  @NotNull
-  public List<GithubFile> getFiles() {
-    return myFiles;
-  }
+	@NotNull
+	public List<GithubFile> getFiles()
+	{
+		return myFiles;
+	}
 }

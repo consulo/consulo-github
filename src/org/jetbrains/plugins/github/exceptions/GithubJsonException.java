@@ -20,20 +20,25 @@ import java.io.IOException;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubJsonException extends IOException {
-  public GithubJsonException() {
-    super();
-  }
+public class GithubJsonException extends IOException
+{
+	public GithubJsonException()
+	{
+		super();
+	}
 
-  public GithubJsonException(String message) {
-    super(message);
-  }
+	public GithubJsonException(String message)
+	{
+		super(message);
+	}
 
-  public GithubJsonException(String message, Throwable cause) {
-    super(message, cause);
-  }
+	public GithubJsonException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 
-  public GithubJsonException(Throwable cause) {
-    super(cause);
-  }
+	public GithubJsonException(Throwable cause)
+	{
+		super(cause);
+	}
 }

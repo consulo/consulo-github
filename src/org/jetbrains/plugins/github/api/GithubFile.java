@@ -21,61 +21,75 @@ import org.jetbrains.annotations.NotNull;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubFile {
-  @NotNull private final String myFilename;
+public class GithubFile
+{
+	@NotNull
+	private final String myFilename;
 
-  private final int myAdditions;
-  private final int myDeletions;
-  private final int myChanges;
-  @NotNull private final String myStatus;
+	private final int myAdditions;
+	private final int myDeletions;
+	private final int myChanges;
+	@NotNull
+	private final String myStatus;
 
-  @NotNull private final String myRawUrl;
-  @NotNull private final String myPatch;
+	@NotNull
+	private final String myRawUrl;
+	@NotNull
+	private final String myPatch;
 
-  public GithubFile(@NotNull String filename, int additions,
-                     int deletions,
-                     int changes,
-                     @NotNull String status,
-                     @NotNull String rawUrl,
-                     @NotNull String patch) {
-    myFilename = filename;
-    myAdditions = additions;
-    myDeletions = deletions;
-    myChanges = changes;
-    myStatus = status;
-    myRawUrl = rawUrl;
-    myPatch = patch;
-  }
+	public GithubFile(@NotNull String filename,
+			int additions,
+			int deletions,
+			int changes,
+			@NotNull String status,
+			@NotNull String rawUrl,
+			@NotNull String patch)
+	{
+		myFilename = filename;
+		myAdditions = additions;
+		myDeletions = deletions;
+		myChanges = changes;
+		myStatus = status;
+		myRawUrl = rawUrl;
+		myPatch = patch;
+	}
 
-  @NotNull
-  public String getFilename() {
-    return myFilename;
-  }
+	@NotNull
+	public String getFilename()
+	{
+		return myFilename;
+	}
 
-  public int getAdditions() {
-    return myAdditions;
-  }
+	public int getAdditions()
+	{
+		return myAdditions;
+	}
 
-  public int getDeletions() {
-    return myDeletions;
-  }
+	public int getDeletions()
+	{
+		return myDeletions;
+	}
 
-  public int getChanges() {
-    return myChanges;
-  }
+	public int getChanges()
+	{
+		return myChanges;
+	}
 
-  @NotNull
-  public String getStatus() {
-    return myStatus;
-  }
+	@NotNull
+	public String getStatus()
+	{
+		return myStatus;
+	}
 
-  @NotNull
-  public String getRawUrl() {
-    return myRawUrl;
-  }
+	@NotNull
+	public String getRawUrl()
+	{
+		return myRawUrl;
+	}
 
-  @NotNull
-  public String getPatch() {
-    return myPatch;
-  }
+	@NotNull
+	public String getPatch()
+	{
+		return myPatch;
+	}
 }

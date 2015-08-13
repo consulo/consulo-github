@@ -47,7 +47,8 @@ public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBr
 			e.getPresentation().setEnabledAndVisible(false);
 			return;
 		}
-		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commits.get(0).getRoot());
+		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commits.get(0).getRoot
+				());
 		e.getPresentation().setEnabledAndVisible(repository != null && GithubUtil.isRepositoryOnGitHub(repository));
 	}
 

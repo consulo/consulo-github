@@ -22,22 +22,27 @@ import org.jetbrains.annotations.Nullable;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubBranchRaw implements DataConstructor {
-  @Nullable public String name;
+class GithubBranchRaw implements DataConstructor
+{
+	@Nullable
+	public String name;
 
-  @SuppressWarnings("ConstantConditions")
-  public GithubBranch createBranch() {
-    return new GithubBranch(name);
-  }
+	@SuppressWarnings("ConstantConditions")
+	public GithubBranch createBranch()
+	{
+		return new GithubBranch(name);
+	}
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  @Override
-  public <T> T create(@NotNull Class<T> resultClass) {
-    if (resultClass.isAssignableFrom(GithubBranch.class)) {
-      return (T)createBranch();
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T create(@NotNull Class<T> resultClass)
+	{
+		if(resultClass.isAssignableFrom(GithubBranch.class))
+		{
+			return (T) createBranch();
+		}
 
-    throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-  }
+		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+	}
 }

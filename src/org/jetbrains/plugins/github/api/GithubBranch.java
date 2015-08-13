@@ -20,15 +20,19 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubBranch {
-  @NotNull private final String name;
+public class GithubBranch
+{
+	@NotNull
+	private final String name;
 
-  public GithubBranch(@NotNull String name) {
-    this.name = name;
-  }
+	public GithubBranch(@NotNull String name)
+	{
+		this.name = name;
+	}
 
-  @NotNull
-  public String getName() {
-    return name;
-  }
+	@NotNull
+	public String getName()
+	{
+		return name;
+	}
 }

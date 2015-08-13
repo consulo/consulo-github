@@ -15,42 +15,54 @@
  */
 package org.jetbrains.plugins.github.api;
 
+import java.util.Date;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Date;
 
 /**
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubIssueCommentRaw implements DataConstructor {
-  @Nullable public Long id;
+class GithubIssueCommentRaw implements DataConstructor
+{
+	@Nullable
+	public Long id;
 
-  @Nullable public String url;
-  @Nullable public String htmlUrl;
-  @Nullable public String body;
-  @Nullable public String bodyHtml;
+	@Nullable
+	public String url;
+	@Nullable
+	public String htmlUrl;
+	@Nullable
+	public String body;
+	@Nullable
+	public String bodyHtml;
 
-  @Nullable public Date createdAt;
-  @Nullable public Date updatedAt;
+	@Nullable
+	public Date createdAt;
+	@Nullable
+	public Date updatedAt;
 
-  @Nullable public GithubUserRaw user;
+	@Nullable
+	public GithubUserRaw user;
 
-  @SuppressWarnings("ConstantConditions")
-  @NotNull
-  public GithubIssueComment createIssueComment() {
-    return new GithubIssueComment(id, htmlUrl, bodyHtml, createdAt, updatedAt, user.createUser());
-  }
+	@SuppressWarnings("ConstantConditions")
+	@NotNull
+	public GithubIssueComment createIssueComment()
+	{
+		return new GithubIssueComment(id, htmlUrl, bodyHtml, createdAt, updatedAt, user.createUser());
+	}
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  @Override
-  public <T> T create(@NotNull Class<T> resultClass) {
-    if (resultClass.isAssignableFrom(GithubIssueComment.class)) {
-      return (T)createIssueComment();
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T create(@NotNull Class<T> resultClass)
+	{
+		if(resultClass.isAssignableFrom(GithubIssueComment.class))
+		{
+			return (T) createIssueComment();
+		}
 
-    throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-  }
+		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+	}
 }

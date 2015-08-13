@@ -15,21 +15,23 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.github.GithubShowCommitInBrowserFromAnnotateAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.vcs.annotate.AnnotationGutterActionProvider;
 import com.intellij.openapi.vcs.annotate.FileAnnotation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.github.GithubShowCommitInBrowserFromAnnotateAction;
 
 /**
  * @author Kirill Likhodedov
  */
-public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider {
+public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider
+{
 
-  @NotNull
-  @Override
-  public AnAction createAction(@NotNull FileAnnotation annotation) {
-    return new GithubShowCommitInBrowserFromAnnotateAction(annotation);
-  }
+	@NotNull
+	@Override
+	public AnAction createAction(@NotNull FileAnnotation annotation)
+	{
+		return new GithubShowCommitInBrowserFromAnnotateAction(annotation);
+	}
 
 }

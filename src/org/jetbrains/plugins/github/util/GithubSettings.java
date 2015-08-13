@@ -212,7 +212,8 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		String password;
 		try
 		{
-			password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY);
+			password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class,
+					GITHUB_SETTINGS_PASSWORD_KEY);
 		}
 		catch(PasswordSafeException e)
 		{
@@ -229,14 +230,16 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		{
 			if(rememberPassword)
 			{
-				PasswordSafe.getInstance().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
+				PasswordSafe.getInstance().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY,
+						password);
 			}
 			else
 			{
 				final PasswordSafeImpl passwordSafe = (PasswordSafeImpl) PasswordSafe.getInstance();
 				if(passwordSafe.getSettings().getProviderType() != PasswordSafeSettings.ProviderType.DO_NOT_STORE)
 				{
-					passwordSafe.getMemoryProvider().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
+					passwordSafe.getMemoryProvider().storePassword(null, GithubSettings.class,
+							GITHUB_SETTINGS_PASSWORD_KEY, password);
 				}
 			}
 		}

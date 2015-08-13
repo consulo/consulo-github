@@ -24,88 +24,109 @@ import java.util.Date;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubIssue {
-  @NotNull private final String myHtmlUrl;
-  private final long myNumber;
-  @NotNull private final String myState;
-  @NotNull private final String myTitle;
-  @NotNull private final String myBody;
+public class GithubIssue
+{
+	@NotNull
+	private final String myHtmlUrl;
+	private final long myNumber;
+	@NotNull
+	private final String myState;
+	@NotNull
+	private final String myTitle;
+	@NotNull
+	private final String myBody;
 
-  @NotNull private final GithubUser myUser;
-  @Nullable private final GithubUser myAssignee;
+	@NotNull
+	private final GithubUser myUser;
+	@Nullable
+	private final GithubUser myAssignee;
 
-  @Nullable private final Date myClosedAt;
-  @NotNull private final Date myCreatedAt;
-  @NotNull private final Date myUpdatedAt;
+	@Nullable
+	private final Date myClosedAt;
+	@NotNull
+	private final Date myCreatedAt;
+	@NotNull
+	private final Date myUpdatedAt;
 
-  public GithubIssue(@NotNull String htmlUrl,
-                     long number,
-                     @NotNull String state,
-                     @NotNull String title,
-                     @Nullable String body,
-                     @NotNull GithubUser user,
-                     @Nullable GithubUser assignee,
-                     @Nullable Date closedAt,
-                     @NotNull Date createdAt,
-                     @NotNull Date updatedAt) {
-    myHtmlUrl = htmlUrl;
-    myNumber = number;
-    myState = state;
-    myTitle = title;
-    myBody = StringUtil.notNullize(body);
-    myUser = user;
-    myAssignee = assignee;
-    myClosedAt = closedAt;
-    myCreatedAt = createdAt;
-    myUpdatedAt = updatedAt;
-  }
+	public GithubIssue(@NotNull String htmlUrl,
+			long number,
+			@NotNull String state,
+			@NotNull String title,
+			@Nullable String body,
+			@NotNull GithubUser user,
+			@Nullable GithubUser assignee,
+			@Nullable Date closedAt,
+			@NotNull Date createdAt,
+			@NotNull Date updatedAt)
+	{
+		myHtmlUrl = htmlUrl;
+		myNumber = number;
+		myState = state;
+		myTitle = title;
+		myBody = StringUtil.notNullize(body);
+		myUser = user;
+		myAssignee = assignee;
+		myClosedAt = closedAt;
+		myCreatedAt = createdAt;
+		myUpdatedAt = updatedAt;
+	}
 
-  @NotNull
-  public String getHtmlUrl() {
-    return myHtmlUrl;
-  }
+	@NotNull
+	public String getHtmlUrl()
+	{
+		return myHtmlUrl;
+	}
 
-  public long getNumber() {
-    return myNumber;
-  }
+	public long getNumber()
+	{
+		return myNumber;
+	}
 
-  @NotNull
-  public String getState() {
-    return myState;
-  }
+	@NotNull
+	public String getState()
+	{
+		return myState;
+	}
 
-  @NotNull
-  public String getTitle() {
-    return myTitle;
-  }
+	@NotNull
+	public String getTitle()
+	{
+		return myTitle;
+	}
 
-  @NotNull
-  public String getBody() {
-    return myBody;
-  }
+	@NotNull
+	public String getBody()
+	{
+		return myBody;
+	}
 
-  @NotNull
-  public GithubUser getUser() {
-    return myUser;
-  }
+	@NotNull
+	public GithubUser getUser()
+	{
+		return myUser;
+	}
 
-  @Nullable
-  public GithubUser getAssignee() {
-    return myAssignee;
-  }
+	@Nullable
+	public GithubUser getAssignee()
+	{
+		return myAssignee;
+	}
 
-  @Nullable
-  public Date getClosedAt() {
-    return myClosedAt;
-  }
+	@Nullable
+	public Date getClosedAt()
+	{
+		return myClosedAt;
+	}
 
-  @NotNull
-  public Date getCreatedAt() {
-    return myCreatedAt;
-  }
+	@NotNull
+	public Date getCreatedAt()
+	{
+		return myCreatedAt;
+	}
 
-  @NotNull
-  public Date getUpdatedAt() {
-    return myUpdatedAt;
-  }
+	@NotNull
+	public Date getUpdatedAt()
+	{
+		return myUpdatedAt;
+	}
 }

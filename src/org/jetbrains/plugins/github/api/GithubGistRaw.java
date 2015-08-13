@@ -15,75 +15,98 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubGistRaw implements DataConstructor {
-  @Nullable public String id;
-  @Nullable public String description;
+class GithubGistRaw implements DataConstructor
+{
+	@Nullable
+	public String id;
+	@Nullable
+	public String description;
 
-  @SerializedName("public")
-  @Nullable public Boolean isPublic;
+	@SerializedName("public")
+	@Nullable
+	public Boolean isPublic;
 
-  @Nullable public String url;
-  @Nullable public String htmlUrl;
-  @Nullable public String gitPullUrl;
-  @Nullable public String gitPushUrl;
+	@Nullable
+	public String url;
+	@Nullable
+	public String htmlUrl;
+	@Nullable
+	public String gitPullUrl;
+	@Nullable
+	public String gitPushUrl;
 
-  @Nullable public Map<String, GistFileRaw> files;
+	@Nullable
+	public Map<String, GistFileRaw> files;
 
-  @Nullable public GithubUserRaw user;
+	@Nullable
+	public GithubUserRaw user;
 
-  @Nullable public Date createdAt;
+	@Nullable
+	public Date createdAt;
 
-  public static class GistFileRaw {
-    @Nullable public Long size;
-    @Nullable public String filename;
-    @Nullable public String content;
+	public static class GistFileRaw
+	{
+		@Nullable
+		public Long size;
+		@Nullable
+		public String filename;
+		@Nullable
+		public String content;
 
-    @Nullable public String raw_url;
+		@Nullable
+		public String raw_url;
 
-    @Nullable public String type;
-    @Nullable public String language;
+		@Nullable
+		public String type;
+		@Nullable
+		public String language;
 
-    @SuppressWarnings("ConstantConditions")
-    @NotNull
-    public GithubGist.GistFile create() {
-      return new GithubGist.GistFile(filename, content, raw_url);
-    }
-  }
+		@SuppressWarnings("ConstantConditions")
+		@NotNull
+		public GithubGist.GistFile create()
+		{
+			return new GithubGist.GistFile(filename, content, raw_url);
+		}
+	}
 
-  @SuppressWarnings("ConstantConditions")
-  @NotNull
-  public GithubGist createGist() {
-    GithubUser user = this.user == null ? null : this.user.createUser();
+	@SuppressWarnings("ConstantConditions")
+	@NotNull
+	public GithubGist createGist()
+	{
+		GithubUser user = this.user == null ? null : this.user.createUser();
 
-    List<GithubGist.GistFile> files = new ArrayList<GithubGist.GistFile>();
-    for (Map.Entry<String, GistFileRaw> entry : this.files.entrySet()) {
-      files.add(entry.getValue().create());
-    }
+		List<GithubGist.GistFile> files = new ArrayList<GithubGist.GistFile>();
+		for(Map.Entry<String, GistFileRaw> entry : this.files.entrySet())
+		{
+			files.add(entry.getValue().create());
+		}
 
-    return new GithubGist(id, description, isPublic, htmlUrl, files, user);
-  }
+		return new GithubGist(id, description, isPublic, htmlUrl, files, user);
+	}
 
-  @SuppressWarnings("unchecked")
-  @NotNull
-  @Override
-  public <T> T create(@NotNull Class<T> resultClass) {
-    if (resultClass.isAssignableFrom(GithubGist.class)) {
-      return (T)createGist();
-    }
+	@SuppressWarnings("unchecked")
+	@NotNull
+	@Override
+	public <T> T create(@NotNull Class<T> resultClass)
+	{
+		if(resultClass.isAssignableFrom(GithubGist.class))
+		{
+			return (T) createGist();
+		}
 
-    throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-  }
+		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+	}
 }

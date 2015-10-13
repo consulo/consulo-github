@@ -31,6 +31,7 @@ import org.jetbrains.plugins.github.ui.GithubCreateGistDialog;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUtil;
+import org.mustbe.consulo.RequiredDispatchThread;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -154,6 +155,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 				url.set(gistUrl);
 			}
 
+			@RequiredDispatchThread
 			@Override
 			public void onSuccess()
 			{
@@ -163,7 +165,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 				}
 				if(dialog.isOpenInBrowser())
 				{
-					BrowserUtil.launchBrowser(url.get());
+					BrowserUtil.browse(url.get());
 				}
 				else
 				{
@@ -284,7 +286,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 	}
 
 	@NotNull
-	private static List<FileContent> getContentFromFile(@NotNull VirtualFile file,
+	private static List<FileContent> getContentFromFile(@NotNull final VirtualFile file,
 			@NotNull Project project,
 			@Nullable String prefix)
 	{
@@ -292,7 +294,14 @@ public class GithubCreateGistAction extends DumbAwareAction
 		{
 			return getContentFromDirectory(file, project, prefix);
 		}
-		Document document = FileDocumentManager.getInstance().getDocument(file);
+		Document document = ApplicationManager.getApplication().runReadAction(new Computable<Document>()
+		{
+			@Override
+			public Document compute()
+			{
+				return FileDocumentManager.getInstance().getDocument(file);
+			}
+		});
 		String content;
 		if(document != null)
 		{

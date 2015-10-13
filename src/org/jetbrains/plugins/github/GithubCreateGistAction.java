@@ -55,7 +55,7 @@ import icons.GithubIcons;
 
 /**
  * @author oleg
- * @date 9/27/11
+ * @since 9/27/11
  */
 public class GithubCreateGistAction extends DumbAwareAction
 {
@@ -67,8 +67,9 @@ public class GithubCreateGistAction extends DumbAwareAction
 		super("Create Gist...", "Create GitHub Gist", GithubIcons.Github_icon);
 	}
 
+	@RequiredDispatchThread
 	@Override
-	public void update(final AnActionEvent e)
+	public void update(@NotNull final AnActionEvent e)
 	{
 		Project project = e.getData(PlatformDataKeys.PROJECT);
 		if(project == null || project.isDefault())
@@ -90,8 +91,9 @@ public class GithubCreateGistAction extends DumbAwareAction
 		GithubUtil.setVisibleEnabled(e, true, true);
 	}
 
+	@RequiredDispatchThread
 	@Override
-	public void actionPerformed(final AnActionEvent e)
+	public void actionPerformed(@NotNull final AnActionEvent e)
 	{
 		final Project project = e.getData(PlatformDataKeys.PROJECT);
 		if(project == null || project.isDefault())

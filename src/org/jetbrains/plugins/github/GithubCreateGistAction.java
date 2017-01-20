@@ -31,7 +31,6 @@ import org.jetbrains.plugins.github.ui.GithubCreateGistDialog;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import org.mustbe.consulo.RequiredDispatchThread;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -51,6 +50,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ThrowableConvertor;
+import consulo.annotations.RequiredDispatchThread;
 import icons.GithubIcons;
 
 /**

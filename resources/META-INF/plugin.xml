@@ -1,15 +1,13 @@
-<idea-plugin version="2">
+<idea-plugin>
 	<id>org.jetbrains.plugins.github</id>
 	<name>GitHub</name>
 	<vendor>JetBrains</vendor>
 	<description>GitHub integration</description>
 
-	<depends>Git4Idea</depends>
-	<depends>com.intellij.xml</depends>
+	<depends>com.intellij.git</depends>
 	<depends optional="true" config-file="github-tracker.xml">com.intellij.tasks</depends>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 		<checkoutProvider implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutProvider"/>
 		<applicationService serviceInterface="org.jetbrains.plugins.github.util.GithubSettings"
 							serviceImplementation="org.jetbrains.plugins.github.util.GithubSettings"/>

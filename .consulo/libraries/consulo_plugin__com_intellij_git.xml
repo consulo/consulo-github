@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="consulo-plugin: com.intellij.git" type="consulo-plugin">
+    <binaries>
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.git/lib/git.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.git/lib/git_rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.git/lib/trilead-ssh2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.git/lib/ini4j-0.5.2-patched.jar!/" />
+    </binaries>
+  </library>
+</component>

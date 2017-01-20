@@ -20,6 +20,7 @@ import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ThrowableConvertor;
-import git4idea.GitPlatformFacade;
 import git4idea.GitUtil;
 import git4idea.actions.BasicAction;
 import git4idea.commands.Git;
@@ -55,6 +55,7 @@ import git4idea.commands.GitStandardProgressAnalyzer;
 import git4idea.commands.GitTask;
 import git4idea.commands.GitTaskResultHandlerAdapter;
 import git4idea.commands.GitUntrackedFilesOverwrittenByOperationDetector;
+import git4idea.config.GitVcsSettings;
 import git4idea.rebase.GitRebaseProblemDetector;
 import git4idea.rebase.GitRebaser;
 import git4idea.repo.GitRepository;
@@ -78,8 +79,7 @@ public class GithubRebaseAction extends DumbAwareAction
 
 	public GithubRebaseAction()
 	{
-		super("Rebase my GitHub fork", "Rebase your GitHub forked repository relative to the origin",
-				GithubIcons.Github_icon);
+		super("Rebase my GitHub fork", "Rebase your GitHub forked repository relative to the origin", GithubIcons.Github_icon);
 	}
 
 	public void update(AnActionEvent e)
@@ -155,22 +155,18 @@ public class GithubRebaseAction extends DumbAwareAction
 
 				if(!GithubUrlUtil.isGithubUrl(upstreamRemoteUrl))
 				{
-					GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE,
-							"Configured upstream is not a GitHub repository: " + upstreamRemoteUrl);
+					GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE, "Configured upstream is not a GitHub repository: " + upstreamRemoteUrl);
 					return;
 				}
 				else
 				{
-					final GithubFullPath userAndRepo = GithubUrlUtil.getUserAndRepositoryFromRemoteUrl
-							(upstreamRemoteUrl);
+					final GithubFullPath userAndRepo = GithubUrlUtil.getUserAndRepositoryFromRemoteUrl(upstreamRemoteUrl);
 					final String login = GithubSettings.getInstance().getLogin();
 					if(userAndRepo != null)
 					{
 						if(userAndRepo.getUser().equals(login))
 						{
-							GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE,
-									"Configured upstream seems to be your own " +
-									"repository: " + upstreamRemoteUrl);
+							GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE, "Configured upstream seems to be your own " + "repository: " + upstreamRemoteUrl);
 							return;
 						}
 					}
@@ -191,10 +187,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	static String configureUpstreamRemote(@NotNull Project project,
-			@NotNull VirtualFile root,
-			@NotNull GitRepository gitRepository,
-			@NotNull ProgressIndicator indicator)
+	static String configureUpstreamRemote(@NotNull Project project, @NotNull VirtualFile root, @NotNull GitRepository gitRepository, @NotNull ProgressIndicator indicator)
 	{
 		GithubRepoDetailed repositoryInfo = loadRepositoryInfo(project, gitRepository, indicator);
 		if(repositoryInfo == null)
@@ -204,13 +197,11 @@ public class GithubRebaseAction extends DumbAwareAction
 
 		if(!repositoryInfo.isFork() || repositoryInfo.getParent() == null)
 		{
-			GithubNotifications.showWarningURL(project, CANNOT_PERFORM_GITHUB_REBASE, "GitHub repository ",
-					"'" + repositoryInfo.getName() + "'", " is not a forked one", repositoryInfo.getHtmlUrl());
+			GithubNotifications.showWarningURL(project, CANNOT_PERFORM_GITHUB_REBASE, "GitHub repository ", "'" + repositoryInfo.getName() + "'", " is not a forked one", repositoryInfo.getHtmlUrl());
 			return null;
 		}
 
-		final String parentRepoUrl = GithubUrlUtil.getGitHost() + '/' + repositoryInfo.getParent().getFullName() + "" +
-				".git";
+		final String parentRepoUrl = GithubUrlUtil.getGitHost() + '/' + repositoryInfo.getParent().getFullName() + "" + ".git";
 
 		LOG.info("Adding GitHub parent as a remote host");
 		indicator.setText("Adding GitHub parent as a remote host...");
@@ -218,9 +209,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static GithubRepoDetailed loadRepositoryInfo(@NotNull Project project,
-			@NotNull GitRepository gitRepository,
-			@NotNull ProgressIndicator indicator)
+	private static GithubRepoDetailed loadRepositoryInfo(@NotNull Project project, @NotNull GitRepository gitRepository, @NotNull ProgressIndicator indicator)
 	{
 		final String remoteUrl = GithubUtil.findGithubRemoteUrl(gitRepository);
 		if(remoteUrl == null)
@@ -237,15 +226,13 @@ public class GithubRebaseAction extends DumbAwareAction
 
 		try
 		{
-			return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData,
-					GithubRepoDetailed, IOException>()
+			return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData, GithubRepoDetailed, IOException>()
 			{
 				@Override
 				@NotNull
 				public GithubRepoDetailed convert(GithubAuthData authData) throws IOException
 				{
-					return GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(),
-							userAndRepo.getRepository());
+					return GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(), userAndRepo.getRepository());
 				}
 			});
 		}
@@ -261,10 +248,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static String addParentAsUpstreamRemote(@NotNull Project project,
-			@NotNull VirtualFile root,
-			@NotNull String parentRepoUrl,
-			@NotNull GitRepository gitRepository)
+	private static String addParentAsUpstreamRemote(@NotNull Project project, @NotNull VirtualFile root, @NotNull String parentRepoUrl, @NotNull GitRepository gitRepository)
 	{
 		final GitSimpleHandler handler = new GitSimpleHandler(project, root, GitCommand.REMOTE);
 		handler.setSilent(true);
@@ -275,9 +259,7 @@ public class GithubRebaseAction extends DumbAwareAction
 			handler.run();
 			if(handler.getExitCode() != 0)
 			{
-				GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE, "Failed to add GitHub remote: '"
-						+ parentRepoUrl + "'. " +
-						handler.getStderr());
+				GithubNotifications.showError(project, CANNOT_PERFORM_GITHUB_REBASE, "Failed to add GitHub remote: '" + parentRepoUrl + "'. " + handler.getStderr());
 				return null;
 			}
 			// catch newly added remote
@@ -292,9 +274,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		}
 	}
 
-	private static boolean fetchParent(@NotNull final Project project,
-			@NotNull final GitRepository repository,
-			@NotNull final ProgressIndicator indicator)
+	private static boolean fetchParent(@NotNull final Project project, @NotNull final GitRepository repository, @NotNull final ProgressIndicator indicator)
 	{
 		GitFetchResult result = new GitFetcher(project, indicator, false).fetch(repository.getRoot(), "upstream");
 		if(!result.isSuccess())
@@ -305,28 +285,18 @@ public class GithubRebaseAction extends DumbAwareAction
 		return true;
 	}
 
-	private static void rebaseCurrentBranch(@NotNull final Project project,
-			@NotNull final VirtualFile root,
-			@NotNull final GitRepository gitRepository,
-			@NotNull final ProgressIndicator indicator)
+	private static void rebaseCurrentBranch(@NotNull final Project project, @NotNull final VirtualFile root, @NotNull final GitRepository gitRepository, @NotNull final ProgressIndicator indicator)
 	{
 		final Git git = ServiceManager.getService(project, Git.class);
-		final GitPlatformFacade facade = ServiceManager.getService(project, GitPlatformFacade.class);
-		GitPreservingProcess process = new GitPreservingProcess(project, facade, git,
-				Collections.singletonList(gitRepository), "Rebasing", "upstream/master", indicator, new Runnable()
+		List<VirtualFile> rootsToSave = Collections.singletonList(gitRepository.getRoot());
+		GitPreservingProcess process = new GitPreservingProcess(project, git, rootsToSave, "Rebasing", "upstream/master", GitVcsSettings.UpdateChangesPolicy.STASH, indicator, () ->
 		{
-			@Override
-			public void run()
-			{
-				doRebaseCurrentBranch(project, root, indicator);
-			}
+			doRebaseCurrentBranch(project, root, indicator);
 		});
 		process.execute();
 	}
 
-	private static void doRebaseCurrentBranch(@NotNull final Project project,
-			@NotNull final VirtualFile root,
-			@NotNull final ProgressIndicator indicator)
+	private static void doRebaseCurrentBranch(@NotNull final Project project, @NotNull final VirtualFile root, @NotNull final ProgressIndicator indicator)
 	{
 		final GitRepositoryManager repositoryManager = GitUtil.getRepositoryManager(project);
 
@@ -338,10 +308,8 @@ public class GithubRebaseAction extends DumbAwareAction
 		final GitRebaseProblemDetector rebaseConflictDetector = new GitRebaseProblemDetector();
 		handler.addLineListener(rebaseConflictDetector);
 
-		final GitUntrackedFilesOverwrittenByOperationDetector untrackedFilesDetector = new
-				GitUntrackedFilesOverwrittenByOperationDetector(root);
-		final GitLocalChangesWouldBeOverwrittenDetector localChangesDetector = new
-				GitLocalChangesWouldBeOverwrittenDetector(root, Operation.CHECKOUT);
+		final GitUntrackedFilesOverwrittenByOperationDetector untrackedFilesDetector = new GitUntrackedFilesOverwrittenByOperationDetector(root);
+		final GitLocalChangesWouldBeOverwrittenDetector localChangesDetector = new GitLocalChangesWouldBeOverwrittenDetector(root, Operation.CHECKOUT);
 		handler.addLineListener(untrackedFilesDetector);
 		handler.addLineListener(localChangesDetector);
 		GitTask pullTask = new GitTask(project, handler, "Rebasing from upstream/master");
@@ -360,12 +328,9 @@ public class GithubRebaseAction extends DumbAwareAction
 			@Override
 			protected void onFailure()
 			{
-				GitUpdateResult result = rebaser.handleRebaseFailure(handler, root, rebaseConflictDetector,
-						untrackedFilesDetector, localChangesDetector);
+				GitUpdateResult result = rebaser.handleRebaseFailure(handler, root, rebaseConflictDetector, untrackedFilesDetector, localChangesDetector);
 				repositoryManager.updateRepository(root);
-				if(result == GitUpdateResult.NOTHING_TO_UPDATE ||
-						result == GitUpdateResult.SUCCESS ||
-						result == GitUpdateResult.SUCCESS_WITH_RESOLVED_CONFLICTS)
+				if(result == GitUpdateResult.NOTHING_TO_UPDATE || result == GitUpdateResult.SUCCESS || result == GitUpdateResult.SUCCESS_WITH_RESOLVED_CONFLICTS)
 				{
 					GithubNotifications.showInfo(project, "Success", "Successfully rebased GitHub fork");
 				}

@@ -240,8 +240,7 @@ public class GithubApiUtil
 			client.getHostConfiguration().setProxy(proxySettings.PROXY_HOST, proxySettings.PROXY_PORT);
 			if(proxySettings.PROXY_AUTHENTICATION)
 			{
-				client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxySettings
-						.PROXY_LOGIN, proxySettings.getPlainProxyPassword()));
+				client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxySettings.getProxyLogin(), proxySettings.getPlainProxyPassword()));
 			}
 		}
 		if(basicAuth != null)

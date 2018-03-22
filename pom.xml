@@ -49,6 +49,10 @@
 				<extensions>true</extensions>
 				<configuration>
 					<repositoryChannel>nightly</repositoryChannel>
+					<dependencies>
+						<dependency>com.intellij.git</dependency>
+						<dependency>com.intellij.tasks</dependency>
+					</dependencies>
 					<packaging>
 						<skip>${dev.mode}</skip>
 						<version>${build.number}</version>
@@ -67,6 +71,26 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>com.intellij.git</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>com.intellij.tasks</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>consulo-lang-impl-testing</artifactId>

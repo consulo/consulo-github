@@ -31,6 +31,7 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
+import consulo.awt.TargetAWT;
 import icons.TasksIcons;
 
 /**
@@ -200,7 +201,7 @@ public class GithubRepository extends BaseRepositoryImpl
 			@Override
 			public Icon getIcon()
 			{
-				return TasksIcons.Github;
+				return TargetAWT.to(TasksIcons.Github);
 			}
 
 			@NotNull

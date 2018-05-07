@@ -1,13 +1,12 @@
 package org.jetbrains.plugins.github.tasks;
 
-import javax.swing.Icon;
-
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.config.TaskRepositoryEditor;
 import com.intellij.tasks.impl.BaseRepositoryType;
 import com.intellij.util.Consumer;
+import consulo.ui.image.Image;
 import icons.TasksIcons;
 
 /**
@@ -25,7 +24,7 @@ public class GithubRepositoryType extends BaseRepositoryType<GithubRepository>
 
 	@NotNull
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return TasksIcons.Github;
 	}

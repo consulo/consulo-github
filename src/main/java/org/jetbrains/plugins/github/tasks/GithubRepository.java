@@ -6,9 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubIssue;
 import org.jetbrains.plugins.github.api.GithubIssueComment;
@@ -31,7 +30,7 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.TasksIcons;
 
 /**
@@ -199,9 +198,9 @@ public class GithubRepository extends BaseRepositoryImpl
 
 			@Nonnull
 			@Override
-			public Icon getIcon()
+			public Image getIcon()
 			{
-				return TargetAWT.to(TasksIcons.Github);
+				return TasksIcons.Github;
 			}
 
 			@Nonnull

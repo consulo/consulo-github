@@ -23,6 +23,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -34,8 +35,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.ide.BrowserUtil;
@@ -140,7 +140,7 @@ public class GithubLoginPanel
 		return myPane;
 	}
 
-	public void setHost(@NotNull String host)
+	public void setHost(@Nonnull String host)
 	{
 		myHostTextField.setText(host);
 	}
@@ -150,7 +150,7 @@ public class GithubLoginPanel
 		myLoginTextField.setText(login);
 	}
 
-	public void setAuthType(@NotNull GithubAuthData.AuthType type)
+	public void setAuthType(@Nonnull GithubAuthData.AuthType type)
 	{
 		switch(type)
 		{
@@ -165,13 +165,13 @@ public class GithubLoginPanel
 		}
 	}
 
-	public void lockAuthType(@NotNull GithubAuthData.AuthType type)
+	public void lockAuthType(@Nonnull GithubAuthData.AuthType type)
 	{
 		setAuthType(type);
 		myAuthTypeComboBox.setEnabled(false);
 	}
 
-	public void lockHost(@NotNull String host)
+	public void lockHost(@Nonnull String host)
 	{
 		setHost(host);
 		myHostTextField.setEnabled(false);
@@ -188,19 +188,19 @@ public class GithubLoginPanel
 		mySavePasswordCheckBox.setEnabled(visible);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHost()
 	{
 		return myHostTextField.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getLogin()
 	{
 		return myLoginTextField.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	private String getPassword()
 	{
 		return String.valueOf(myPasswordField.getPassword());
@@ -216,7 +216,7 @@ public class GithubLoginPanel
 		return myLoginTextField.isVisible() ? myLoginTextField : myPasswordField;
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubAuthData getAuthData()
 	{
 		Object selected = myAuthTypeComboBox.getSelectedItem();
@@ -234,15 +234,15 @@ public class GithubLoginPanel
 
 	private static class MyFocusTraversalPolicy extends ComponentsListFocusTraversalPolicy
 	{
-		@NotNull
+		@Nonnull
 		private List<Component> myOrder;
 
-		private MyFocusTraversalPolicy(@NotNull List<Component> order)
+		private MyFocusTraversalPolicy(@Nonnull List<Component> order)
 		{
 			myOrder = order;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		protected List<Component> getOrderedComponents()
 		{

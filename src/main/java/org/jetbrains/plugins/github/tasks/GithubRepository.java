@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubIssue;
 import org.jetbrains.plugins.github.api.GithubIssueComment;
@@ -43,13 +43,13 @@ public class GithubRepository extends BaseRepositoryImpl
 	private static final Logger LOG = GithubUtil.LOG;
 
 	private Pattern myPattern = Pattern.compile("($^)");
-	@NotNull
+	@Nonnull
 	private String myRepoAuthor = "";
-	@NotNull
+	@Nonnull
 	private String myRepoName = "";
-	@NotNull
+	@Nonnull
 	private String myUser = "";
-	@NotNull
+	@Nonnull
 	private String myToken = "";
 
 	{
@@ -116,7 +116,7 @@ public class GithubRepository extends BaseRepositoryImpl
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private Task[] getIssues(@Nullable String query) throws Exception
 	{
 		List<GithubIssue> issues;
@@ -143,12 +143,12 @@ public class GithubRepository extends BaseRepositoryImpl
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	private Task createTask(final GithubIssue issue)
 	{
 		return new Task()
 		{
-			@NotNull
+			@Nonnull
 			String myRepoName = getRepoName();
 
 			@Override
@@ -163,14 +163,14 @@ public class GithubRepository extends BaseRepositoryImpl
 				return issue.getHtmlUrl();
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public String getId()
 			{
 				return myRepoName + "-" + issue.getNumber();
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public String getSummary()
 			{
@@ -182,7 +182,7 @@ public class GithubRepository extends BaseRepositoryImpl
 				return issue.getBody();
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public Comment[] getComments()
 			{
@@ -197,14 +197,14 @@ public class GithubRepository extends BaseRepositoryImpl
 				}
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public Icon getIcon()
 			{
 				return TargetAWT.to(TasksIcons.Github);
 			}
 
-			@NotNull
+			@Nonnull
 			@Override
 			public TaskType getType()
 			{
@@ -279,48 +279,48 @@ public class GithubRepository extends BaseRepositoryImpl
 		return new GithubRepository(this);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRepoName()
 	{
 		return myRepoName;
 	}
 
-	public void setRepoName(@NotNull String repoName)
+	public void setRepoName(@Nonnull String repoName)
 	{
 		myRepoName = repoName;
 		myPattern = Pattern.compile("(" + StringUtil.escapeToRegexp(repoName) + "\\-\\d+):\\s+");
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRepoAuthor()
 	{
 		return myRepoAuthor;
 	}
 
-	public void setRepoAuthor(@NotNull String repoAuthor)
+	public void setRepoAuthor(@Nonnull String repoAuthor)
 	{
 		myRepoAuthor = repoAuthor;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getUser()
 	{
 		return myUser;
 	}
 
-	public void setUser(@NotNull String user)
+	public void setUser(@Nonnull String user)
 	{
 		myUser = user;
 	}
 
 	@Transient
-	@NotNull
+	@Nonnull
 	public String getToken()
 	{
 		return myToken;
 	}
 
-	public void setToken(@NotNull String token)
+	public void setToken(@Nonnull String token)
 	{
 		myToken = token;
 	}

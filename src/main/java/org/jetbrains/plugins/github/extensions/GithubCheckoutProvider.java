@@ -21,8 +21,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubRepo;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
@@ -48,7 +49,7 @@ public class GithubCheckoutProvider implements CheckoutProvider
 {
 
 	@Override
-	public void doCheckout(@NotNull final Project project, @Nullable final Listener listener)
+	public void doCheckout(@Nonnull final Project project, @Nullable final Listener listener)
 	{
 		if(!GithubUtil.testGitExecutable(project))
 		{

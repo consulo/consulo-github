@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.openapi.util.text.StringUtil;
 
 /**
@@ -24,33 +25,33 @@ import com.intellij.openapi.util.text.StringUtil;
  */
 public class GithubRepo
 {
-	@NotNull
+	@Nonnull
 	private final String myName;
-	@NotNull
+	@Nonnull
 	private final String myDescription;
 
 	private final boolean myIsPrivate;
 	private final boolean myIsFork;
 
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
-	@NotNull
+	@Nonnull
 	private final String myCloneUrl;
 
 	@Nullable
 	private final String myDefaultBranch;
 
-	@NotNull
+	@Nonnull
 	private final GithubUser myOwner;
 
-	public GithubRepo(@NotNull String name,
+	public GithubRepo(@Nonnull String name,
 			@Nullable String description,
 			boolean isPrivate,
 			boolean isFork,
-			@NotNull String htmlUrl,
-			@NotNull String cloneUrl,
+			@Nonnull String htmlUrl,
+			@Nonnull String cloneUrl,
 			@Nullable String defaultBranch,
-			@NotNull GithubUser owner)
+			@Nonnull GithubUser owner)
 	{
 		myName = name;
 		myDescription = StringUtil.notNullize(description);
@@ -62,19 +63,19 @@ public class GithubRepo
 		myOwner = owner;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getFullName()
 	{
 		return getUserName() + "/" + getName();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return myDescription;
@@ -90,13 +91,13 @@ public class GithubRepo
 		return myIsFork;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getCloneUrl()
 	{
 		return myCloneUrl;
@@ -108,19 +109,19 @@ public class GithubRepo
 		return myDefaultBranch;
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubUser getOwner()
 	{
 		return myOwner;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getUserName()
 	{
 		return getOwner().getLogin();
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubFullPath getFullPath()
 	{
 		return new GithubFullPath(getUserName(), getName());

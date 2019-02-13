@@ -17,6 +17,8 @@ package org.jetbrains.plugins.github.util;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -24,8 +26,8 @@ import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.CalledInAwt;
@@ -59,10 +61,10 @@ public class GithubSslSupport
 	 * and which can be {@link HttpMethod#getResponseBodyAsString() asked for the response}.
 	 * @throws IOException in case of other errors or if user declines the proposal of non-trusted connection.
 	 */
-	@NotNull
-	public HttpMethod executeSelfSignedCertificateAwareRequest(@NotNull HttpClient client,
-			@NotNull String uri,
-			@NotNull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
+	@Nonnull
+	public HttpMethod executeSelfSignedCertificateAwareRequest(@Nonnull HttpClient client,
+			@Nonnull String uri,
+			@Nonnull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
 	{
 		HttpMethod method = methodCreator.convert(uri);
 		try
@@ -83,11 +85,11 @@ public class GithubSslSupport
 	}
 
 	@Nullable
-	private static HttpMethod handleCertificateExceptionAndRetry(@NotNull IOException e,
-			@NotNull String host,
-			@NotNull HttpClient client,
-			@NotNull URI uri,
-			@NotNull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
+	private static HttpMethod handleCertificateExceptionAndRetry(@Nonnull IOException e,
+			@Nonnull String host,
+			@Nonnull HttpClient client,
+			@Nonnull URI uri,
+			@Nonnull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
 	{
 		if(!isCertificateException(e))
 		{
@@ -118,12 +120,12 @@ public class GithubSslSupport
 		return e.getCause() instanceof ValidatorException;
 	}
 
-	private static boolean isTrusted(@NotNull String host)
+	private static boolean isTrusted(@Nonnull String host)
 	{
 		return GithubSettings.getInstance().getTrustedHosts().contains(host);
 	}
 
-	private static void saveToTrusted(@NotNull String host)
+	private static void saveToTrusted(@Nonnull String host)
 	{
 		GithubSettings.getInstance().addTrustedHost(host);
 	}

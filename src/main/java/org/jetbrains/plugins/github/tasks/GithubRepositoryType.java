@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.github.tasks;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.config.TaskRepositoryEditor;
@@ -15,21 +16,21 @@ import icons.TasksIcons;
 public class GithubRepositoryType extends BaseRepositoryType<GithubRepository>
 {
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return "GitHub";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Image getIcon()
 	{
 		return TasksIcons.Github;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TaskRepository createRepository()
 	{
@@ -42,7 +43,7 @@ public class GithubRepositoryType extends BaseRepositoryType<GithubRepository>
 		return GithubRepository.class;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TaskRepositoryEditor createEditor(GithubRepository repository,
 			Project project,

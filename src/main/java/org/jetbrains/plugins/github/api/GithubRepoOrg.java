@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 })
 public class GithubRepoOrg extends GithubRepo
 {
-	@NotNull
+	@Nonnull
 	private final Permissions myPermissions;
 
 	public static class Permissions
@@ -59,15 +59,15 @@ public class GithubRepoOrg extends GithubRepo
 		}
 	}
 
-	public GithubRepoOrg(@NotNull String name,
+	public GithubRepoOrg(@Nonnull String name,
 			@Nullable String description,
 			boolean isPrivate,
 			boolean isFork,
-			@NotNull String htmlUrl,
-			@NotNull String cloneUrl,
+			@Nonnull String htmlUrl,
+			@Nonnull String cloneUrl,
 			@Nullable String defaultBranch,
-			@NotNull GithubUser owner,
-			@NotNull Permissions permissions)
+			@Nonnull GithubUser owner,
+			@Nonnull Permissions permissions)
 	{
 		super(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch, owner);
 		myPermissions = permissions;

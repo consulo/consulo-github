@@ -17,7 +17,7 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
@@ -25,15 +25,15 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("UnusedDeclaration")
 public class GithubIssuesSearchResult
 {
-	@NotNull
+	@Nonnull
 	private final List<GithubIssue> issues;
 
-	public GithubIssuesSearchResult(@NotNull List<GithubIssue> issues)
+	public GithubIssuesSearchResult(@Nonnull List<GithubIssue> issues)
 	{
 		this.issues = issues;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<GithubIssue> getIssues()
 	{
 		return issues;

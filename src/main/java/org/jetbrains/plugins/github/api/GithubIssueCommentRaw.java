@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -47,16 +47,16 @@ class GithubIssueCommentRaw implements DataConstructor
 	public GithubUserRaw user;
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubIssueComment createIssueComment()
 	{
 		return new GithubIssueComment(id, htmlUrl, bodyHtml, createdAt, updatedAt, user.createUser());
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubIssueComment.class))
 		{

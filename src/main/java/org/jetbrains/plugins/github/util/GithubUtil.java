@@ -18,8 +18,8 @@ package org.jetbrains.plugins.github.util;
 import java.io.IOException;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubUserDetailed;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
@@ -60,10 +60,10 @@ public class GithubUtil
 	public static final Logger LOG = Logger.getInstance("github");
 
 	// TODO: these functions ugly inside and out
-	@NotNull
+	@Nonnull
 	public static GithubAuthData runAndGetValidAuth(@Nullable Project project,
-			@NotNull ProgressIndicator indicator,
-			@NotNull ThrowableConsumer<GithubAuthData, IOException> task) throws IOException
+			@Nonnull ProgressIndicator indicator,
+			@Nonnull ThrowableConsumer<GithubAuthData, IOException> task) throws IOException
 	{
 		GithubAuthData auth = GithubSettings.getInstance().getAuthData();
 		try
@@ -91,10 +91,10 @@ public class GithubUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public static <T> T runWithValidAuth(@Nullable Project project,
-			@NotNull ProgressIndicator indicator,
-			@NotNull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
+			@Nonnull ProgressIndicator indicator,
+			@Nonnull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
 	{
 		GithubAuthData auth = GithubSettings.getInstance().getAuthData();
 		try
@@ -120,11 +120,11 @@ public class GithubUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public static <T> T runWithValidBasicAuthForHost(@Nullable Project project,
-			@NotNull ProgressIndicator indicator,
-			@NotNull String host,
-			@NotNull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
+			@Nonnull ProgressIndicator indicator,
+			@Nonnull String host,
+			@Nonnull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
 	{
 		GithubSettings settings = GithubSettings.getInstance();
 		GithubAuthData auth = null;
@@ -175,9 +175,9 @@ public class GithubUtil
 	/**
 	 * @return null if user canceled login dialog. Valid GithubAuthData otherwise.
 	 */
-	@NotNull
+	@Nonnull
 	public static GithubAuthData getValidAuthData(@Nullable Project project,
-			@NotNull ProgressIndicator indicator) throws GithubAuthenticationCanceledException
+			@Nonnull ProgressIndicator indicator) throws GithubAuthenticationCanceledException
 	{
 		final GithubLoginDialog dialog = new GithubLoginDialog(project);
 		ApplicationManager.getApplication().invokeAndWait(new Runnable()
@@ -198,10 +198,10 @@ public class GithubUtil
 	/**
 	 * @return null if user canceled login dialog. Valid GithubAuthData otherwise.
 	 */
-	@NotNull
+	@Nonnull
 	public static GithubAuthData getValidBasicAuthDataForHost(@Nullable Project project,
-			@NotNull ProgressIndicator indicator,
-			@NotNull String host) throws GithubAuthenticationCanceledException
+			@Nonnull ProgressIndicator indicator,
+			@Nonnull String host) throws GithubAuthenticationCanceledException
 	{
 		final GithubLoginDialog dialog = new GithubBasicLoginDialog(project);
 		dialog.lockHost(host);
@@ -220,9 +220,9 @@ public class GithubUtil
 		return dialog.getAuthData();
 	}
 
-	@NotNull
+	@Nonnull
 	public static GithubAuthData getValidAuthDataFromConfig(@Nullable Project project,
-			@NotNull ProgressIndicator indicator) throws IOException
+			@Nonnull ProgressIndicator indicator) throws IOException
 	{
 		GithubAuthData auth = GithubSettings.getInstance().getAuthData();
 		try
@@ -236,8 +236,8 @@ public class GithubUtil
 		}
 	}
 
-	@NotNull
-	public static GithubUserDetailed checkAuthData(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static GithubUserDetailed checkAuthData(@Nonnull GithubAuthData auth) throws IOException
 	{
 		if(StringUtil.isEmptyOrSpaces(auth.getHost()))
 		{
@@ -270,21 +270,21 @@ public class GithubUtil
 		return testConnection(auth);
 	}
 
-	@NotNull
-	private static GithubUserDetailed testConnection(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	private static GithubUserDetailed testConnection(@Nonnull GithubAuthData auth) throws IOException
 	{
 		return GithubApiUtil.getCurrentUserDetailed(auth);
 	}
 
-	public static <T, E extends Throwable> T computeValueInModal(@NotNull Project project,
-			@NotNull String caption,
-			@NotNull final ThrowableConvertor<ProgressIndicator, T, E> task) throws E
+	public static <T, E extends Throwable> T computeValueInModal(@Nonnull Project project,
+			@Nonnull String caption,
+			@Nonnull final ThrowableConvertor<ProgressIndicator, T, E> task) throws E
 	{
 		final Ref<T> dataRef = new Ref<T>();
 		final Ref<E> exceptionRef = new Ref<E>();
 		ProgressManager.getInstance().run(new Task.Modal(project, caption, true)
 		{
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				try
 				{
@@ -317,7 +317,7 @@ public class GithubUtil
   */
 
 	@Nullable
-	public static String findGithubRemoteUrl(@NotNull GitRepository repository)
+	public static String findGithubRemoteUrl(@Nonnull GitRepository repository)
 	{
 		Pair<GitRemote, String> remote = findGithubRemote(repository);
 		if(remote == null)
@@ -328,7 +328,7 @@ public class GithubUtil
 	}
 
 	@Nullable
-	public static Pair<GitRemote, String> findGithubRemote(@NotNull GitRepository repository)
+	public static Pair<GitRemote, String> findGithubRemote(@Nonnull GitRepository repository)
 	{
 		Pair<GitRemote, String> githubRemote = null;
 		for(GitRemote gitRemote : repository.getRemotes())
@@ -354,7 +354,7 @@ public class GithubUtil
 	}
 
 	@Nullable
-	public static String findUpstreamRemote(@NotNull GitRepository repository)
+	public static String findUpstreamRemote(@Nonnull GitRepository repository)
 	{
 		for(GitRemote gitRemote : repository.getRemotes())
 		{
@@ -398,7 +398,7 @@ public class GithubUtil
 		return true;
 	}
 
-	public static boolean isRepositoryOnGitHub(@NotNull GitRepository repository)
+	public static boolean isRepositoryOnGitHub(@Nonnull GitRepository repository)
 	{
 		return findGithubRemoteUrl(repository) != null;
 	}
@@ -409,14 +409,14 @@ public class GithubUtil
 		e.getPresentation().setEnabled(enabled);
 	}
 
-	@NotNull
-	public static String getErrorTextFromException(@NotNull Exception e)
+	@Nonnull
+	public static String getErrorTextFromException(@Nonnull Exception e)
 	{
 		return e.getMessage();
 	}
 
 	@Nullable
-	public static GitRepository getGitRepository(@NotNull Project project, @Nullable VirtualFile file)
+	public static GitRepository getGitRepository(@Nonnull Project project, @Nullable VirtualFile file)
 	{
 		GitRepositoryManager manager = GitUtil.getRepositoryManager(project);
 		List<GitRepository> repositories = manager.getRepositories();

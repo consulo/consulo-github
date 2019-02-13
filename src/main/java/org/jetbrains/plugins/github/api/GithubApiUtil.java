@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpClient;
@@ -41,8 +43,8 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
 import org.jetbrains.plugins.github.exceptions.GithubJsonException;
 import org.jetbrains.plugins.github.exceptions.GithubStatusCodeException;
@@ -77,7 +79,7 @@ public class GithubApiUtil
 	private static final Header ACCEPT_HTML_BODY_MARKUP = new Header("Accept", "application/vnd.github.v3.html+json");
 	private static final Header ACCEPT_NEW_SEARCH_API = new Header("Accept", "application/vnd.github.preview");
 
-	@NotNull
+	@Nonnull
 	private static final Gson gson = initGson();
 
 	private static Gson initGson()
@@ -94,36 +96,36 @@ public class GithubApiUtil
 	}
 
 	@Nullable
-	private static JsonElement postRequest(@NotNull GithubAuthData auth,
-			@NotNull String path,
+	private static JsonElement postRequest(@Nonnull GithubAuthData auth,
+			@Nonnull String path,
 			@Nullable String requestBody,
-			@NotNull Header... headers) throws IOException
+			@Nonnull Header... headers) throws IOException
 	{
 		return request(auth, path, requestBody, Arrays.asList(headers), HttpVerb.POST).getJsonElement();
 	}
 
 	@Nullable
-	private static JsonElement deleteRequest(@NotNull GithubAuthData auth,
-			@NotNull String path,
-			@NotNull Header... headers) throws IOException
+	private static JsonElement deleteRequest(@Nonnull GithubAuthData auth,
+			@Nonnull String path,
+			@Nonnull Header... headers) throws IOException
 	{
 		return request(auth, path, null, Arrays.asList(headers), HttpVerb.DELETE).getJsonElement();
 	}
 
 	@Nullable
-	private static JsonElement getRequest(@NotNull GithubAuthData auth,
-			@NotNull String path,
-			@NotNull Header... headers) throws IOException
+	private static JsonElement getRequest(@Nonnull GithubAuthData auth,
+			@Nonnull String path,
+			@Nonnull Header... headers) throws IOException
 	{
 		return request(auth, path, null, Arrays.asList(headers), HttpVerb.GET).getJsonElement();
 	}
 
-	@NotNull
-	private static ResponsePage request(@NotNull GithubAuthData auth,
-			@NotNull String path,
+	@Nonnull
+	private static ResponsePage request(@Nonnull GithubAuthData auth,
+			@Nonnull String path,
 			@Nullable String requestBody,
-			@NotNull Collection<Header> headers,
-			@NotNull HttpVerb verb) throws IOException
+			@Nonnull Collection<Header> headers,
+			@Nonnull HttpVerb verb) throws IOException
 	{
 		HttpMethod method = null;
 		try
@@ -171,12 +173,12 @@ public class GithubApiUtil
 		}
 	}
 
-	@NotNull
-	private static HttpMethod doREST(@NotNull final GithubAuthData auth,
-			@NotNull final String uri,
+	@Nonnull
+	private static HttpMethod doREST(@Nonnull final GithubAuthData auth,
+			@Nonnull final String uri,
 			@Nullable final String requestBody,
-			@NotNull final Collection<Header> headers,
-			@NotNull final HttpVerb verb) throws IOException
+			@Nonnull final Collection<Header> headers,
+			@Nonnull final HttpVerb verb) throws IOException
 	{
 		HttpClient client = getHttpClient(auth.getBasicAuth(), auth.isUseProxy());
 		return GithubSslSupport.getInstance().executeSelfSignedCertificateAwareRequest(client, uri,
@@ -222,7 +224,7 @@ public class GithubApiUtil
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	private static HttpClient getHttpClient(@Nullable GithubAuthData.BasicAuth basicAuth, boolean useProxy)
 	{
 		final HttpClient client = new HttpClient();
@@ -253,7 +255,7 @@ public class GithubApiUtil
 		return client;
 	}
 
-	private static void checkStatusCode(@NotNull HttpMethod method) throws IOException
+	private static void checkStatusCode(@Nonnull HttpMethod method) throws IOException
 	{
 		int code = method.getStatusCode();
 		switch(code)
@@ -273,8 +275,8 @@ public class GithubApiUtil
 		}
 	}
 
-	@NotNull
-	private static String getErrorMessage(@NotNull HttpMethod method)
+	@Nonnull
+	private static String getErrorMessage(@Nonnull HttpMethod method)
 	{
 		try
 		{
@@ -292,8 +294,8 @@ public class GithubApiUtil
 		return method.getStatusText();
 	}
 
-	@NotNull
-	private static JsonElement parseResponse(@NotNull InputStream githubResponse) throws IOException
+	@Nonnull
+	private static JsonElement parseResponse(@Nonnull InputStream githubResponse) throws IOException
 	{
 		Reader reader = new InputStreamReader(githubResponse);
 		try
@@ -350,8 +352,8 @@ public class GithubApiUtil
    * Json API
    */
 
-	static <Raw extends DataConstructor, Result> Result createDataFromRaw(@NotNull Raw rawObject,
-			@NotNull Class<Result> resultClass) throws GithubJsonException
+	static <Raw extends DataConstructor, Result> Result createDataFromRaw(@Nonnull Raw rawObject,
+			@Nonnull Class<Result> resultClass) throws GithubJsonException
 	{
 		try
 		{
@@ -367,18 +369,18 @@ public class GithubApiUtil
 	{
 		@Nullable
 		private String myNextPage;
-		@NotNull
+		@Nonnull
 		private final Collection<Header> myHeaders;
-		@NotNull
+		@Nonnull
 		private final Class<T> myResult;
-		@NotNull
+		@Nonnull
 		private final Class<? extends DataConstructor[]> myRawArray;
 
 		@SuppressWarnings("NullableProblems")
-		public PagedRequest(@NotNull String path,
-				@NotNull Class<T> result,
-				@NotNull Class<? extends DataConstructor[]> rawArray,
-				@NotNull Header... headers)
+		public PagedRequest(@Nonnull String path,
+				@Nonnull Class<T> result,
+				@Nonnull Class<? extends DataConstructor[]> rawArray,
+				@Nonnull Header... headers)
 		{
 			myNextPage = path;
 			myResult = result;
@@ -386,8 +388,8 @@ public class GithubApiUtil
 			myHeaders = Arrays.asList(headers);
 		}
 
-		@NotNull
-		public List<T> next(@NotNull GithubAuthData auth) throws IOException
+		@Nonnull
+		public List<T> next(@Nonnull GithubAuthData auth) throws IOException
 		{
 			if(myNextPage == null)
 			{
@@ -425,8 +427,8 @@ public class GithubApiUtil
 			return myNextPage != null;
 		}
 
-		@NotNull
-		public List<T> getAll(@NotNull GithubAuthData auth) throws IOException
+		@Nonnull
+		public List<T> getAll(@Nonnull GithubAuthData auth) throws IOException
 		{
 			List<T> result = new ArrayList<T>();
 			while(hasNext())
@@ -437,8 +439,8 @@ public class GithubApiUtil
 		}
 	}
 
-	@NotNull
-	private static <T> T fromJson(@Nullable JsonElement json, @NotNull Class<T> classT) throws IOException
+	@Nonnull
+	private static <T> T fromJson(@Nullable JsonElement json, @Nonnull Class<T> classT) throws IOException
 	{
 		if(json == null)
 		{
@@ -471,8 +473,8 @@ public class GithubApiUtil
    * Github API
    */
 
-	@NotNull
-	public static Collection<String> getTokenScopes(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static Collection<String> getTokenScopes(@Nonnull GithubAuthData auth) throws IOException
 	{
 		HttpMethod method = null;
 		try
@@ -504,9 +506,9 @@ public class GithubApiUtil
 		}
 	}
 
-	@NotNull
-	public static String getScopedToken(@NotNull GithubAuthData auth,
-			@NotNull Collection<String> scopes,
+	@Nonnull
+	public static String getScopedToken(@Nonnull GithubAuthData auth,
+			@Nonnull Collection<String> scopes,
 			@Nullable String note) throws IOException
 	{
 		String path = "/authorizations";
@@ -518,10 +520,10 @@ public class GithubApiUtil
 		return response.getToken();
 	}
 
-	@NotNull
-	public static String getReadOnlyToken(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static String getReadOnlyToken(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			@Nullable String note) throws IOException
 	{
 		GithubRepo repository = getDetailedRepoInfo(auth, user, repo);
@@ -532,22 +534,22 @@ public class GithubApiUtil
 		return getScopedToken(auth, scopes, note);
 	}
 
-	@NotNull
-	public static GithubUser getCurrentUser(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static GithubUser getCurrentUser(@Nonnull GithubAuthData auth) throws IOException
 	{
 		JsonElement result = getRequest(auth, "/user");
 		return createDataFromRaw(fromJson(result, GithubUserRaw.class), GithubUser.class);
 	}
 
-	@NotNull
-	public static GithubUserDetailed getCurrentUserDetailed(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static GithubUserDetailed getCurrentUserDetailed(@Nonnull GithubAuthData auth) throws IOException
 	{
 		JsonElement result = getRequest(auth, "/user");
 		return createDataFromRaw(fromJson(result, GithubUserRaw.class), GithubUserDetailed.class);
 	}
 
-	@NotNull
-	public static List<GithubRepo> getUserRepos(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static List<GithubRepo> getUserRepos(@Nonnull GithubAuthData auth) throws IOException
 	{
 		String path = "/user/repos?" + PER_PAGE;
 
@@ -556,8 +558,8 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static List<GithubRepo> getUserRepos(@NotNull GithubAuthData auth, @NotNull String user) throws IOException
+	@Nonnull
+	public static List<GithubRepo> getUserRepos(@Nonnull GithubAuthData auth, @Nonnull String user) throws IOException
 	{
 		String path = "/users/" + user + "/repos?" + PER_PAGE;
 
@@ -566,8 +568,8 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static List<GithubRepo> getAvailableRepos(@NotNull GithubAuthData auth) throws IOException
+	@Nonnull
+	public static List<GithubRepo> getAvailableRepos(@Nonnull GithubAuthData auth) throws IOException
 	{
 		List<GithubRepo> repos = new ArrayList<GithubRepo>();
 
@@ -592,10 +594,10 @@ public class GithubApiUtil
 		return repos;
 	}
 
-	@NotNull
-	public static GithubRepoDetailed getDetailedRepoInfo(@NotNull GithubAuthData auth,
-			@NotNull String owner,
-			@NotNull String name) throws IOException
+	@Nonnull
+	public static GithubRepoDetailed getDetailedRepoInfo(@Nonnull GithubAuthData auth,
+			@Nonnull String owner,
+			@Nonnull String name) throws IOException
 	{
 		final String request = "/repos/" + owner + "/" + name;
 
@@ -604,22 +606,22 @@ public class GithubApiUtil
 		return createDataFromRaw(fromJson(jsonObject, GithubRepoRaw.class), GithubRepoDetailed.class);
 	}
 
-	public static void deleteGithubRepository(@NotNull GithubAuthData auth,
-			@NotNull String username,
-			@NotNull String repo) throws IOException
+	public static void deleteGithubRepository(@Nonnull GithubAuthData auth,
+			@Nonnull String username,
+			@Nonnull String repo) throws IOException
 	{
 		String path = "/repos/" + username + "/" + repo;
 		deleteRequest(auth, path);
 	}
 
-	public static void deleteGist(@NotNull GithubAuthData auth, @NotNull String id) throws IOException
+	public static void deleteGist(@Nonnull GithubAuthData auth, @Nonnull String id) throws IOException
 	{
 		String path = "/gists/" + id;
 		deleteRequest(auth, path);
 	}
 
-	@NotNull
-	public static GithubGist getGist(@NotNull GithubAuthData auth, @NotNull String id) throws IOException
+	@Nonnull
+	public static GithubGist getGist(@Nonnull GithubAuthData auth, @Nonnull String id) throws IOException
 	{
 		String path = "/gists/" + id;
 		JsonElement result = getRequest(auth, path);
@@ -627,10 +629,10 @@ public class GithubApiUtil
 		return createDataFromRaw(fromJson(result, GithubGistRaw.class), GithubGist.class);
 	}
 
-	@NotNull
-	public static GithubGist createGist(@NotNull GithubAuthData auth,
-			@NotNull List<GithubGist.FileContent> contents,
-			@NotNull String description,
+	@Nonnull
+	public static GithubGist createGist(@Nonnull GithubAuthData auth,
+			@Nonnull List<GithubGist.FileContent> contents,
+			@Nonnull String description,
 			boolean isPrivate) throws IOException
 	{
 		String request = gson.toJson(new GithubGistRequest(contents, description, !isPrivate));
@@ -638,24 +640,24 @@ public class GithubApiUtil
 				GithubGist.class);
 	}
 
-	@NotNull
-	public static GithubPullRequest createPullRequest(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
-			@NotNull String title,
-			@NotNull String description,
-			@NotNull String from,
-			@NotNull String onto) throws IOException
+	@Nonnull
+	public static GithubPullRequest createPullRequest(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
+			@Nonnull String title,
+			@Nonnull String description,
+			@Nonnull String from,
+			@Nonnull String onto) throws IOException
 	{
 		String request = gson.toJson(new GithubPullRequestRequest(title, description, from, onto));
 		return createDataFromRaw(fromJson(postRequest(auth, "/repos/" + user + "/" + repo + "/pulls", request),
 				GithubPullRequestRaw.class), GithubPullRequest.class);
 	}
 
-	@NotNull
-	public static GithubRepo createRepo(@NotNull GithubAuthData auth,
-			@NotNull String name,
-			@NotNull String description,
+	@Nonnull
+	public static GithubRepo createRepo(@Nonnull GithubAuthData auth,
+			@Nonnull String name,
+			@Nonnull String description,
 			boolean isPublic) throws IOException
 	{
 		String path = "/user/repos";
@@ -666,10 +668,10 @@ public class GithubApiUtil
 				GithubRepo.class);
 	}
 
-	@NotNull
-	public static List<GithubIssue> getIssuesAssigned(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static List<GithubIssue> getIssuesAssigned(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			@Nullable String assigned) throws IOException
 	{
 		String path;
@@ -688,10 +690,10 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static List<GithubIssue> getIssuesQueried(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static List<GithubIssue> getIssuesQueried(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			@Nullable String query) throws IOException
 	{
 		query = URLEncoder.encode("@" + user + "/" + repo + " " + query, "UTF-8");
@@ -705,11 +707,11 @@ public class GithubApiUtil
 				GithubIssuesSearchResult.class).getIssues();
 	}
 
-	@NotNull
-	public static GithubIssue getIssue(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
-			@NotNull String id) throws IOException
+	@Nonnull
+	public static GithubIssue getIssue(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
+			@Nonnull String id) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/issues/" + id;
 
@@ -718,10 +720,10 @@ public class GithubApiUtil
 		return createDataFromRaw(fromJson(result, GithubIssueRaw.class), GithubIssue.class);
 	}
 
-	@NotNull
-	public static List<GithubIssueComment> getIssueComments(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static List<GithubIssueComment> getIssueComments(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			long id) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/issues/" + id + "/comments?" + PER_PAGE;
@@ -732,11 +734,11 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static GithubCommitDetailed getCommit(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
-			@NotNull String sha) throws IOException
+	@Nonnull
+	public static GithubCommitDetailed getCommit(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
+			@Nonnull String sha) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/commits/" + sha;
 
@@ -744,10 +746,10 @@ public class GithubApiUtil
 		return createDataFromRaw(fromJson(result, GithubCommitRaw.class), GithubCommitDetailed.class);
 	}
 
-	@NotNull
-	public static GithubPullRequest getPullRequest(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static GithubPullRequest getPullRequest(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			int id) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/pulls/" + id;
@@ -755,10 +757,10 @@ public class GithubApiUtil
 				GithubPullRequestRaw.class), GithubPullRequest.class);
 	}
 
-	@NotNull
-	public static List<GithubPullRequest> getPullRequests(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo) throws IOException
+	@Nonnull
+	public static List<GithubPullRequest> getPullRequests(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/pulls?" + PER_PAGE;
 
@@ -768,8 +770,8 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static PagedRequest<GithubPullRequest> getPullRequests(@NotNull String user, @NotNull String repo)
+	@Nonnull
+	public static PagedRequest<GithubPullRequest> getPullRequests(@Nonnull String user, @Nonnull String repo)
 	{
 		String path = "/repos/" + user + "/" + repo + "/pulls?" + PER_PAGE;
 
@@ -777,10 +779,10 @@ public class GithubApiUtil
 				ACCEPT_HTML_BODY_MARKUP);
 	}
 
-	@NotNull
-	public static List<GithubCommit> getPullRequestCommits(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static List<GithubCommit> getPullRequestCommits(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			long id) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/pulls/" + id + "/commits?" + PER_PAGE;
@@ -791,10 +793,10 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static List<GithubFile> getPullRequestFiles(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
+	@Nonnull
+	public static List<GithubFile> getPullRequestFiles(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
 			long id) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/pulls/" + id + "/files?" + PER_PAGE;
@@ -804,10 +806,10 @@ public class GithubApiUtil
 		return request.getAll(auth);
 	}
 
-	@NotNull
-	public static List<GithubBranch> getRepoBranches(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo) throws IOException
+	@Nonnull
+	public static List<GithubBranch> getRepoBranches(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/branches?" + PER_PAGE;
 
@@ -818,10 +820,10 @@ public class GithubApiUtil
 	}
 
 	@Nullable
-	public static GithubRepo findForkByUser(@NotNull GithubAuthData auth,
-			@NotNull String user,
-			@NotNull String repo,
-			@NotNull String forkUser) throws IOException
+	public static GithubRepo findForkByUser(@Nonnull GithubAuthData auth,
+			@Nonnull String user,
+			@Nonnull String repo,
+			@Nonnull String forkUser) throws IOException
 	{
 		String path = "/repos/" + user + "/" + repo + "/forks?" + PER_PAGE;
 

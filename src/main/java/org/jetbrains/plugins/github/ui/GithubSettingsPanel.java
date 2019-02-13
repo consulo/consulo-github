@@ -25,6 +25,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -37,8 +39,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.github.api.GithubUser;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
 import org.jetbrains.plugins.github.util.GithubAuthData;
@@ -79,7 +79,7 @@ public class GithubSettingsPanel
 
 	private boolean myCredentialsModified;
 
-	public GithubSettingsPanel(@NotNull final GithubSettings settings)
+	public GithubSettingsPanel(@Nonnull final GithubSettings settings)
 	{
 		mySettings = settings;
 		mySignupTextField.addHyperlinkListener(new HyperlinkAdapter()
@@ -204,19 +204,19 @@ public class GithubSettingsPanel
 		return myPane;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHost()
 	{
 		return myHostTextField.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getLogin()
 	{
 		return myLoginTextField.getText().trim();
 	}
 
-	public void setHost(@NotNull final String host)
+	public void setHost(@Nonnull final String host)
 	{
 		myHostTextField.setText(host);
 	}
@@ -226,19 +226,19 @@ public class GithubSettingsPanel
 		myLoginTextField.setText(login);
 	}
 
-	@NotNull
+	@Nonnull
 	private String getPassword()
 	{
 		return String.valueOf(myPasswordField.getPassword());
 	}
 
-	private void setPassword(@NotNull final String password)
+	private void setPassword(@Nonnull final String password)
 	{
 		// Show password as blank if password is empty
 		myPasswordField.setText(StringUtil.isEmpty(password) ? null : password);
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubAuthData.AuthType getAuthType()
 	{
 		Object selected = myAuthTypeComboBox.getSelectedItem();
@@ -254,7 +254,7 @@ public class GithubSettingsPanel
 		return GithubAuthData.AuthType.BASIC;
 	}
 
-	public void setAuthType(@NotNull final GithubAuthData.AuthType type)
+	public void setAuthType(@Nonnull final GithubAuthData.AuthType type)
 	{
 		switch(type)
 		{
@@ -270,7 +270,7 @@ public class GithubSettingsPanel
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubAuthData getAuthData()
 	{
 		if(!myCredentialsModified)

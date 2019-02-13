@@ -18,8 +18,8 @@ package org.jetbrains.plugins.github;
 import com.intellij.openapi.util.Pair;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.containers.Convertor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 
 import java.util.ArrayList;
@@ -32,15 +32,16 @@ import static org.jetbrains.plugins.github.util.GithubUrlUtil.*;
  */
 public class GithubUrlUtilTest extends UsefulTestCase {
   private static class TestCase<T> {
-    @NotNull final public List<Pair<String, T>> tests = new ArrayList<Pair<String, T>>();
+    @Nonnull
+	final public List<Pair<String, T>> tests = new ArrayList<Pair<String, T>>();
 
-    public void add(@NotNull String in, @Nullable T out) {
+    public void add(@Nonnull String in, @Nullable T out) {
       tests.add(Pair.create(in, out));
     }
 
   }
 
-  private static <T> void runTestCase(@NotNull TestCase<T> tests, @NotNull Convertor<String, T> func) {
+  private static <T> void runTestCase(@Nonnull TestCase<T> tests, @Nonnull Convertor<String, T> func) {
     for (Pair<String, T> test : tests.tests) {
       assertEquals(test.getFirst(), test.getSecond(), func.convert(test.getFirst()));
     }

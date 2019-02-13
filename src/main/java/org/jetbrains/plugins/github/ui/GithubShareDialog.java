@@ -3,9 +3,9 @@ package org.jetbrains.plugins.github.ui;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -101,7 +101,7 @@ public class GithubShareDialog extends DialogWrapper
 	}
 
 	@TestOnly
-	public void setRepositoryName(@NotNull String name)
+	public void setRepositoryName(@Nonnull String name)
 	{
 		myGithubSharePanel.setRepositoryName(name);
 	}

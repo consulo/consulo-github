@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -75,7 +75,7 @@ class GithubGistRaw implements DataConstructor
 		public String language;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubGist.GistFile create()
 		{
 			return new GithubGist.GistFile(filename, content, raw_url);
@@ -83,7 +83,7 @@ class GithubGistRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubGist createGist()
 	{
 		GithubUser user = this.user == null ? null : this.user.createUser();
@@ -98,9 +98,9 @@ class GithubGistRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubGist.class))
 		{

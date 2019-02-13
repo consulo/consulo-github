@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
  */
 public class GithubOrg
 {
-	@NotNull
+	@Nonnull
 	private final String myLogin;
 
-	public GithubOrg(@NotNull String login)
+	public GithubOrg(@Nonnull String login)
 	{
 		myLogin = login;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getLogin()
 	{
 		return myLogin;

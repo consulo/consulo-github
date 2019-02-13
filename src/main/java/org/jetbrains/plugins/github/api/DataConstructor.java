@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  */
 interface DataConstructor
 {
-	@NotNull
-	<T> T create(@NotNull Class<T> resultClass) throws IllegalArgumentException, NullPointerException,
+	@Nonnull
+	<T> T create(@Nonnull Class<T> resultClass) throws IllegalArgumentException, NullPointerException,
 			ClassCastException;
 }

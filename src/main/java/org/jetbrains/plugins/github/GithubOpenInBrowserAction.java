@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github;
 
 import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
 import org.jetbrains.plugins.github.util.GithubUtil;
@@ -115,8 +115,8 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 	}
 
 	@Nullable
-	public static String getGithubUrl(@NotNull Project project,
-			@NotNull VirtualFile virtualFile,
+	public static String getGithubUrl(@Nonnull Project project,
+			@Nonnull VirtualFile virtualFile,
 			@Nullable Editor editor,
 			boolean quiet)
 	{
@@ -172,9 +172,9 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 
 	@Nullable
 	private static String makeUrlToOpen(@Nullable Editor editor,
-			@NotNull String relativePath,
-			@NotNull String branch,
-			@NotNull String githubRemoteUrl)
+			@Nonnull String relativePath,
+			@Nonnull String branch,
+			@Nonnull String githubRemoteUrl)
 	{
 		final StringBuilder builder = new StringBuilder();
 		final String githubRepoUrl = GithubUrlUtil.makeGithubRepoUrlFromRemoteUrl(githubRemoteUrl);
@@ -202,8 +202,8 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 	}
 
 	@Nullable
-	public static String getBranchNameOnRemote(@NotNull Project project,
-			@NotNull GitRepository repository,
+	public static String getBranchNameOnRemote(@Nonnull Project project,
+			@Nonnull GitRepository repository,
 			boolean quiet)
 	{
 		GitLocalBranch currentBranch = repository.getCurrentBranch();
@@ -225,8 +225,8 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 		return tracked.getNameForRemoteOperations();
 	}
 
-	private static void showError(@NotNull Project project,
-			@NotNull String message,
+	private static void showError(@Nonnull Project project,
+			@Nonnull String message,
 			@Nullable String details,
 			boolean quiet)
 	{

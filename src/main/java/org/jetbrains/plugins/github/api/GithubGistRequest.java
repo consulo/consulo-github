@@ -18,7 +18,7 @@ package org.jetbrains.plugins.github.api;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.google.gson.annotations.SerializedName;
 import com.intellij.util.containers.HashMap;
 
@@ -32,9 +32,9 @@ import com.intellij.util.containers.HashMap;
 })
 class GithubGistRequest
 {
-	@NotNull
+	@Nonnull
 	private final String description;
-	@NotNull
+	@Nonnull
 	private final Map<String, GistFile> files;
 
 	@SerializedName("public")
@@ -42,16 +42,16 @@ class GithubGistRequest
 
 	public static class GistFile
 	{
-		@NotNull
+		@Nonnull
 		private final String content;
 
-		public GistFile(@NotNull String content)
+		public GistFile(@Nonnull String content)
 		{
 			this.content = content;
 		}
 	}
 
-	public GithubGistRequest(@NotNull List<GithubGist.FileContent> files, @NotNull String description,
+	public GithubGistRequest(@Nonnull List<GithubGist.FileContent> files, @Nonnull String description,
 			boolean isPublic)
 	{
 		this.description = description;

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -28,14 +28,14 @@ public class GithubRepoDetailed extends GithubRepo
 	@Nullable
 	private final GithubRepo mySource;
 
-	public GithubRepoDetailed(@NotNull String name,
+	public GithubRepoDetailed(@Nonnull String name,
 			@Nullable String description,
 			boolean isPrivate,
 			boolean isFork,
-			@NotNull String htmlUrl,
-			@NotNull String cloneUrl,
+			@Nonnull String htmlUrl,
+			@Nonnull String cloneUrl,
 			@Nullable String defaultBranch,
-			@NotNull GithubUser owner,
+			@Nonnull GithubUser owner,
 			@Nullable GithubRepo parent,
 			@Nullable GithubRepo source)
 	{

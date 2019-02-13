@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
@@ -23,27 +23,27 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("UnusedDeclaration")
 public class GithubFile
 {
-	@NotNull
+	@Nonnull
 	private final String myFilename;
 
 	private final int myAdditions;
 	private final int myDeletions;
 	private final int myChanges;
-	@NotNull
+	@Nonnull
 	private final String myStatus;
 
-	@NotNull
+	@Nonnull
 	private final String myRawUrl;
-	@NotNull
+	@Nonnull
 	private final String myPatch;
 
-	public GithubFile(@NotNull String filename,
+	public GithubFile(@Nonnull String filename,
 			int additions,
 			int deletions,
 			int changes,
-			@NotNull String status,
-			@NotNull String rawUrl,
-			@NotNull String patch)
+			@Nonnull String status,
+			@Nonnull String rawUrl,
+			@Nonnull String patch)
 	{
 		myFilename = filename;
 		myAdditions = additions;
@@ -54,7 +54,7 @@ public class GithubFile
 		myPatch = patch;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getFilename()
 	{
 		return myFilename;
@@ -75,19 +75,19 @@ public class GithubFile
 		return myChanges;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getStatus()
 	{
 		return myStatus;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRawUrl()
 	{
 		return myRawUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getPatch()
 	{
 		return myPatch;

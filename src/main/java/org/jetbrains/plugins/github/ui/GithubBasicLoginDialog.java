@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import com.intellij.openapi.project.Project;

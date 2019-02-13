@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -16,8 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
 import org.jetbrains.plugins.github.util.GithubAuthData;
@@ -154,7 +154,7 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
 					return GithubUtil.runWithValidBasicAuthForHost(myProject, indicator, getHost(),
 							new ThrowableConvertor<GithubAuthData, String, IOException>()
 					{
-						@NotNull
+						@Nonnull
 						@Override
 						public String convert(GithubAuthData auth) throws IOException
 						{
@@ -203,25 +203,25 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
 		return myHost;
 	}
 
-	@NotNull
+	@Nonnull
 	private String getHost()
 	{
 		return myHost.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	private String getRepoAuthor()
 	{
 		return myRepoAuthor.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	private String getRepoName()
 	{
 		return myRepoName.getText().trim();
 	}
 
-	@NotNull
+	@Nonnull
 	private String getToken()
 	{
 		return myToken.getText().trim();
@@ -231,12 +231,12 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
 	{
 		private int myWidth = -1;
 
-		public MyTextField(@NotNull String hintCaption)
+		public MyTextField(@Nonnull String hintCaption)
 		{
 			getEmptyText().setText(hintCaption);
 		}
 
-		public void setPreferredSize(@NotNull String sampleSizeString)
+		public void setPreferredSize(@Nonnull String sampleSizeString)
 		{
 			myWidth = getFontMetrics(getFont()).stringWidth(sampleSizeString);
 		}

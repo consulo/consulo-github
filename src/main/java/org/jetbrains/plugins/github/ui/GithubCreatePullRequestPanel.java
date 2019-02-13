@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Comparator;
 
+import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -27,8 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.SortedComboBoxModel;
@@ -46,7 +46,7 @@ public class GithubCreatePullRequestPanel
 	private JPanel myPanel;
 	private JButton myShowDiffButton;
 
-	public GithubCreatePullRequestPanel(@NotNull final Consumer<String> showDiff)
+	public GithubCreatePullRequestPanel(@Nonnull final Consumer<String> showDiff)
 	{
 		myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
 		myBranchModel = new SortedComboBoxModel<String>(new Comparator<String>()
@@ -68,19 +68,19 @@ public class GithubCreatePullRequestPanel
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	public String getTitle()
 	{
 		return myTitleTextField.getText();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return myDescriptionTextArea.getText();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getBranch()
 	{
 		return myBranchComboBox.getSelectedItem().toString();
@@ -101,7 +101,7 @@ public class GithubCreatePullRequestPanel
 		myBranchComboBox.setSelectedItem(branch);
 	}
 
-	public void setBranches(@NotNull Collection<String> branches)
+	public void setBranches(@Nonnull Collection<String> branches)
 	{
 		myBranchModel.clear();
 		myBranchModel.addAll(branches);
@@ -112,7 +112,7 @@ public class GithubCreatePullRequestPanel
 		return myPanel;
 	}
 
-	@NotNull
+	@Nonnull
 	public JComponent getPreferredComponent()
 	{
 		return myTitleTextField;

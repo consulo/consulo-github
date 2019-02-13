@@ -18,10 +18,10 @@ package org.jetbrains.plugins.github.ui;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import com.intellij.openapi.project.Project;
@@ -38,10 +38,10 @@ public class GithubCreatePullRequestDialog extends DialogWrapper
 	private final GithubCreatePullRequestPanel myGithubCreatePullRequestPanel;
 	private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+");
 
-	public GithubCreatePullRequestDialog(@NotNull final Project project,
-			@NotNull Collection<String> branches,
+	public GithubCreatePullRequestDialog(@Nonnull final Project project,
+			@Nonnull Collection<String> branches,
 			@Nullable String suggestedBranch,
-			@NotNull Consumer<String> showDiff)
+			@Nonnull Consumer<String> showDiff)
 	{
 		super(project, true);
 		myGithubCreatePullRequestPanel = new GithubCreatePullRequestPanel(showDiff);
@@ -81,19 +81,19 @@ public class GithubCreatePullRequestDialog extends DialogWrapper
 		return "Github.CreatePullRequestDialog";
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRequestTitle()
 	{
 		return myGithubCreatePullRequestPanel.getTitle();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return myGithubCreatePullRequestPanel.getDescription();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getTargetBranch()
 	{
 		return myGithubCreatePullRequestPanel.getBranch();

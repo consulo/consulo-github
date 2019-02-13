@@ -40,8 +40,8 @@ import git4idea.test.GitExecutor;
 import git4idea.test.GitTestUtil;
 import git4idea.test.TestDialogManager;
 import git4idea.test.TestNotificator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUtil;
@@ -65,25 +65,39 @@ import static org.junit.Assume.assumeNotNull;
  */
 public abstract class GithubTest extends UsefulTestCase {
 
-  @NotNull protected Project myProject;
-  @NotNull protected VirtualFile myProjectRoot;
+  @Nonnull
+  protected Project myProject;
+  @Nonnull
+  protected VirtualFile myProjectRoot;
   @Nullable protected GitRepository myRepository;
-  @NotNull protected GitRepositoryManager myGitRepositoryManager;
+  @Nonnull
+  protected GitRepositoryManager myGitRepositoryManager;
 
-  @NotNull protected GitVcsSettings myGitSettings;
-  @NotNull protected GithubSettings myGitHubSettings;
-  @NotNull private GitHttpAuthTestService myHttpAuthService;
+  @Nonnull
+  protected GitVcsSettings myGitSettings;
+  @Nonnull
+  protected GithubSettings myGitHubSettings;
+  @Nonnull
+  private GitHttpAuthTestService myHttpAuthService;
 
-  @NotNull protected TestDialogManager myDialogManager;
-  @NotNull protected TestNotificator myNotificator;
+  @Nonnull
+  protected TestDialogManager myDialogManager;
+  @Nonnull
+  protected TestNotificator myNotificator;
 
-  @NotNull private IdeaProjectTestFixture myProjectFixture;
+  @Nonnull
+  private IdeaProjectTestFixture myProjectFixture;
 
-  @NotNull protected GithubAuthData myAuth;
-  @NotNull protected String myHost;
-  @NotNull protected String myLogin1;
-  @NotNull protected String myLogin2;
-  @NotNull protected String myPassword;
+  @Nonnull
+  protected GithubAuthData myAuth;
+  @Nonnull
+  protected String myHost;
+  @Nonnull
+  protected String myLogin1;
+  @Nonnull
+  protected String myLogin2;
+  @Nonnull
+  protected String myPassword;
 
   @SuppressWarnings({"JUnitTestCaseWithNonTrivialConstructors", "UnusedDeclaration"})
   protected GithubTest() {
@@ -101,7 +115,7 @@ public abstract class GithubTest extends UsefulTestCase {
     VfsTestUtil.createDir (myProjectRoot, "folder/empty_folder");
   }
 
-  protected void checkNotification(@NotNull NotificationType type, @Nullable String title, @Nullable String content) {
+  protected void checkNotification(@Nonnull NotificationType type, @Nullable String title, @Nullable String content) {
     Notification actualNotification = myNotificator.getLastNotification();
     assertNotNull("No notification was shown", actualNotification);
 
@@ -117,15 +131,15 @@ public abstract class GithubTest extends UsefulTestCase {
   protected void registerHttpAuthService() {
     GitHttpAuthTestService myHttpAuthService = (GitHttpAuthTestService)ServiceManager.getService(GitHttpAuthService.class);
     myHttpAuthService.register(new GitHttpAuthenticator() {
-      @NotNull
+      @Nonnull
       @Override
-      public String askPassword(@NotNull String url) {
+      public String askPassword(@Nonnull String url) {
         return myPassword;
       }
 
-      @NotNull
+      @Nonnull
       @Override
-      public String askUsername(@NotNull String url) {
+      public String askUsername(@Nonnull String url) {
         return myLogin1;
       }
 

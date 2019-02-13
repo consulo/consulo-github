@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.github.ui;
 
+import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author oleg
@@ -75,7 +74,7 @@ public class GithubCreateGistPanel
 		myOpenInBrowserCheckBox.setSelected(openInBrowser);
 	}
 
-	public void showFileNameField(@NotNull String filename)
+	public void showFileNameField(@Nonnull String filename)
 	{
 		myFileNameLabel.setVisible(true);
 		myFileNameField.setVisible(true);

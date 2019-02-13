@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -30,24 +30,24 @@ public class GithubUserDetailed extends GithubUser
 
 	private final int myOwnedPrivateRepos;
 
-	@NotNull
+	@Nonnull
 	private final String myType;
-	@NotNull
+	@Nonnull
 	private final UserPlan myPlan;
 
 	public static class UserPlan
 	{
-		@NotNull
+		@Nonnull
 		private final String myName;
 		private final long myPrivateRepos;
 
-		public UserPlan(@NotNull String name, long privateRepos)
+		public UserPlan(@Nonnull String name, long privateRepos)
 		{
 			myName = name;
 			myPrivateRepos = privateRepos;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getName()
 		{
 			return myName;
@@ -64,14 +64,14 @@ public class GithubUserDetailed extends GithubUser
 		return getPlan().getPrivateRepos() > getOwnedPrivateRepos();
 	}
 
-	public GithubUserDetailed(@NotNull String login,
-			@NotNull String htmlUrl,
+	public GithubUserDetailed(@Nonnull String login,
+			@Nonnull String htmlUrl,
 			@Nullable String gravatarId,
 			@Nullable String name,
 			@Nullable String email,
 			int ownedPrivateRepos,
-			@NotNull String type,
-			@NotNull UserPlan plan)
+			@Nonnull String type,
+			@Nonnull UserPlan plan)
 	{
 		super(login, htmlUrl, gravatarId);
 		myName = name;
@@ -93,7 +93,7 @@ public class GithubUserDetailed extends GithubUser
 		return myEmail;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getType()
 	{
 		return myType;
@@ -104,7 +104,7 @@ public class GithubUserDetailed extends GithubUser
 		return myOwnedPrivateRepos;
 	}
 
-	@NotNull
+	@Nonnull
 	public UserPlan getPlan()
 	{
 		return myPlan;

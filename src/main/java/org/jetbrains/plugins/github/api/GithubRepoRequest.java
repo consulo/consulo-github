@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -27,15 +27,15 @@ import com.google.gson.annotations.SerializedName;
 })
 class GithubRepoRequest
 {
-	@NotNull
+	@Nonnull
 	private final String name;
-	@NotNull
+	@Nonnull
 	private final String description;
 
 	@SerializedName("public")
 	private final boolean isPublic;
 
-	GithubRepoRequest(@NotNull String name, @NotNull String description, boolean aPublic)
+	GithubRepoRequest(@Nonnull String name, @Nonnull String description, boolean aPublic)
 	{
 		this.name = name;
 		this.description = description;

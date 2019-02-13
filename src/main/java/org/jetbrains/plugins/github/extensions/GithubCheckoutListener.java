@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.tasks.GithubRepository;
 import org.jetbrains.plugins.github.tasks.GithubRepositoryType;

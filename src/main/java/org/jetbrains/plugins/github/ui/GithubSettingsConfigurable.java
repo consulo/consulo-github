@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.github.ui;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -24,19 +24,19 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
 		mySettings = GithubSettings.getInstance();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return "GitHub";
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHelpTopic()
 	{
 		return "settings.github";
 	}
 
-	@NotNull
+	@Nonnull
 	public JComponent createComponent()
 	{
 		if(mySettingsPane == null)
@@ -73,7 +73,7 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
 		mySettingsPane = null;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getId()
 	{
 		return getHelpTopic();

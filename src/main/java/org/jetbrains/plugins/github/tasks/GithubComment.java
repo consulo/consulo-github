@@ -17,8 +17,9 @@ package org.jetbrains.plugins.github.tasks;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.tasks.impl.SimpleComment;
 import com.intellij.util.text.DateFormatUtil;
 
@@ -29,14 +30,14 @@ public class GithubComment extends SimpleComment
 {
 	@Nullable
 	private final String myGravatarId;
-	@NotNull
+	@Nonnull
 	private final String myUserHtmlUrl;
 
 	public GithubComment(@Nullable Date date,
 			@Nullable String author,
-			@NotNull String text,
+			@Nonnull String text,
 			@Nullable String gravatarId,
-			@NotNull String userHtmlUrl)
+			@Nonnull String userHtmlUrl)
 	{
 		super(date, author, text);
 		myGravatarId = gravatarId;

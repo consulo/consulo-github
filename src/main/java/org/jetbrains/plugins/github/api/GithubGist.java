@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.github.api;
 
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +27,17 @@ import java.util.List;
  */
 public class GithubGist
 {
-	@NotNull
+	@Nonnull
 	private final String myId;
-	@NotNull
+	@Nonnull
 	private final String myDescription;
 
 	private final boolean myIsPublic;
 
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
 
-	@NotNull
+	@Nonnull
 	private final List<GistFile> myFiles;
 
 	@Nullable
@@ -45,41 +45,41 @@ public class GithubGist
 
 	public static class GistFile
 	{
-		@NotNull
+		@Nonnull
 		private final String myFilename;
-		@NotNull
+		@Nonnull
 		private final String myContent;
 
-		@NotNull
+		@Nonnull
 		private final String myRawUrl;
 
-		public GistFile(@NotNull String filename, @NotNull String content, @NotNull String rawUrl)
+		public GistFile(@Nonnull String filename, @Nonnull String content, @Nonnull String rawUrl)
 		{
 			myFilename = filename;
 			myContent = content;
 			myRawUrl = rawUrl;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getFilename()
 		{
 			return myFilename;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getContent()
 		{
 			return myContent;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getRawUrl()
 		{
 			return myRawUrl;
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public List<FileContent> getContent()
 	{
 		List<FileContent> ret = new ArrayList<FileContent>();
@@ -90,11 +90,11 @@ public class GithubGist
 		return ret;
 	}
 
-	public GithubGist(@NotNull String id,
+	public GithubGist(@Nonnull String id,
 			@Nullable String description,
 			boolean isPublic,
-			@NotNull String htmlUrl,
-			@NotNull List<GistFile> files,
+			@Nonnull String htmlUrl,
+			@Nonnull List<GistFile> files,
 			@Nullable GithubUser user)
 	{
 		myId = id;
@@ -105,13 +105,13 @@ public class GithubGist
 		myUser = user;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getId()
 	{
 		return myId;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return myDescription;
@@ -122,13 +122,13 @@ public class GithubGist
 		return myIsPublic;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<GistFile> getFiles()
 	{
 		return myFiles;
@@ -142,24 +142,24 @@ public class GithubGist
 
 	public static class FileContent
 	{
-		@NotNull
+		@Nonnull
 		private final String myFileName;
-		@NotNull
+		@Nonnull
 		private final String myContent;
 
-		public FileContent(@NotNull String fileName, @NotNull String content)
+		public FileContent(@Nonnull String fileName, @Nonnull String content)
 		{
 			myFileName = fileName;
 			myContent = content;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getFileName()
 		{
 			return myFileName;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getContent()
 		{
 			return myContent;

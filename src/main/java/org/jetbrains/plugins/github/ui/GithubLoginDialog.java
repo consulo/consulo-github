@@ -2,11 +2,11 @@ package org.jetbrains.plugins.github.ui;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUtil;
@@ -50,7 +50,7 @@ public class GithubLoginDialog extends DialogWrapper
 		init();
 	}
 
-	@NotNull
+	@Nonnull
 	protected Action[] createActions()
 	{
 		return new Action[]{
@@ -111,7 +111,7 @@ public class GithubLoginDialog extends DialogWrapper
 		setErrorText(null);
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubAuthData getAuthData()
 	{
 		return myGithubLoginPanel.getAuthData();

@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubGist;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
@@ -69,7 +69,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 
 	@RequiredDispatchThread
 	@Override
-	public void update(@NotNull final AnActionEvent e)
+	public void update(@Nonnull final AnActionEvent e)
 	{
 		Project project = e.getData(PlatformDataKeys.PROJECT);
 		if(project == null || project.isDefault())
@@ -93,7 +93,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 
 	@RequiredDispatchThread
 	@Override
-	public void actionPerformed(@NotNull final AnActionEvent e)
+	public void actionPerformed(@Nonnull final AnActionEvent e)
 	{
 		final Project project = e.getData(PlatformDataKeys.PROJECT);
 		if(project == null || project.isDefault())
@@ -112,7 +112,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		createGistAction(project, editor, file, files);
 	}
 
-	static void createGistAction(@NotNull final Project project,
+	static void createGistAction(@Nonnull final Project project,
 			@Nullable final Editor editor,
 			@Nullable final VirtualFile file,
 			@Nullable final VirtualFile[] files)
@@ -149,7 +149,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		new Task.Backgroundable(project, "Creating Gist...")
 		{
 			@Override
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				List<FileContent> contents = collectContents(project, editor, file, files);
 				String gistUrl = createGist(project, finalAuth, contents, dialog.isPrivate(), dialog.getDescription(),
@@ -177,8 +177,8 @@ public class GithubCreateGistAction extends DumbAwareAction
 		}.queue();
 	}
 
-	@NotNull
-	private static GithubAuthData getValidAuthData(@NotNull final Project project) throws IOException
+	@Nonnull
+	private static GithubAuthData getValidAuthData(@Nonnull final Project project) throws IOException
 	{
 		return GithubUtil.computeValueInModal(project, "Access to GitHub", new ThrowableConvertor<ProgressIndicator,
 				GithubAuthData, IOException>()
@@ -191,8 +191,8 @@ public class GithubCreateGistAction extends DumbAwareAction
 		});
 	}
 
-	@NotNull
-	static List<FileContent> collectContents(@NotNull Project project,
+	@Nonnull
+	static List<FileContent> collectContents(@Nonnull Project project,
 			@Nullable Editor editor,
 			@Nullable VirtualFile file,
 			@Nullable VirtualFile[] files)
@@ -233,11 +233,11 @@ public class GithubCreateGistAction extends DumbAwareAction
 	}
 
 	@Nullable
-	static String createGist(@NotNull Project project,
-			@NotNull GithubAuthData auth,
-			@NotNull List<FileContent> contents,
+	static String createGist(@Nonnull Project project,
+			@Nonnull GithubAuthData auth,
+			@Nonnull List<FileContent> contents,
 			boolean isPrivate,
-			@NotNull String description,
+			@Nonnull String description,
 			@Nullable String filename)
 	{
 		if(contents.isEmpty())
@@ -263,7 +263,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static String getContentFromEditor(@NotNull final Editor editor)
+	private static String getContentFromEditor(@Nonnull final Editor editor)
 	{
 		String text = ApplicationManager.getApplication().runReadAction(new Computable<String>()
 		{
@@ -287,9 +287,9 @@ public class GithubCreateGistAction extends DumbAwareAction
 		return text;
 	}
 
-	@NotNull
-	private static List<FileContent> getContentFromFile(@NotNull final VirtualFile file,
-			@NotNull Project project,
+	@Nonnull
+	private static List<FileContent> getContentFromFile(@Nonnull final VirtualFile file,
+			@Nonnull Project project,
 			@Nullable String prefix)
 	{
 		if(file.isDirectory())
@@ -327,9 +327,9 @@ public class GithubCreateGistAction extends DumbAwareAction
 		return Collections.singletonList(new FileContent(filename, content));
 	}
 
-	@NotNull
-	private static List<FileContent> getContentFromDirectory(@NotNull VirtualFile dir,
-			@NotNull Project project,
+	@Nonnull
+	private static List<FileContent> getContentFromDirectory(@Nonnull VirtualFile dir,
+			@Nonnull Project project,
 			@Nullable String prefix)
 	{
 		List<FileContent> contents = new ArrayList<FileContent>();
@@ -345,7 +345,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static String readFile(@NotNull final VirtualFile file)
+	private static String readFile(@Nonnull final VirtualFile file)
 	{
 		return ApplicationManager.getApplication().runReadAction(new Computable<String>()
 		{
@@ -366,7 +366,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		});
 	}
 
-	private static String addPrefix(@NotNull String name, @Nullable String prefix, boolean addTrailingSlash)
+	private static String addPrefix(@Nonnull String name, @Nullable String prefix, boolean addTrailingSlash)
 	{
 		String pref = prefix == null ? "" : prefix;
 		pref += name;
@@ -377,7 +377,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		return pref;
 	}
 
-	private static boolean isFileIgnored(@NotNull VirtualFile file, @NotNull Project project)
+	private static boolean isFileIgnored(@Nonnull VirtualFile file, @Nonnull Project project)
 	{
 		ChangeListManager manager = ChangeListManager.getInstance(project);
 		return manager.isIgnoredFile(file) || FileTypeManager.getInstance().isFileIgnored(file);

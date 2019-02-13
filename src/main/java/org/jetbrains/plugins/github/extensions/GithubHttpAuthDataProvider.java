@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
@@ -32,7 +32,7 @@ public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
 
 	@Nullable
 	@Override
-	public AuthData getAuthData(@NotNull String url)
+	public AuthData getAuthData(@Nonnull String url)
 	{
 		if(!GithubUrlUtil.isGithubUrl(url))
 		{
@@ -70,7 +70,7 @@ public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
 	}
 
 	@Override
-	public void forgetPassword(@NotNull String s)
+	public void forgetPassword(@Nonnull String s)
 	{
 		GithubSettings.getInstance().setValidGitAuth(false);
 	}

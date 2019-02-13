@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.github.api;
 
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Date;
 
@@ -26,38 +26,38 @@ import java.util.Date;
  */
 public class GithubIssue
 {
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
 	private final long myNumber;
-	@NotNull
+	@Nonnull
 	private final String myState;
-	@NotNull
+	@Nonnull
 	private final String myTitle;
-	@NotNull
+	@Nonnull
 	private final String myBody;
 
-	@NotNull
+	@Nonnull
 	private final GithubUser myUser;
 	@Nullable
 	private final GithubUser myAssignee;
 
 	@Nullable
 	private final Date myClosedAt;
-	@NotNull
+	@Nonnull
 	private final Date myCreatedAt;
-	@NotNull
+	@Nonnull
 	private final Date myUpdatedAt;
 
-	public GithubIssue(@NotNull String htmlUrl,
+	public GithubIssue(@Nonnull String htmlUrl,
 			long number,
-			@NotNull String state,
-			@NotNull String title,
+			@Nonnull String state,
+			@Nonnull String title,
 			@Nullable String body,
-			@NotNull GithubUser user,
+			@Nonnull GithubUser user,
 			@Nullable GithubUser assignee,
 			@Nullable Date closedAt,
-			@NotNull Date createdAt,
-			@NotNull Date updatedAt)
+			@Nonnull Date createdAt,
+			@Nonnull Date updatedAt)
 	{
 		myHtmlUrl = htmlUrl;
 		myNumber = number;
@@ -71,7 +71,7 @@ public class GithubIssue
 		myUpdatedAt = updatedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;
@@ -82,25 +82,25 @@ public class GithubIssue
 		return myNumber;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getState()
 	{
 		return myState;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getTitle()
 	{
 		return myTitle;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getBody()
 	{
 		return myBody;
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubUser getUser()
 	{
 		return myUser;
@@ -118,13 +118,13 @@ public class GithubIssue
 		return myClosedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getCreatedAt()
 	{
 		return myCreatedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getUpdatedAt()
 	{
 		return myUpdatedAt;

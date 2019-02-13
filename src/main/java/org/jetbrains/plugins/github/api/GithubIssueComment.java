@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Date;
 
@@ -26,25 +26,25 @@ public class GithubIssueComment
 {
 	private final long myId;
 
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
-	@NotNull
+	@Nonnull
 	private final String myBodyHtml;
 
-	@NotNull
+	@Nonnull
 	private final Date myCreatedAt;
-	@NotNull
+	@Nonnull
 	private final Date myUpdatedAt;
 
-	@NotNull
+	@Nonnull
 	private final GithubUser myUser;
 
 	public GithubIssueComment(long id,
-			@NotNull String htmlUrl,
-			@NotNull String bodyHtml,
-			@NotNull Date createdAt,
-			@NotNull Date updatedAt,
-			@NotNull GithubUser user)
+			@Nonnull String htmlUrl,
+			@Nonnull String bodyHtml,
+			@Nonnull Date createdAt,
+			@Nonnull Date updatedAt,
+			@Nonnull GithubUser user)
 	{
 		myId = id;
 		myHtmlUrl = htmlUrl;
@@ -59,31 +59,31 @@ public class GithubIssueComment
 		return myId;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getBodyHtml()
 	{
 		return myBodyHtml;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getCreatedAt()
 	{
 		return myCreatedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getUpdatedAt()
 	{
 		return myUpdatedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubUser getUser()
 	{
 		return myUser;

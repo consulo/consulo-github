@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -52,7 +52,7 @@ class GithubIssueRaw implements DataConstructor
 	public Date updatedAt;
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubIssue createIssue()
 	{
 		GithubUser assignee = this.assignee == null ? null : this.assignee.createUser();
@@ -61,9 +61,9 @@ class GithubIssueRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubIssue.class))
 		{

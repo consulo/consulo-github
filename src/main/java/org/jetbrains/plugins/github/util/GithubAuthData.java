@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 
 /**
@@ -36,9 +36,9 @@ public class GithubAuthData
 		BASIC, TOKEN, ANONYMOUS
 	}
 
-	@NotNull
+	@Nonnull
 	private final AuthType myAuthType;
-	@NotNull
+	@Nonnull
 	private final String myHost;
 	@Nullable
 	private final BasicAuth myBasicAuth;
@@ -47,8 +47,8 @@ public class GithubAuthData
 	private final boolean myUseProxy;
 
 
-	private GithubAuthData(@NotNull AuthType authType,
-			@NotNull String host,
+	private GithubAuthData(@Nonnull AuthType authType,
+			@Nonnull String host,
 			@Nullable BasicAuth basicAuth,
 			@Nullable TokenAuth tokenAuth,
 			boolean useProxy)
@@ -65,33 +65,33 @@ public class GithubAuthData
 		return createAnonymous(GithubApiUtil.DEFAULT_GITHUB_HOST);
 	}
 
-	public static GithubAuthData createAnonymous(@NotNull String host)
+	public static GithubAuthData createAnonymous(@Nonnull String host)
 	{
 		return new GithubAuthData(AuthType.ANONYMOUS, host, null, null, true);
 	}
 
-	public static GithubAuthData createBasicAuth(@NotNull String host, @NotNull String login, @NotNull String password)
+	public static GithubAuthData createBasicAuth(@Nonnull String host, @Nonnull String login, @Nonnull String password)
 	{
 		return new GithubAuthData(AuthType.BASIC, host, new BasicAuth(login, password), null, true);
 	}
 
-	public static GithubAuthData createTokenAuth(@NotNull String host, @NotNull String token)
+	public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token)
 	{
 		return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), true);
 	}
 
-	public static GithubAuthData createTokenAuth(@NotNull String host, @NotNull String token, boolean useProxy)
+	public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token, boolean useProxy)
 	{
 		return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), useProxy);
 	}
 
-	@NotNull
+	@Nonnull
 	public AuthType getAuthType()
 	{
 		return myAuthType;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHost()
 	{
 		return myHost;
@@ -116,24 +116,24 @@ public class GithubAuthData
 
 	public static class BasicAuth
 	{
-		@NotNull
+		@Nonnull
 		private final String myLogin;
-		@NotNull
+		@Nonnull
 		private final String myPassword;
 
-		private BasicAuth(@NotNull String login, @NotNull String password)
+		private BasicAuth(@Nonnull String login, @Nonnull String password)
 		{
 			myLogin = login;
 			myPassword = password;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getLogin()
 		{
 			return myLogin;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getPassword()
 		{
 			return myPassword;
@@ -142,15 +142,15 @@ public class GithubAuthData
 
 	public static class TokenAuth
 	{
-		@NotNull
+		@Nonnull
 		private final String myToken;
 
-		private TokenAuth(@NotNull String token)
+		private TokenAuth(@Nonnull String token)
 		{
 			myToken = token;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getToken()
 		{
 			return myToken;

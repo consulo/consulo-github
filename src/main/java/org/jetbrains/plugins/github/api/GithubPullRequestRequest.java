@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
@@ -26,19 +26,19 @@ import org.jetbrains.annotations.NotNull;
 })
 class GithubPullRequestRequest
 {
-	@NotNull
+	@Nonnull
 	private final String title;
-	@NotNull
+	@Nonnull
 	private final String body;
-	@NotNull
+	@Nonnull
 	private final String head; // branch with changes
-	@NotNull
+	@Nonnull
 	private final String base; // branch requested to
 
-	public GithubPullRequestRequest(@NotNull String title,
-			@NotNull String description,
-			@NotNull String head,
-			@NotNull String base)
+	public GithubPullRequestRequest(@Nonnull String title,
+			@Nonnull String description,
+			@Nonnull String head,
+			@Nonnull String base)
 	{
 		this.title = title;
 		this.body = description;

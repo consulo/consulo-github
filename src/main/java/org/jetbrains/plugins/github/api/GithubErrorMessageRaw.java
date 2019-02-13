@@ -17,7 +17,7 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov

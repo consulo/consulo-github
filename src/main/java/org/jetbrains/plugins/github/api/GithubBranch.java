@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
  */
 public class GithubBranch
 {
-	@NotNull
+	@Nonnull
 	private final String name;
 
-	public GithubBranch(@NotNull String name)
+	public GithubBranch(@Nonnull String name)
 	{
 		this.name = name;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return name;

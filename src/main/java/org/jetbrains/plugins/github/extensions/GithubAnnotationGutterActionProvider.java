@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.github.GithubShowCommitInBrowserFromAnnotateAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.vcs.annotate.AnnotationGutterActionProvider;
@@ -27,9 +28,9 @@ import com.intellij.openapi.vcs.annotate.FileAnnotation;
 public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider
 {
 
-	@NotNull
+	@Nonnull
 	@Override
-	public AnAction createAction(@NotNull FileAnnotation annotation)
+	public AnAction createAction(@Nonnull FileAnnotation annotation)
 	{
 		return new GithubShowCommitInBrowserFromAnnotateAction(annotation);
 	}

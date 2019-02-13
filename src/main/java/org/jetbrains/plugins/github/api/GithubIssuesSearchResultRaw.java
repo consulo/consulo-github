@@ -18,8 +18,8 @@ package org.jetbrains.plugins.github.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -33,7 +33,7 @@ class GithubIssuesSearchResultRaw implements DataConstructor
 	@Nullable
 	public List<GithubIssueRaw> items;
 
-	@NotNull
+	@Nonnull
 	GithubIssuesSearchResult createIssueSearchResult()
 	{
 		List<GithubIssue> issues = new ArrayList<GithubIssue>();
@@ -46,9 +46,9 @@ class GithubIssuesSearchResultRaw implements DataConstructor
 
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubIssuesSearchResult.class))
 		{

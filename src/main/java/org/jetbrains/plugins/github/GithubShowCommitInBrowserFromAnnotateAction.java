@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -115,26 +115,26 @@ public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommi
 
 	private static class EventData
 	{
-		@NotNull
+		@Nonnull
 		private final Project myProject;
-		@NotNull
+		@Nonnull
 		private final GitRepository myRepository;
 		private final int myCorrectedLineNumber;
 
-		private EventData(@NotNull Project project, @NotNull GitRepository repository, int correctedLineNumber)
+		private EventData(@Nonnull Project project, @Nonnull GitRepository repository, int correctedLineNumber)
 		{
 			myProject = project;
 			myRepository = repository;
 			myCorrectedLineNumber = correctedLineNumber;
 		}
 
-		@NotNull
+		@Nonnull
 		public Project getProject()
 		{
 			return myProject;
 		}
 
-		@NotNull
+		@Nonnull
 		public GitRepository getRepository()
 		{
 			return myRepository;

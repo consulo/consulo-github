@@ -22,8 +22,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.api.GithubRepoDetailed;
@@ -122,7 +123,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		rebaseMyGithubFork(project, file);
 	}
 
-	private static void rebaseMyGithubFork(@NotNull final Project project, @Nullable final VirtualFile file)
+	private static void rebaseMyGithubFork(@Nonnull final Project project, @Nullable final VirtualFile file)
 	{
 		final GitRepository gitRepository = GithubUtil.getGitRepository(project, file);
 		if(gitRepository == null)
@@ -137,7 +138,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		new Task.Backgroundable(project, "Rebasing GitHub fork...")
 		{
 			@Override
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				gitRepository.update();
 				String upstreamRemoteUrl = GithubUtil.findUpstreamRemote(gitRepository);
@@ -187,7 +188,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	static String configureUpstreamRemote(@NotNull Project project, @NotNull VirtualFile root, @NotNull GitRepository gitRepository, @NotNull ProgressIndicator indicator)
+	static String configureUpstreamRemote(@Nonnull Project project, @Nonnull VirtualFile root, @Nonnull GitRepository gitRepository, @Nonnull ProgressIndicator indicator)
 	{
 		GithubRepoDetailed repositoryInfo = loadRepositoryInfo(project, gitRepository, indicator);
 		if(repositoryInfo == null)
@@ -209,7 +210,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static GithubRepoDetailed loadRepositoryInfo(@NotNull Project project, @NotNull GitRepository gitRepository, @NotNull ProgressIndicator indicator)
+	private static GithubRepoDetailed loadRepositoryInfo(@Nonnull Project project, @Nonnull GitRepository gitRepository, @Nonnull ProgressIndicator indicator)
 	{
 		final String remoteUrl = GithubUtil.findGithubRemoteUrl(gitRepository);
 		if(remoteUrl == null)
@@ -229,7 +230,7 @@ public class GithubRebaseAction extends DumbAwareAction
 			return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData, GithubRepoDetailed, IOException>()
 			{
 				@Override
-				@NotNull
+				@Nonnull
 				public GithubRepoDetailed convert(GithubAuthData authData) throws IOException
 				{
 					return GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(), userAndRepo.getRepository());
@@ -248,7 +249,7 @@ public class GithubRebaseAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static String addParentAsUpstreamRemote(@NotNull Project project, @NotNull VirtualFile root, @NotNull String parentRepoUrl, @NotNull GitRepository gitRepository)
+	private static String addParentAsUpstreamRemote(@Nonnull Project project, @Nonnull VirtualFile root, @Nonnull String parentRepoUrl, @Nonnull GitRepository gitRepository)
 	{
 		final GitSimpleHandler handler = new GitSimpleHandler(project, root, GitCommand.REMOTE);
 		handler.setSilent(true);
@@ -274,7 +275,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		}
 	}
 
-	private static boolean fetchParent(@NotNull final Project project, @NotNull final GitRepository repository, @NotNull final ProgressIndicator indicator)
+	private static boolean fetchParent(@Nonnull final Project project, @Nonnull final GitRepository repository, @Nonnull final ProgressIndicator indicator)
 	{
 		GitFetchResult result = new GitFetcher(project, indicator, false).fetch(repository.getRoot(), "upstream");
 		if(!result.isSuccess())
@@ -285,7 +286,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		return true;
 	}
 
-	private static void rebaseCurrentBranch(@NotNull final Project project, @NotNull final VirtualFile root, @NotNull final GitRepository gitRepository, @NotNull final ProgressIndicator indicator)
+	private static void rebaseCurrentBranch(@Nonnull final Project project, @Nonnull final VirtualFile root, @Nonnull final GitRepository gitRepository, @Nonnull final ProgressIndicator indicator)
 	{
 		final Git git = ServiceManager.getService(project, Git.class);
 		List<VirtualFile> rootsToSave = Collections.singletonList(gitRepository.getRoot());
@@ -296,7 +297,7 @@ public class GithubRebaseAction extends DumbAwareAction
 		process.execute();
 	}
 
-	private static void doRebaseCurrentBranch(@NotNull final Project project, @NotNull final VirtualFile root, @NotNull final ProgressIndicator indicator)
+	private static void doRebaseCurrentBranch(@Nonnull final Project project, @Nonnull final VirtualFile root, @Nonnull final ProgressIndicator indicator)
 	{
 		final GitRepositoryManager repositoryManager = GitUtil.getRepositoryManager(project);
 

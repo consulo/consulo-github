@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -98,14 +98,14 @@ class GithubPullRequestRaw implements DataConstructor
 		@Nullable
 		public GithubUserRaw user;
 
-		@NotNull
+		@Nonnull
 		public GithubPullRequest.Link create()
 		{
 			return new GithubPullRequest.Link(label, ref, sha, repo.createRepo(), user.createUser());
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubPullRequest createPullRequest()
 	{
 		return new GithubPullRequest(number, state, title, bodyHtml, htmlUrl, diffUrl, patchUrl, issueUrl, createdAt,
@@ -113,9 +113,9 @@ class GithubPullRequestRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubPullRequest.class))
 		{

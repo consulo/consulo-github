@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Information about a user on GitHub.
@@ -94,7 +94,7 @@ class GithubUserRaw implements DataConstructor
 		public Long privateRepos;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubUserDetailed.UserPlan create()
 		{
 			return new GithubUserDetailed.UserPlan(name, privateRepos);
@@ -102,23 +102,23 @@ class GithubUserRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubUser createUser()
 	{
 		return new GithubUser(login, htmlUrl, gravatarId);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubUserDetailed createUserDetailed()
 	{
 		return new GithubUserDetailed(login, htmlUrl, gravatarId, name, email, ownedPrivateRepos, type, plan.create());
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubUser.class))
 		{

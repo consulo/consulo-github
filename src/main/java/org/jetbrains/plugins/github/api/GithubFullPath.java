@@ -15,37 +15,37 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
  */
 public class GithubFullPath
 {
-	@NotNull
+	@Nonnull
 	private final String myUserName;
-	@NotNull
+	@Nonnull
 	private final String myRepositoryName;
 
-	public GithubFullPath(@NotNull String userName, @NotNull String repositoryName)
+	public GithubFullPath(@Nonnull String userName, @Nonnull String repositoryName)
 	{
 		myUserName = userName;
 		myRepositoryName = repositoryName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getUser()
 	{
 		return myUserName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getRepository()
 	{
 		return myRepositoryName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String toString()
 	{
 		return myUserName + '/' + myRepositoryName;

@@ -15,37 +15,37 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
  */
 public class GithubUser
 {
-	@NotNull
+	@Nonnull
 	private final String myLogin;
 
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
 
 	@Nullable
 	private final String myGravatarId;
 
-	public GithubUser(@NotNull String login, @NotNull String htmlUrl, @Nullable String gravatarId)
+	public GithubUser(@Nonnull String login, @Nonnull String htmlUrl, @Nullable String gravatarId)
 	{
 		myLogin = login;
 		myHtmlUrl = htmlUrl;
 		myGravatarId = gravatarId;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getLogin()
 	{
 		return myLogin;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;

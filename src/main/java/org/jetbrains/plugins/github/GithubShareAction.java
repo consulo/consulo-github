@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubRepo;
 import org.jetbrains.plugins.github.api.GithubUserDetailed;
@@ -124,7 +124,7 @@ public class GithubShareAction extends DumbAwareAction
 		shareProjectOnGithub(project, file);
 	}
 
-	public static void shareProjectOnGithub(@NotNull final Project project, @Nullable final VirtualFile file)
+	public static void shareProjectOnGithub(@Nonnull final Project project, @Nullable final VirtualFile file)
 	{
 		BasicAction.saveAll();
 
@@ -170,7 +170,7 @@ public class GithubShareAction extends DumbAwareAction
 		new Task.Backgroundable(project, "Sharing project on GitHub...")
 		{
 			@Override
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				// create GitHub repo (network)
 				LOG.info("Creating GitHub repository");
@@ -231,7 +231,7 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static GithubInfo loadGithubInfoWithModal(@NotNull final Project project)
+	private static GithubInfo loadGithubInfoWithModal(@Nonnull final Project project)
 	{
 		try
 		{
@@ -276,10 +276,10 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static String createGithubRepository(@NotNull Project project,
-			@NotNull GithubAuthData auth,
-			@NotNull String name,
-			@NotNull String description,
+	private static String createGithubRepository(@Nonnull Project project,
+			@Nonnull GithubAuthData auth,
+			@Nonnull String name,
+			@Nonnull String description,
 			boolean isPrivate)
 	{
 
@@ -295,9 +295,9 @@ public class GithubShareAction extends DumbAwareAction
 		}
 	}
 
-	private static boolean createEmptyGitRepository(@NotNull Project project,
-			@NotNull VirtualFile root,
-			@NotNull ProgressIndicator indicator)
+	private static boolean createEmptyGitRepository(@Nonnull Project project,
+			@Nonnull VirtualFile root,
+			@Nonnull ProgressIndicator indicator)
 	{
 		final GitLineHandler h = new GitLineHandler(project, root, GitCommand.INIT);
 		GitHandlerUtil.runInCurrentThread(h, indicator, true, GitBundle.message("initializing.title"));
@@ -311,11 +311,11 @@ public class GithubShareAction extends DumbAwareAction
 		return true;
 	}
 
-	private static boolean addGithubRemote(@NotNull Project project,
-			@NotNull VirtualFile root,
-			@NotNull String remoteName,
-			@NotNull String remoteUrl,
-			@NotNull GitRepository repository)
+	private static boolean addGithubRemote(@Nonnull Project project,
+			@Nonnull VirtualFile root,
+			@Nonnull String remoteName,
+			@Nonnull String remoteUrl,
+			@Nonnull GitRepository repository)
 	{
 		final GitSimpleHandler addRemoteHandler = new GitSimpleHandler(project, root, GitCommand.REMOTE);
 		addRemoteHandler.setSilent(true);
@@ -339,12 +339,12 @@ public class GithubShareAction extends DumbAwareAction
 		return true;
 	}
 
-	private static boolean performFirstCommitIfRequired(@NotNull final Project project,
-			@NotNull VirtualFile root,
-			@NotNull GitRepository repository,
-			@NotNull ProgressIndicator indicator,
-			@NotNull String name,
-			@NotNull String url)
+	private static boolean performFirstCommitIfRequired(@Nonnull final Project project,
+			@Nonnull VirtualFile root,
+			@Nonnull GitRepository repository,
+			@Nonnull ProgressIndicator indicator,
+			@Nonnull String name,
+			@Nonnull String url)
 	{
 		// check if there is no commits
 		if(!repository.isFresh())
@@ -420,12 +420,12 @@ public class GithubShareAction extends DumbAwareAction
 		return true;
 	}
 
-	private static boolean pushCurrentBranch(@NotNull Project project,
-			@NotNull GitRepository repository,
-			@NotNull String remoteName,
-			@NotNull String remoteUrl,
-			@NotNull String name,
-			@NotNull String url)
+	private static boolean pushCurrentBranch(@Nonnull Project project,
+			@Nonnull GitRepository repository,
+			@Nonnull String remoteName,
+			@Nonnull String remoteUrl,
+			@Nonnull String name,
+			@Nonnull String url)
 	{
 		Git git = ServiceManager.getService(Git.class);
 
@@ -450,11 +450,11 @@ public class GithubShareAction extends DumbAwareAction
 
 	public static class GithubUntrackedFilesDialog extends SelectFilesDialog implements TypeSafeDataProvider
 	{
-		@NotNull
+		@Nonnull
 		private final Project myProject;
 		private CommitMessage myCommitMessagePanel;
 
-		public GithubUntrackedFilesDialog(@NotNull Project project, @NotNull List<VirtualFile> untrackedFiles)
+		public GithubUntrackedFilesDialog(@Nonnull Project project, @Nonnull List<VirtualFile> untrackedFiles)
 		{
 			super(project, untrackedFiles, null, null, true, false, false);
 			myProject = project;
@@ -485,7 +485,7 @@ public class GithubShareAction extends DumbAwareAction
 			return splitter;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getCommitMessage()
 		{
 			return myCommitMessagePanel.getComment();
@@ -509,35 +509,35 @@ public class GithubShareAction extends DumbAwareAction
 
 	private static class GithubInfo
 	{
-		@NotNull
+		@Nonnull
 		private final GithubUserDetailed myUser;
-		@NotNull
+		@Nonnull
 		private final GithubAuthData myAuthData;
-		@NotNull
+		@Nonnull
 		private final HashSet<String> myRepositoryNames;
 
-		GithubInfo(@NotNull GithubAuthData auth,
-				@NotNull GithubUserDetailed user,
-				@NotNull HashSet<String> repositoryNames)
+		GithubInfo(@Nonnull GithubAuthData auth,
+				@Nonnull GithubUserDetailed user,
+				@Nonnull HashSet<String> repositoryNames)
 		{
 			myUser = user;
 			myAuthData = auth;
 			myRepositoryNames = repositoryNames;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubUserDetailed getUser()
 		{
 			return myUser;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubAuthData getAuthData()
 		{
 			return myAuthData;
 		}
 
-		@NotNull
+		@Nonnull
 		public HashSet<String> getRepositoryNames()
 		{
 			return myRepositoryNames;

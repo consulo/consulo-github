@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.github.api;
 
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Date;
 
@@ -28,58 +28,58 @@ import java.util.Date;
 public class GithubPullRequest
 {
 	private final long myNumber;
-	@NotNull
+	@Nonnull
 	private final String myState;
-	@NotNull
+	@Nonnull
 	private final String myTitle;
-	@NotNull
+	@Nonnull
 	private final String myBodyHtml;
 
-	@NotNull
+	@Nonnull
 	private final String myHtmlUrl;
-	@NotNull
+	@Nonnull
 	private final String myDiffUrl;
-	@NotNull
+	@Nonnull
 	private final String myPatchUrl;
-	@NotNull
+	@Nonnull
 	private final String myIssueUrl;
 
-	@NotNull
+	@Nonnull
 	private final Date myCreatedAt;
-	@NotNull
+	@Nonnull
 	private final Date myUpdatedAt;
 	@Nullable
 	private final Date myClosedAt;
 	@Nullable
 	private final Date myMergedAt;
 
-	@NotNull
+	@Nonnull
 	private final GithubUser myUser;
 
-	@NotNull
+	@Nonnull
 	private final Link myHead;
-	@NotNull
+	@Nonnull
 	private final Link myBase;
 
 	public static class Link
 	{
-		@NotNull
+		@Nonnull
 		private final String myLabel;
-		@NotNull
+		@Nonnull
 		private final String myRef;
-		@NotNull
+		@Nonnull
 		private final String mySha;
 
-		@NotNull
+		@Nonnull
 		private final GithubRepo myRepo;
-		@NotNull
+		@Nonnull
 		private final GithubUser myUser;
 
-		public Link(@NotNull String label,
-				@NotNull String ref,
-				@NotNull String sha,
-				@NotNull GithubRepo repo,
-				@NotNull GithubUser user)
+		public Link(@Nonnull String label,
+				@Nonnull String ref,
+				@Nonnull String sha,
+				@Nonnull GithubRepo repo,
+				@Nonnull GithubUser user)
 		{
 			myLabel = label;
 			myRef = ref;
@@ -88,31 +88,31 @@ public class GithubPullRequest
 			myUser = user;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getLabel()
 		{
 			return myLabel;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getRef()
 		{
 			return myRef;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getSha()
 		{
 			return mySha;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubRepo getRepo()
 		{
 			return myRepo;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubUser getUser()
 		{
 			return myUser;
@@ -120,20 +120,20 @@ public class GithubPullRequest
 	}
 
 	public GithubPullRequest(long number,
-			@NotNull String state,
-			@NotNull String title,
+			@Nonnull String state,
+			@Nonnull String title,
 			@Nullable String bodyHtml,
-			@NotNull String htmlUrl,
-			@NotNull String diffUrl,
-			@NotNull String patchUrl,
-			@NotNull String issueUrl,
-			@NotNull Date createdAt,
-			@NotNull Date updatedAt,
+			@Nonnull String htmlUrl,
+			@Nonnull String diffUrl,
+			@Nonnull String patchUrl,
+			@Nonnull String issueUrl,
+			@Nonnull Date createdAt,
+			@Nonnull Date updatedAt,
 			@Nullable Date closedAt,
 			@Nullable Date mergedAt,
-			@NotNull GithubUser user,
-			@NotNull Link head,
-			@NotNull Link base)
+			@Nonnull GithubUser user,
+			@Nonnull Link head,
+			@Nonnull Link base)
 	{
 		myNumber = number;
 		myState = state;
@@ -157,55 +157,55 @@ public class GithubPullRequest
 		return myNumber;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getState()
 	{
 		return myState;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getTitle()
 	{
 		return myTitle;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getBodyHtml()
 	{
 		return myBodyHtml;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHtmlUrl()
 	{
 		return myHtmlUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDiffUrl()
 	{
 		return myDiffUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getPatchUrl()
 	{
 		return myPatchUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getIssueUrl()
 	{
 		return myIssueUrl;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getCreatedAt()
 	{
 		return myCreatedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getUpdatedAt()
 	{
 		return myUpdatedAt;
@@ -223,19 +223,19 @@ public class GithubPullRequest
 		return myMergedAt;
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubUser getUser()
 	{
 		return myUser;
 	}
 
-	@NotNull
+	@Nonnull
 	public Link getHead()
 	{
 		return myHead;
 	}
 
-	@NotNull
+	@Nonnull
 	public Link getBase()
 	{
 		return myBase;

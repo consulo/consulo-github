@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -61,7 +61,7 @@ class GithubCommitRaw implements DataConstructor
 		public GitUserRaw committer;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubCommit.GitCommit create()
 		{
 			return new GithubCommit.GitCommit(message, author.create(), committer.create());
@@ -78,7 +78,7 @@ class GithubCommitRaw implements DataConstructor
 		public Date date;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubCommit.GitUser create()
 		{
 			return new GithubCommit.GitUser(name, email, date);
@@ -95,7 +95,7 @@ class GithubCommitRaw implements DataConstructor
 		public Integer total;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubCommitDetailed.CommitStats create()
 		{
 			return new GithubCommitDetailed.CommitStats(additions, deletions, total);
@@ -103,14 +103,14 @@ class GithubCommitRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubCommitSha createCommitSha()
 	{
 		return new GithubCommitSha(url, sha);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubCommit createCommit()
 	{
 		GithubUser author = this.author == null ? null : this.author.createUser();
@@ -125,7 +125,7 @@ class GithubCommitRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubCommitDetailed createCommitDetailed()
 	{
 		GithubCommit commit = createCommit();
@@ -140,9 +140,9 @@ class GithubCommitRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubCommitSha.class))
 		{

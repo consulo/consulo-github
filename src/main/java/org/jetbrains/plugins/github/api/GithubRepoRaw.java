@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -120,7 +120,7 @@ class GithubRepoRaw implements DataConstructor
 		public Boolean push;
 
 		@SuppressWarnings("ConstantConditions")
-		@NotNull
+		@Nonnull
 		public GithubRepoOrg.Permissions create()
 		{
 			return new GithubRepoOrg.Permissions(admin, pull, push);
@@ -128,7 +128,7 @@ class GithubRepoRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubRepo createRepo()
 	{
 		return new GithubRepo(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch,
@@ -136,7 +136,7 @@ class GithubRepoRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubRepoOrg createRepoOrg()
 	{
 		return new GithubRepoOrg(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch,
@@ -144,7 +144,7 @@ class GithubRepoRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@NotNull
+	@Nonnull
 	public GithubRepoDetailed createRepoDetailed()
 	{
 		GithubRepo parent = this.parent == null ? null : this.parent.createRepo();
@@ -154,9 +154,9 @@ class GithubRepoRaw implements DataConstructor
 	}
 
 	@SuppressWarnings("unchecked")
-	@NotNull
+	@Nonnull
 	@Override
-	public <T> T create(@NotNull Class<T> resultClass)
+	public <T> T create(@Nonnull Class<T> resultClass)
 	{
 		if(resultClass.isAssignableFrom(GithubRepo.class))
 		{

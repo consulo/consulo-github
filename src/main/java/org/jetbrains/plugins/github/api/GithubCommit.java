@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -32,42 +32,42 @@ public class GithubCommit extends GithubCommitSha
 	@Nullable
 	private final GithubUser myCommitter;
 
-	@NotNull
+	@Nonnull
 	private final List<GithubCommitSha> myParents;
 
-	@NotNull
+	@Nonnull
 	private final GitCommit myCommit;
 
 	public static class GitCommit
 	{
-		@NotNull
+		@Nonnull
 		private final String myMessage;
 
-		@NotNull
+		@Nonnull
 		private final GitUser myAuthor;
-		@NotNull
+		@Nonnull
 		private final GitUser myCommitter;
 
-		public GitCommit(@NotNull String message, @NotNull GitUser author, @NotNull GitUser committer)
+		public GitCommit(@Nonnull String message, @Nonnull GitUser author, @Nonnull GitUser committer)
 		{
 			myMessage = message;
 			myAuthor = author;
 			myCommitter = committer;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getMessage()
 		{
 			return myMessage;
 		}
 
-		@NotNull
+		@Nonnull
 		public GitUser getAuthor()
 		{
 			return myAuthor;
 		}
 
-		@NotNull
+		@Nonnull
 		public GitUser getCommitter()
 		{
 			return myCommitter;
@@ -76,45 +76,45 @@ public class GithubCommit extends GithubCommitSha
 
 	public static class GitUser
 	{
-		@NotNull
+		@Nonnull
 		private final String myName;
-		@NotNull
+		@Nonnull
 		private final String myEmail;
-		@NotNull
+		@Nonnull
 		private final Date myDate;
 
-		public GitUser(@NotNull String name, @NotNull String email, @NotNull Date date)
+		public GitUser(@Nonnull String name, @Nonnull String email, @Nonnull Date date)
 		{
 			myName = name;
 			myEmail = email;
 			myDate = date;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getName()
 		{
 			return myName;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getEmail()
 		{
 			return myEmail;
 		}
 
-		@NotNull
+		@Nonnull
 		public Date getDate()
 		{
 			return myDate;
 		}
 	}
 
-	public GithubCommit(@NotNull String url,
-			@NotNull String sha,
+	public GithubCommit(@Nonnull String url,
+			@Nonnull String sha,
 			@Nullable GithubUser author,
 			@Nullable GithubUser committer,
-			@NotNull List<GithubCommitSha> parents,
-			@NotNull GitCommit commit)
+			@Nonnull List<GithubCommitSha> parents,
+			@Nonnull GitCommit commit)
 	{
 		super(url, sha);
 		myAuthor = author;
@@ -135,13 +135,13 @@ public class GithubCommit extends GithubCommitSha
 		return myCommitter;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<GithubCommitSha> getParents()
 	{
 		return myParents;
 	}
 
-	@NotNull
+	@Nonnull
 	public GitCommit getCommit()
 	{
 		return myCommit;

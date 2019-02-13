@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.github.ui;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -33,7 +33,7 @@ public class GithubCreateGistDialog extends DialogWrapper
 {
 	private final GithubCreateGistPanel myGithubCreateGistPanel;
 
-	public GithubCreateGistDialog(@NotNull final Project project,
+	public GithubCreateGistDialog(@Nonnull final Project project,
 			@Nullable Editor editor,
 			@Nullable VirtualFile[] files,
 			@Nullable VirtualFile file)
@@ -118,7 +118,7 @@ public class GithubCreateGistDialog extends DialogWrapper
 		return myGithubCreateGistPanel.isAnonymous();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return myGithubCreateGistPanel.getDescriptionTextArea().getText();

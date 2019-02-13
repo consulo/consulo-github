@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import com.intellij.openapi.util.text.StringUtil;
@@ -26,7 +26,7 @@ import com.intellij.openapi.util.text.StringUtil;
  */
 public class GithubUrlUtil
 {
-	@NotNull
+	@Nonnull
 	public static String removeProtocolPrefix(String url)
 	{
 		int index = url.indexOf('@');
@@ -42,8 +42,8 @@ public class GithubUrlUtil
 		return url;
 	}
 
-	@NotNull
-	public static String removeTrailingSlash(@NotNull String s)
+	@Nonnull
+	public static String removeTrailingSlash(@Nonnull String s)
 	{
 		if(s.endsWith("/"))
 		{
@@ -52,8 +52,8 @@ public class GithubUrlUtil
 		return s;
 	}
 
-	@NotNull
-	public static String getApiUrl(@NotNull String urlFromSettings)
+	@Nonnull
+	public static String getApiUrl(@Nonnull String urlFromSettings)
 	{
 		return "https://" + getApiUrlWithoutProtocol(urlFromSettings);
 	}
@@ -62,7 +62,7 @@ public class GithubUrlUtil
 	 * E.g.: https://api.github.com
 	 * https://my.company.url/api/v3
 	 */
-	@NotNull
+	@Nonnull
 	public static String getApiUrl()
 	{
 		return getApiUrl(GithubSettings.getInstance().getHost());
@@ -74,7 +74,7 @@ public class GithubUrlUtil
 	 * https://my.company.url
 	 * Note: there is no trailing slash in the returned url.
 	 */
-	@NotNull
+	@Nonnull
 	public static String getGitHost()
 	{
 		return "https://" + getGitHostWithoutProtocol();
@@ -84,7 +84,7 @@ public class GithubUrlUtil
 	 * E.g.: github.com
 	 * my.company.url
 	 */
-	@NotNull
+	@Nonnull
 	public static String getGitHostWithoutProtocol()
 	{
 		return removeTrailingSlash(removeProtocolPrefix(GithubSettings.getInstance().getHost()));
@@ -95,8 +95,8 @@ public class GithubUrlUtil
 		 (or through yourdomain.com/api/v3/ for enterprise).
 		 http://developer.github.com/api/v3/
 		*/
-	@NotNull
-	public static String getApiUrlWithoutProtocol(@NotNull String urlFromSettings)
+	@Nonnull
+	public static String getApiUrlWithoutProtocol(@Nonnull String urlFromSettings)
 	{
 		String url = removeTrailingSlash(removeProtocolPrefix(urlFromSettings.toLowerCase()));
 		final String API_PREFIX = "api.";
@@ -120,12 +120,12 @@ public class GithubUrlUtil
 		}
 	}
 
-	public static boolean isGithubUrl(@NotNull String url)
+	public static boolean isGithubUrl(@Nonnull String url)
 	{
 		return isGithubUrl(url, GithubSettings.getInstance().getHost());
 	}
 
-	public static boolean isGithubUrl(@NotNull String url, @NotNull String host)
+	public static boolean isGithubUrl(@Nonnull String url, @Nonnull String host)
 	{
 		url = removeProtocolPrefix(url);
 		if(StringUtil.startsWithIgnoreCase(url, host))
@@ -145,7 +145,7 @@ public class GithubUrlUtil
 	 * git@github.com:user/repo.git -> user/repo
 	 */
 	@Nullable
-	public static GithubFullPath getUserAndRepositoryFromRemoteUrl(@NotNull String remoteUrl)
+	public static GithubFullPath getUserAndRepositoryFromRemoteUrl(@Nonnull String remoteUrl)
 	{
 		remoteUrl = removeProtocolPrefix(removeEndingDotGit(remoteUrl));
 		int index1 = remoteUrl.lastIndexOf('/');
@@ -174,13 +174,13 @@ public class GithubUrlUtil
 	 * git@github.com:user/repo -> https://github.com/user/repo
 	 */
 	@Nullable
-	public static String makeGithubRepoUrlFromRemoteUrl(@NotNull String remoteUrl)
+	public static String makeGithubRepoUrlFromRemoteUrl(@Nonnull String remoteUrl)
 	{
 		return makeGithubRepoUrlFromRemoteUrl(remoteUrl, getGitHost());
 	}
 
 	@Nullable
-	public static String makeGithubRepoUrlFromRemoteUrl(@NotNull String remoteUrl, @NotNull String host)
+	public static String makeGithubRepoUrlFromRemoteUrl(@Nonnull String remoteUrl, @Nonnull String host)
 	{
 		GithubFullPath repo = getUserAndRepositoryFromRemoteUrl(remoteUrl);
 		if(repo == null)
@@ -190,8 +190,8 @@ public class GithubUrlUtil
 		return host + '/' + repo.getUser() + '/' + repo.getRepository();
 	}
 
-	@NotNull
-	private static String removeEndingDotGit(@NotNull String url)
+	@Nonnull
+	private static String removeEndingDotGit(@Nonnull String url)
 	{
 		url = removeTrailingSlash(url);
 		final String DOT_GIT = ".git";

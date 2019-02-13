@@ -20,8 +20,8 @@ import static org.jetbrains.plugins.github.util.GithubAuthData.AuthType;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
@@ -66,15 +66,15 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 	{
 		@Nullable
 		public String LOGIN = null;
-		@NotNull
+		@Nonnull
 		public String HOST = GithubApiUtil.DEFAULT_GITHUB_HOST;
-		@NotNull
+		@Nonnull
 		public AuthType AUTH_TYPE = AuthType.ANONYMOUS;
 		public boolean ANONYMOUS_GIST = false;
 		public boolean OPEN_IN_BROWSER_GIST = true;
 		public boolean PRIVATE_GIST = true;
 		public boolean SAVE_PASSWORD = true;
-		@NotNull
+		@Nonnull
 		public Collection<String> TRUSTED_HOSTS = new ArrayList<String>();
 		@Nullable
 		public String CREATE_PULL_REQUEST_DEFAULT_BRANCH = null;
@@ -87,7 +87,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		return ServiceManager.getService(GithubSettings.class);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getHost()
 	{
 		return myState.HOST;
@@ -99,7 +99,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		return myState.LOGIN;
 	}
 
-	@NotNull
+	@Nonnull
 	public AuthType getAuthType()
 	{
 		return myState.AUTH_TYPE;
@@ -110,7 +110,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		return !myState.AUTH_TYPE.equals(AuthType.ANONYMOUS);
 	}
 
-	private void setHost(@NotNull String host)
+	private void setHost(@Nonnull String host)
 	{
 		myState.HOST = StringUtil.notNullize(host, GithubApiUtil.DEFAULT_GITHUB_HOST);
 	}
@@ -120,7 +120,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		myState.LOGIN = login;
 	}
 
-	private void setAuthType(@NotNull AuthType authType)
+	private void setAuthType(@Nonnull AuthType authType)
 	{
 		myState.AUTH_TYPE = authType;
 	}
@@ -182,7 +182,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		myState.OPEN_IN_BROWSER_GIST = openInBrowserGist;
 	}
 
-	public void setCreatePullRequestDefaultBranch(@NotNull String branch)
+	public void setCreatePullRequestDefaultBranch(@Nonnull String branch)
 	{
 		myState.CREATE_PULL_REQUEST_DEFAULT_BRANCH = branch;
 	}
@@ -192,7 +192,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		myState.VALID_GIT_AUTH = validGitAuth;
 	}
 
-	@NotNull
+	@Nonnull
 	public Collection<String> getTrustedHosts()
 	{
 		return myState.TRUSTED_HOSTS;
@@ -206,7 +206,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private String getPassword()
 	{
 		String password;
@@ -224,7 +224,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		return StringUtil.notNullize(password);
 	}
 
-	private void setPassword(@NotNull String password, boolean rememberPassword)
+	private void setPassword(@Nonnull String password, boolean rememberPassword)
 	{
 		try
 		{
@@ -249,7 +249,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public GithubAuthData getAuthData()
 	{
 		switch(getAuthType())
@@ -265,7 +265,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		}
 	}
 
-	private void setAuthData(@NotNull GithubAuthData auth, boolean rememberPassword)
+	private void setAuthData(@Nonnull GithubAuthData auth, boolean rememberPassword)
 	{
 		setValidGitAuth(true);
 		setAuthType(auth.getAuthType());
@@ -291,7 +291,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 		}
 	}
 
-	public void setCredentials(@NotNull String host, @NotNull GithubAuthData auth, boolean rememberPassword)
+	public void setCredentials(@Nonnull String host, @Nonnull GithubAuthData auth, boolean rememberPassword)
 	{
 		setHost(host);
 		setAuthData(auth, rememberPassword);

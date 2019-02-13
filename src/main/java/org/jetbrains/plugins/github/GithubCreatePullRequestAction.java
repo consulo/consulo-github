@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubBranch;
 import org.jetbrains.plugins.github.api.GithubFullPath;
@@ -137,7 +137,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		createPullRequest(project, file);
 	}
 
-	static void createPullRequest(@NotNull final Project project, @Nullable final VirtualFile file)
+	static void createPullRequest(@Nonnull final Project project, @Nullable final VirtualFile file)
 	{
 		final Git git = ServiceManager.getService(Git.class);
 
@@ -213,7 +213,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		new Task.Backgroundable(project, "Creating pull request...")
 		{
 			@Override
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				LOG.info("Pushing current branch");
 				indicator.setText("Pushing current branch...");
@@ -255,8 +255,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static GithubInfo loadGithubInfoWithModal(@NotNull final Project project,
-			@NotNull final GithubFullPath userAndRepo,
+	private static GithubInfo loadGithubInfoWithModal(@Nonnull final Project project,
+			@Nonnull final GithubFullPath userAndRepo,
 			@Nullable final GithubFullPath upstreamUserAndRepo)
 	{
 		try
@@ -296,12 +296,12 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static GithubFullPath findTargetRepository(@NotNull Project project,
-			@NotNull GithubAuthData auth,
-			@NotNull String onto,
-			@NotNull GithubRepoDetailed repo,
+	private static GithubFullPath findTargetRepository(@Nonnull Project project,
+			@Nonnull GithubAuthData auth,
+			@Nonnull String onto,
+			@Nonnull GithubRepoDetailed repo,
 			@Nullable GithubFullPath upstreamPath,
-			@NotNull Collection<RemoteBranch> branches)
+			@Nonnull Collection<RemoteBranch> branches)
 	{
 		String targetUser = onto.substring(0, onto.indexOf(':'));
 		@Nullable GithubRepo parent = repo.getParent();
@@ -364,19 +364,19 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		return null;
 	}
 
-	private static boolean isRepoOwner(@NotNull String user, @NotNull GithubRepo repo)
+	private static boolean isRepoOwner(@Nonnull String user, @Nonnull GithubRepo repo)
 	{
 		return StringUtil.equalsIgnoreCase(user, repo.getUserName());
 	}
 
 	@Nullable
-	private static GithubPullRequest createPullRequest(@NotNull Project project,
-			@NotNull GithubAuthData auth,
-			@NotNull GithubFullPath targetRepo,
-			@NotNull String title,
-			@NotNull String description,
-			@NotNull String from,
-			@NotNull String onto)
+	private static GithubPullRequest createPullRequest(@Nonnull Project project,
+			@Nonnull GithubAuthData auth,
+			@Nonnull GithubFullPath targetRepo,
+			@Nonnull String title,
+			@Nonnull String description,
+			@Nonnull String from,
+			@Nonnull String onto)
 	{
 		try
 		{
@@ -390,8 +390,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		}
 	}
 
-	@NotNull
-	private static Set<RemoteBranch> getAvailableBranchesFromGit(@NotNull GitRepository gitRepository)
+	@Nonnull
+	private static Set<RemoteBranch> getAvailableBranchesFromGit(@Nonnull GitRepository gitRepository)
 	{
 		Set<RemoteBranch> result = new HashSet<RemoteBranch>();
 		for(GitRemoteBranch remoteBranch : gitRepository.getBranches().getRemoteBranches())
@@ -413,10 +413,10 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		return result;
 	}
 
-	@NotNull
-	private static List<RemoteBranch> loadAvailableBranchesFromGithub(@NotNull final Project project,
-			@NotNull final GithubAuthData auth,
-			@NotNull final GithubRepoDetailed repo,
+	@Nonnull
+	private static List<RemoteBranch> loadAvailableBranchesFromGithub(@Nonnull final Project project,
+			@Nonnull final GithubAuthData auth,
+			@Nonnull final GithubRepoDetailed repo,
 			@Nullable final GithubFullPath upstreamPath)
 	{
 		List<RemoteBranch> result = new ArrayList<RemoteBranch>();
@@ -450,10 +450,10 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		return result;
 	}
 
-	@NotNull
-	private static List<RemoteBranch> getBranches(@NotNull GithubAuthData auth,
-			@NotNull final String user,
-			@NotNull final String repo) throws IOException
+	@Nonnull
+	private static List<RemoteBranch> getBranches(@Nonnull GithubAuthData auth,
+			@Nonnull final String user,
+			@Nonnull final String repo) throws IOException
 	{
 		List<GithubBranch> branches = GithubApiUtil.getRepoBranches(auth, user, repo);
 		return ContainerUtil.map(branches, new Function<GithubBranch, RemoteBranch>()
@@ -466,7 +466,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		});
 	}
 
-	private static boolean equals(@NotNull GithubRepo repo1, @Nullable GithubRepo repo2)
+	private static boolean equals(@Nonnull GithubRepo repo1, @Nullable GithubRepo repo2)
 	{
 		if(repo2 == null)
 		{
@@ -475,7 +475,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		return StringUtil.equalsIgnoreCase(repo1.getUserName(), repo2.getUserName());
 	}
 
-	private static boolean equals(@NotNull GithubFullPath repo1, @Nullable GithubRepo repo2)
+	private static boolean equals(@Nonnull GithubFullPath repo1, @Nullable GithubRepo repo2)
 	{
 		if(repo2 == null)
 		{
@@ -484,11 +484,11 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		return StringUtil.equalsIgnoreCase(repo1.getUser(), repo2.getUserName());
 	}
 
-	private static void showDiffByRef(@NotNull Project project,
+	private static void showDiffByRef(@Nonnull Project project,
 			@Nullable String ref,
-			@NotNull Set<RemoteBranch> branches,
-			@NotNull GitRepository gitRepository,
-			@NotNull String currentBranch)
+			@Nonnull Set<RemoteBranch> branches,
+			@Nonnull GitRepository gitRepository,
+			@Nonnull String currentBranch)
 	{
 		RemoteBranch branch = findRemoteBranch(branches, ref);
 		if(branch == null || branch.getLocalBranch() == null)
@@ -510,7 +510,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static RemoteBranch findRemoteBranch(@NotNull Set<RemoteBranch> branches, @Nullable String ref)
+	private static RemoteBranch findRemoteBranch(@Nonnull Set<RemoteBranch> branches, @Nullable String ref)
 	{
 		if(ref == null)
 		{
@@ -534,10 +534,10 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 	}
 
 	@Nullable
-	private static DiffInfo getDiffInfo(@NotNull final Project project,
-			@NotNull final GitRepository repository,
-			@NotNull final String currentBranch,
-			@NotNull final String targetBranch)
+	private static DiffInfo getDiffInfo(@Nonnull final Project project,
+			@Nonnull final GitRepository repository,
+			@Nonnull final String currentBranch,
+			@Nonnull final String targetBranch)
 	{
 		try
 		{
@@ -564,13 +564,13 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 	private static class GithubCreatePullRequestDiffDialog extends DialogWrapper
 	{
-		@NotNull
+		@Nonnull
 		private final Project myProject;
-		@NotNull
+		@Nonnull
 		private final DiffInfo myInfo;
 		private JPanel myLogPanel;
 
-		public GithubCreatePullRequestDiffDialog(@NotNull Project project, @NotNull DiffInfo info)
+		public GithubCreatePullRequestDiffDialog(@Nonnull Project project, @Nonnull DiffInfo info)
 		{
 			super(project, false);
 			myProject = project;
@@ -593,7 +593,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 			return tabbedPane;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		protected Action[] createActions()
 		{
@@ -613,7 +613,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		private final Project myProject;
 		private final DiffInfo myInfo;
 
-		public GithubCreatePullRequestDiffPanel(@NotNull Project project, @NotNull DiffInfo info)
+		public GithubCreatePullRequestDiffPanel(@Nonnull Project project, @Nonnull DiffInfo info)
 		{
 			super(new BorderLayout(UIUtil.DEFAULT_VGAP, UIUtil.DEFAULT_HGAP));
 			myProject = project;
@@ -639,7 +639,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 		private GitCommitListPanel myCommitPanel;
 
-		GithubCreatePullRequestLogPanel(@NotNull Project project, @NotNull DiffInfo info)
+		GithubCreatePullRequestLogPanel(@Nonnull Project project, @Nonnull DiffInfo info)
 		{
 			super(new BorderLayout(UIUtil.DEFAULT_HGAP, UIUtil.DEFAULT_VGAP));
 			myProject = project;
@@ -666,8 +666,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 			return rootPanel;
 		}
 
-		private static void addSelectionListener(@NotNull GitCommitListPanel sourcePanel,
-				@NotNull final ChangesBrowser changesBrowser)
+		private static void addSelectionListener(@Nonnull GitCommitListPanel sourcePanel,
+				@Nonnull final ChangesBrowser changesBrowser)
 		{
 			sourcePanel.addListSelectionListener(new Consumer<GitCommit>()
 			{
@@ -683,9 +683,9 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 	private static class RemoteBranch
 	{
-		@NotNull
+		@Nonnull
 		final String myUser;
-		@NotNull
+		@Nonnull
 		final String myBranch;
 
 		@Nullable
@@ -693,18 +693,18 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 		@Nullable
 		final String myLocalBranch;
 
-		private RemoteBranch(@NotNull String user, @NotNull String branch)
+		private RemoteBranch(@Nonnull String user, @Nonnull String branch)
 		{
 			this(user, branch, null, null);
 		}
 
-		private RemoteBranch(@NotNull String user, @NotNull String branch, @NotNull String repo)
+		private RemoteBranch(@Nonnull String user, @Nonnull String branch, @Nonnull String repo)
 		{
 			this(user, branch, repo, null);
 		}
 
-		public RemoteBranch(@NotNull String user,
-				@NotNull String branch,
+		public RemoteBranch(@Nonnull String user,
+				@Nonnull String branch,
 				@Nullable String repo,
 				@Nullable String localBranch)
 		{
@@ -714,19 +714,19 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 			myLocalBranch = localBranch;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getReference()
 		{
 			return myUser + ":" + myBranch;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getUser()
 		{
 			return myUser;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getBranch()
 		{
 			return myBranch;
@@ -781,35 +781,35 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 	private static class GithubInfo
 	{
-		@NotNull
+		@Nonnull
 		private final GithubRepoDetailed myRepo;
-		@NotNull
+		@Nonnull
 		private final GithubAuthData myAuthData;
-		@NotNull
+		@Nonnull
 		private final List<RemoteBranch> myBranches;
 
-		private GithubInfo(@NotNull GithubAuthData authData,
-				@NotNull GithubRepoDetailed repo,
-				@NotNull List<RemoteBranch> branches)
+		private GithubInfo(@Nonnull GithubAuthData authData,
+				@Nonnull GithubRepoDetailed repo,
+				@Nonnull List<RemoteBranch> branches)
 		{
 			myAuthData = authData;
 			myRepo = repo;
 			myBranches = branches;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubRepoDetailed getRepo()
 		{
 			return myRepo;
 		}
 
-		@NotNull
+		@Nonnull
 		public GithubAuthData getAuthData()
 		{
 			return myAuthData;
 		}
 
-		@NotNull
+		@Nonnull
 		public List<RemoteBranch> getBranches()
 		{
 			return myBranches;
@@ -818,19 +818,19 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 	private static class DiffInfo
 	{
-		@NotNull
+		@Nonnull
 		private final List<GitCommit> commits;
-		@NotNull
+		@Nonnull
 		private final Collection<Change> diff;
-		@NotNull
+		@Nonnull
 		private final String from;
-		@NotNull
+		@Nonnull
 		private final String to;
 
-		private DiffInfo(@NotNull String from,
-				@NotNull String to,
-				@NotNull List<GitCommit> commits,
-				@NotNull Collection<Change> diff)
+		private DiffInfo(@Nonnull String from,
+				@Nonnull String to,
+				@Nonnull List<GitCommit> commits,
+				@Nonnull Collection<Change> diff)
 		{
 			this.commits = commits;
 			this.diff = diff;
@@ -838,25 +838,25 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 			this.to = to;
 		}
 
-		@NotNull
+		@Nonnull
 		public List<GitCommit> getCommits()
 		{
 			return commits;
 		}
 
-		@NotNull
+		@Nonnull
 		public Collection<Change> getDiff()
 		{
 			return diff;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getFrom()
 		{
 			return from;
 		}
 
-		@NotNull
+		@Nonnull
 		public String getTo()
 		{
 			return to;

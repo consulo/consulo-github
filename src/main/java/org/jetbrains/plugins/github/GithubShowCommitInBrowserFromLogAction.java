@@ -17,7 +17,7 @@ package org.jetbrains.plugins.github;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -32,7 +32,7 @@ public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBr
 {
 
 	@Override
-	public void update(@NotNull AnActionEvent e)
+	public void update(@Nonnull AnActionEvent e)
 	{
 		Project project = e.getData(CommonDataKeys.PROJECT);
 		VcsLog log = e.getData(VcsLogDataKeys.VCS_LOG);
@@ -53,7 +53,7 @@ public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBr
 	}
 
 	@Override
-	public void actionPerformed(@NotNull AnActionEvent e)
+	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
 		Project project = e.getRequiredData(CommonDataKeys.PROJECT);
 		VcsFullCommitDetails commit = e.getRequiredData(VcsLogDataKeys.VCS_LOG).getSelectedDetails().get(0);

@@ -17,8 +17,8 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 })
 class GithubAuthorizationRequest
 {
-	@NotNull
+	@Nonnull
 	private final List<String> scopes;
 
 	@Nullable
@@ -37,7 +37,7 @@ class GithubAuthorizationRequest
 	@Nullable
 	private final String noteUrl;
 
-	public GithubAuthorizationRequest(@NotNull List<String> scopes, @Nullable String note, @Nullable String noteUrl)
+	public GithubAuthorizationRequest(@Nonnull List<String> scopes, @Nullable String note, @Nullable String noteUrl)
 	{
 		this.scopes = scopes;
 		this.note = note;

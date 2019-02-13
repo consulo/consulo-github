@@ -18,7 +18,7 @@ package org.jetbrains.plugins.github;
 import com.intellij.openapi.util.Clock;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.util.text.DateFormatUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubGist;
 import org.jetbrains.plugins.github.test.GithubTest;
@@ -62,7 +62,7 @@ public abstract class GithubCreateGistTestBase extends GithubTest {
     }
   }
 
-  @NotNull
+  @Nonnull
   protected static List<FileContent> createContent() {
     List<FileContent> content = new ArrayList<FileContent>();
 
@@ -73,7 +73,7 @@ public abstract class GithubCreateGistTestBase extends GithubTest {
     return content;
   }
 
-  @NotNull
+  @Nonnull
   protected GithubGist getGist() {
     assertNotNull(GIST_ID);
 
@@ -118,13 +118,13 @@ public abstract class GithubCreateGistTestBase extends GithubTest {
     assertFalse("Gist does not anonymous", result.getUser() == null);
   }
 
-  protected void checkGistDescription(@NotNull String expected) {
+  protected void checkGistDescription(@Nonnull String expected) {
     GithubGist result = getGist();
 
     assertEquals("Gist content differs from sample", expected, result.getDescription());
   }
 
-  protected void checkGistContent(@NotNull List<FileContent> expected) {
+  protected void checkGistContent(@Nonnull List<FileContent> expected) {
     GithubGist result = getGist();
 
     List<FileContent> files = result.getContent();
@@ -132,7 +132,7 @@ public abstract class GithubCreateGistTestBase extends GithubTest {
     assertTrue("Gist content differs from sample", Comparing.haveEqualElements(files, expected));
   }
 
-  protected void checkEquals(@NotNull List<FileContent> expected, @NotNull List<FileContent> actual) {
+  protected void checkEquals(@Nonnull List<FileContent> expected, @Nonnull List<FileContent> actual) {
     assertTrue("Gist content differs from sample", Comparing.haveEqualElements(expected, actual));
   }
 }

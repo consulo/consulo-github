@@ -17,31 +17,31 @@ package org.jetbrains.plugins.github.api;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
  */
 public class GithubAuthorization
 {
-	@NotNull
+	@Nonnull
 	private final String myToken;
-	@NotNull
+	@Nonnull
 	private final List<String> myScopes;
 
-	public GithubAuthorization(@NotNull String token, @NotNull List<String> scopes)
+	public GithubAuthorization(@Nonnull String token, @Nonnull List<String> scopes)
 	{
 		myToken = token;
 		myScopes = scopes;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getToken()
 	{
 		return myToken;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<String> getScopes()
 	{
 		return myScopes;

@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov
@@ -26,9 +27,9 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class GithubCommitDetailed extends GithubCommit
 {
-	@NotNull
+	@Nonnull
 	private final CommitStats myStats;
-	@NotNull
+	@Nonnull
 	private final List<GithubFile> myFiles;
 
 	public static class CommitStats
@@ -60,27 +61,27 @@ public class GithubCommitDetailed extends GithubCommit
 		}
 	}
 
-	public GithubCommitDetailed(@NotNull String url,
-			@NotNull String sha,
+	public GithubCommitDetailed(@Nonnull String url,
+			@Nonnull String sha,
 			@Nullable GithubUser author,
 			@Nullable GithubUser committer,
-			@NotNull List<GithubCommitSha> parents,
-			@NotNull GitCommit commit,
-			@NotNull CommitStats stats,
-			@NotNull List<GithubFile> files)
+			@Nonnull List<GithubCommitSha> parents,
+			@Nonnull GitCommit commit,
+			@Nonnull CommitStats stats,
+			@Nonnull List<GithubFile> files)
 	{
 		super(url, sha, author, committer, parents, commit);
 		myStats = stats;
 		myFiles = files;
 	}
 
-	@NotNull
+	@Nonnull
 	public CommitStats getStats()
 	{
 		return myStats;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<GithubFile> getFiles()
 	{
 		return myFiles;

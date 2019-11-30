@@ -15,22 +15,6 @@
  */
 package org.jetbrains.plugins.github;
 
-import static org.jetbrains.plugins.github.api.GithubGist.FileContent;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubGist;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.ui.GithubCreateGistDialog;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -50,8 +34,24 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ThrowableConvertor;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.annotation.RequiredUIAccess;
 import icons.GithubIcons;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubGist;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.ui.GithubCreateGistDialog;
+import org.jetbrains.plugins.github.util.GithubAuthData;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.jetbrains.plugins.github.api.GithubGist.FileContent;
 
 /**
  * @author oleg
@@ -67,7 +67,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		super("Create Gist...", "Create GitHub Gist", GithubIcons.Github_icon);
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void update(@Nonnull final AnActionEvent e)
 	{
@@ -91,7 +91,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		GithubUtil.setVisibleEnabled(e, true, true);
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void actionPerformed(@Nonnull final AnActionEvent e)
 	{
@@ -157,7 +157,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 				url.set(gistUrl);
 			}
 
-			@RequiredDispatchThread
+			@RequiredUIAccess
 			@Override
 			public void onSuccess()
 			{

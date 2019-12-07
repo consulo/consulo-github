@@ -1,4 +1,4 @@
-<idea-plugin>
+<consulo-plugin>
 	<id>org.jetbrains.plugins.github</id>
 	<name>GitHub</name>
 	<vendor>JetBrains</vendor>
@@ -20,8 +20,8 @@
 							serviceImplementation="org.jetbrains.plugins.github.util.GithubSslSupport"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="Git4Idea">
-		<GitHttpAuthDataProvider implementation="org.jetbrains.plugins.github.extensions.GithubHttpAuthDataProvider"/>
+	<extensions defaultExtensionNs="com.intellij.git">
+		<httpAuthDataProvider implementation="org.jetbrains.plugins.github.extensions.GithubHttpAuthDataProvider"/>
 	</extensions>
 
 	<actions>
@@ -49,4 +49,4 @@
 			<add-to-group group-id="ConsoleEditorPopupMenu"/>
 		</action>
 	</actions>
-</idea-plugin>
+</consulo-plugin>

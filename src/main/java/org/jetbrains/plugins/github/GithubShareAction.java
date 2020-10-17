@@ -39,6 +39,7 @@ import com.intellij.util.ThrowableConvertor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.vcsUtil.VcsFileUtil;
+import consulo.github.icon.GitHubIconGroup;
 import consulo.util.dataholder.Key;
 import git4idea.DialogManager;
 import git4idea.GitLocalBranch;
@@ -51,7 +52,6 @@ import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
 import git4idea.util.GitFileUtils;
 import git4idea.util.GitUIUtil;
-import icons.GithubIcons;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubRepo;
 import org.jetbrains.plugins.github.api.GithubUserDetailed;
@@ -81,7 +81,7 @@ public class GithubShareAction extends DumbAwareAction
 
 	public GithubShareAction()
 	{
-		super("Share project on GitHub", "Easily share project on GitHub", GithubIcons.Github_icon);
+		super("Share project on GitHub", "Easily share project on GitHub", GitHubIconGroup.github_icon());
 	}
 
 	public void update(AnActionEvent e)

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.github;
 
+import consulo.github.icon.GitHubIconGroup;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
@@ -24,7 +25,6 @@ import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
-import icons.GithubIcons;
 
 /**
  * @author Kirill Likhodedov
@@ -34,7 +34,7 @@ abstract class GithubShowCommitInBrowserAction extends DumbAwareAction
 
 	public GithubShowCommitInBrowserAction()
 	{
-		super("Open on GitHub", "Open the selected commit in browser", GithubIcons.Github_icon);
+		super("Open on GitHub", "Open the selected commit in browser", GitHubIconGroup.github_icon());
 	}
 
 	protected static void openInBrowser(Project project, GitRepository repository, String revisionHash)

@@ -34,8 +34,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ThrowableConvertor;
+import consulo.github.icon.GitHubIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
-import icons.GithubIcons;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubGist;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
@@ -64,7 +64,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 
 	protected GithubCreateGistAction()
 	{
-		super("Create Gist...", "Create GitHub Gist", GithubIcons.Github_icon);
+		super("Create Gist...", "Create GitHub Gist", GitHubIconGroup.github_icon());
 	}
 
 	@RequiredUIAccess

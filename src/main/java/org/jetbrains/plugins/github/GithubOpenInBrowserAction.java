@@ -19,6 +19,8 @@ import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.github.icon.GitHubIconGroup;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
 import org.jetbrains.plugins.github.util.GithubUtil;
@@ -37,7 +39,6 @@ import git4idea.GitRemoteBranch;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import icons.GithubIcons;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +52,7 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 
 	protected GithubOpenInBrowserAction()
 	{
-		super("Open on GitHub", "Open corresponding link in browser", GithubIcons.Github_icon);
+		super("Open on GitHub", "Open corresponding link in browser", GitHubIconGroup.github_icon());
 	}
 
 	@Override

@@ -32,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import javax.annotation.Nullable;
+
+import consulo.github.icon.GitHubIconGroup;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubBranch;
 import org.jetbrains.plugins.github.api.GithubFullPath;
@@ -82,7 +84,6 @@ import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.ui.GitCommitListPanel;
 import icons.Git4ideaIcons;
-import icons.GithubIcons;
 
 /**
  * @author Aleksey Pivovarov
@@ -94,7 +95,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 
 	public GithubCreatePullRequestAction()
 	{
-		super("Create Pull Request", "Create pull request from current branch", GithubIcons.Github_icon);
+		super("Create Pull Request", "Create pull request from current branch", GitHubIconGroup.github_icon());
 	}
 
 	public void update(AnActionEvent e)

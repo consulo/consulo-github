@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.github.icon.GitHubIconGroup;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.api.GithubRepoDetailed;
@@ -65,7 +66,6 @@ import git4idea.update.GitFetchResult;
 import git4idea.update.GitFetcher;
 import git4idea.update.GitUpdateResult;
 import git4idea.util.GitPreservingProcess;
-import icons.GithubIcons;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,7 +80,7 @@ public class GithubRebaseAction extends DumbAwareAction
 
 	public GithubRebaseAction()
 	{
-		super("Rebase my GitHub fork", "Rebase your GitHub forked repository relative to the origin", GithubIcons.Github_icon);
+		super("Rebase my GitHub fork", "Rebase your GitHub forked repository relative to the origin", GitHubIconGroup.github_icon());
 	}
 
 	public void update(AnActionEvent e)

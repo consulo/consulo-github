@@ -15,37 +15,6 @@
  */
 package org.jetbrains.plugins.github;
 
-import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
-
-import java.awt.BorderLayout;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import javax.annotation.Nullable;
-
-import consulo.github.icon.GitHubIconGroup;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubBranch;
-import org.jetbrains.plugins.github.api.GithubFullPath;
-import org.jetbrains.plugins.github.api.GithubPullRequest;
-import org.jetbrains.plugins.github.api.GithubRepo;
-import org.jetbrains.plugins.github.api.GithubRepoDetailed;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.ui.GithubCreatePullRequestDialog;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -72,6 +41,8 @@ import com.intellij.util.ThrowableConvertor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.ui.UIUtil;
+import consulo.awt.TargetAWT;
+import consulo.github.icon.GitHubIconGroup;
 import git4idea.DialogManager;
 import git4idea.GitCommit;
 import git4idea.GitLocalBranch;
@@ -84,6 +55,23 @@ import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.ui.GitCommitListPanel;
 import icons.Git4ideaIcons;
+import org.jetbrains.plugins.github.api.*;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.ui.GithubCreatePullRequestDialog;
+import org.jetbrains.plugins.github.util.GithubAuthData;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.*;
+
+import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
  * @author Aleksey Pivovarov
@@ -588,8 +576,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction
 			JPanel diffPanel = new GithubCreatePullRequestDiffPanel(myProject, myInfo);
 
 			TabbedPaneImpl tabbedPane = new TabbedPaneImpl(SwingConstants.TOP);
-			tabbedPane.addTab("Log", Git4ideaIcons.Branch, myLogPanel);
-			tabbedPane.addTab("Diff", AllIcons.Actions.Diff, diffPanel);
+			tabbedPane.addTab("Log", TargetAWT.to(Git4ideaIcons.Branch), myLogPanel);
+			tabbedPane.addTab("Diff", TargetAWT.to(AllIcons.Actions.Diff), diffPanel);
 			tabbedPane.setKeyboardNavigation(TabbedPaneImpl.DEFAULT_PREV_NEXT_SHORTCUTS);
 			return tabbedPane;
 		}

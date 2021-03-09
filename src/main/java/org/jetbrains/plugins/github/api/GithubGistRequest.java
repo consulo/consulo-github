@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import java.util.List;
-import java.util.Map;
+import com.google.gson.annotations.SerializedName;
 
 import javax.annotation.Nonnull;
-import com.google.gson.annotations.SerializedName;
-import com.intellij.util.containers.HashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Aleksey Pivovarov

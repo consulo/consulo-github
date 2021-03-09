@@ -37,7 +37,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ThrowableConsumer;
 import com.intellij.util.ThrowableConvertor;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.HashSet;
 import com.intellij.vcsUtil.VcsFileUtil;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.util.dataholder.Key;
@@ -68,6 +67,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;

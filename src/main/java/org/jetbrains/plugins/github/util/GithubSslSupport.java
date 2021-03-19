@@ -32,7 +32,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.CalledInAwt;
 import com.intellij.util.ThrowableConvertor;
-import sun.security.validator.ValidatorException;
 
 /**
  * Provides various methods to work with SSL certificate protected HTTPS connections.
@@ -48,7 +47,7 @@ public class GithubSslSupport
 	}
 
 	/**
-	 * Tries to execute the {@link HttpMethod} and captures the {@link ValidatorException exception} which is thrown if
+	 * Tries to execute the {@link HttpMethod} and captures the {@link sun.security.validator.ValidatorException exception} which is thrown if
 	 * user connects
 	 * to an HTTPS server with a non-trusted (probably, self-signed) SSL certificate. In which case proposes to cancel
 	 * the connection
@@ -117,7 +116,12 @@ public class GithubSslSupport
 
 	public static boolean isCertificateException(IOException e)
 	{
-		return e.getCause() instanceof ValidatorException;
+		Throwable cause = e.getCause();
+		if(cause != null)
+		{
+			return "sun.security.validator.ValidatorException".equals(cause.getClass().getName());
+		}
+		return false;
 	}
 
 	private static boolean isTrusted(@Nonnull String host)

@@ -1,21 +1,5 @@
 package org.jetbrains.plugins.github.tasks;
 
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubIssue;
-import org.jetbrains.plugins.github.api.GithubIssueComment;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
-import org.jetbrains.plugins.github.exceptions.GithubJsonException;
-import org.jetbrains.plugins.github.exceptions.GithubStatusCodeException;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.PasswordUtil;
@@ -30,8 +14,23 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.intellij.util.xmlb.annotations.Transient;
+import consulo.github.icon.GitHubIconGroup;
 import consulo.ui.image.Image;
-import icons.TasksIcons;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubIssue;
+import org.jetbrains.plugins.github.api.GithubIssueComment;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
+import org.jetbrains.plugins.github.exceptions.GithubJsonException;
+import org.jetbrains.plugins.github.exceptions.GithubStatusCodeException;
+import org.jetbrains.plugins.github.util.GithubAuthData;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Dennis.Ushakov
@@ -200,7 +199,7 @@ public class GithubRepository extends BaseRepositoryImpl
 			@Override
 			public Image getIcon()
 			{
-				return TasksIcons.Github;
+				return GitHubIconGroup.github_icon();
 			}
 
 			@Nonnull

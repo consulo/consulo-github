@@ -1,14 +1,14 @@
 package org.jetbrains.plugins.github.tasks;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.config.TaskRepositoryEditor;
 import com.intellij.tasks.impl.BaseRepositoryType;
 import com.intellij.util.Consumer;
+import consulo.github.icon.GitHubIconGroup;
 import consulo.ui.image.Image;
-import icons.TasksIcons;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Dennis.Ushakov
@@ -27,7 +27,7 @@ public class GithubRepositoryType extends BaseRepositoryType<GithubRepository>
 	@Override
 	public Image getIcon()
 	{
-		return TasksIcons.Github;
+		return GitHubIconGroup.github_icon();
 	}
 
 	@Nonnull

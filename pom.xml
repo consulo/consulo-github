@@ -44,14 +44,13 @@
 		<plugins>
 			<plugin>
 				<groupId>consulo.maven</groupId>
-				<artifactId>consulo-maven-plugin</artifactId>
+				<artifactId>maven-consulo-plugin</artifactId>
 				<version>2-SNAPSHOT</version>
 				<extensions>true</extensions>
 				<configuration>
 					<repositoryChannel>nightly</repositoryChannel>
 					<dependencies>
 						<dependency>com.intellij.git</dependency>
-						<dependency>com.intellij.tasks</dependency>
 					</dependencies>
 					<packaging>
 						<skip>${dev.mode}</skip>
@@ -80,9 +79,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<scope>provided</scope>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
 		</dependency>
 
 		<dependency>
@@ -93,8 +92,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.intellij.tasks</artifactId>
+			<groupId>consulo</groupId>
+			<artifactId>consulo-task-impl</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>

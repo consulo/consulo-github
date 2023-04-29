@@ -15,37 +15,27 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Insets;
+import consulo.ide.impl.idea.util.ui.table.ComponentsListFocusTraversalPolicy;
+import consulo.platform.Platform;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.HyperlinkAdapter;
+import consulo.ui.ex.awt.UIUtil;
+import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.util.collection.ContainerUtil;
+import org.jetbrains.plugins.github.util.GithubAuthData;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.HyperlinkEvent;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.HyperlinkEvent;
-
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.util.Condition;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.HyperlinkAdapter;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.ui.UIUtil;
-import com.intellij.util.ui.table.ComponentsListFocusTraversalPolicy;
 
 /**
  * @author oleg
@@ -86,7 +76,7 @@ public class GithubLoginPanel
 			@Override
 			protected void hyperlinkActivated(final HyperlinkEvent e)
 			{
-				BrowserUtil.browse(e.getURL());
+				Platform.current().openInBrowser(e.getURL());
 			}
 		});
 		mySignupTextField.setBackground(UIUtil.TRANSPARENT_COLOR);
@@ -246,14 +236,7 @@ public class GithubLoginPanel
 		@Override
 		protected List<Component> getOrderedComponents()
 		{
-			return ContainerUtil.filter(myOrder, new Condition<Component>()
-			{
-				@Override
-				public boolean value(Component component)
-				{
-					return component.isVisible() && component.isEnabled();
-				}
-			});
+			return ContainerUtil.filter(myOrder, component -> component.isVisible() && component.isEnabled());
 		}
 	}
 }

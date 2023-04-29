@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.openapi.vcs.annotate.AnnotationGutterActionProvider;
+import consulo.ui.ex.action.AnAction;
+import consulo.versionControlSystem.annotate.FileAnnotation;
 import org.jetbrains.plugins.github.GithubShowCommitInBrowserFromAnnotateAction;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.vcs.annotate.AnnotationGutterActionProvider;
-import com.intellij.openapi.vcs.annotate.FileAnnotation;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Kirill Likhodedov
  */
+@ExtensionImpl
 public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider
 {
-
 	@Nonnull
 	@Override
 	public AnAction createAction(@Nonnull FileAnnotation annotation)

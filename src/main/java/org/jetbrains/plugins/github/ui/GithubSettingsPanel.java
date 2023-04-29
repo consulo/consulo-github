@@ -15,43 +15,31 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import java.awt.CardLayout;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
-
+import consulo.logging.Logger;
+import consulo.platform.Platform;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.HyperlinkAdapter;
+import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.github.api.GithubUser;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.HyperlinkAdapter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
 
 /**
  * @author oleg
@@ -87,7 +75,7 @@ public class GithubSettingsPanel
 			@Override
 			protected void hyperlinkActivated(final HyperlinkEvent e)
 			{
-				BrowserUtil.browse(e.getURL());
+				Platform.current().openInBrowser(e.getURL());
 			}
 		});
 		mySignupTextField.setText("<html>Do not have an account at github.com? <a href=\"https://github.com\">" +

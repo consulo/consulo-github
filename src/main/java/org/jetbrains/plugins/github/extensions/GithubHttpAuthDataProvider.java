@@ -15,21 +15,23 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.credentialStorage.AuthData;
+import consulo.util.lang.StringUtil;
+import git4idea.remote.GitHttpAuthDataProvider;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.AuthData;
-import git4idea.remote.GitHttpAuthDataProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Kirill Likhodedov
  */
+@ExtensionImpl
 public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider
 {
-
 	@Nullable
 	@Override
 	public AuthData getAuthData(@Nonnull String url)

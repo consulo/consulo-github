@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="3f5fd" class="com.intellij.ui.components.JBLabel">
+      <component id="3f5fd" class="consulo.ui.ex.awt.JBLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -16,7 +16,7 @@
           <text value="Target branch:"/>
         </properties>
       </component>
-      <component id="d2b10" class="com.intellij.ui.components.JBLabel">
+      <component id="d2b10" class="consulo.ui.ex.awt.JBLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -24,7 +24,7 @@
           <text value="Title:"/>
         </properties>
       </component>
-      <component id="f7387" class="com.intellij.ui.components.JBLabel">
+      <component id="f7387" class="consulo.ui.ex.awt.JBLabel">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -40,7 +40,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="78a64" class="com.intellij.openapi.ui.ComboBox" binding="myBranchComboBox">
+      <component id="78a64" class="consulo.ui.ex.awt.ComboBox" binding="myBranchComboBox">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -49,7 +49,7 @@
           <toolTipText value="Target branch in format 'user:branch', where user - owner of the target repository"/>
         </properties>
       </component>
-      <scrollpane id="61e54" class="com.intellij.ui.components.JBScrollPane">
+      <scrollpane id="61e54" class="consulo.ui.ex.awt.JBScrollPane">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <minimum-size width="150" height="50"/>

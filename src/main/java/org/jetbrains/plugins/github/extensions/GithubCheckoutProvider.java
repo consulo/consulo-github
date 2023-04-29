@@ -15,36 +15,36 @@
  */
 package org.jetbrains.plugins.github.extensions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.ServiceManager;
+import consulo.project.Project;
+import consulo.util.lang.function.ThrowableFunction;
+import consulo.versionControlSystem.checkout.CheckoutProvider;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import git4idea.actions.BasicAction;
+import git4idea.checkout.GitCheckoutProvider;
+import git4idea.checkout.GitCloneDialog;
+import git4idea.commands.Git;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubRepo;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.CheckoutProvider;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ThrowableConvertor;
-import git4idea.actions.BasicAction;
-import git4idea.checkout.GitCheckoutProvider;
-import git4idea.checkout.GitCloneDialog;
-import git4idea.commands.Git;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author oleg
  */
+@ExtensionImpl
 public class GithubCheckoutProvider implements CheckoutProvider
 {
 
@@ -60,23 +60,8 @@ public class GithubCheckoutProvider implements CheckoutProvider
 		List<GithubRepo> availableRepos;
 		try
 		{
-			availableRepos = GithubUtil.computeValueInModal(project, "Access to GitHub",
-					new ThrowableConvertor<ProgressIndicator, List<GithubRepo>, IOException>()
-			{
-				@Override
-				public List<GithubRepo> convert(ProgressIndicator indicator) throws IOException
-				{
-					return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData,
-							List<GithubRepo>, IOException>()
-					{
-						@Override
-						public List<GithubRepo> convert(GithubAuthData authData) throws IOException
-						{
-							return GithubApiUtil.getAvailableRepos(authData);
-						}
-					});
-				}
-			});
+			availableRepos = GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> GithubUtil.runWithValidAuth(project, indicator, (ThrowableFunction<GithubAuthData,
+					List<GithubRepo>, IOException>) authData -> GithubApiUtil.getAvailableRepos(authData)));
 		}
 		catch(GithubAuthenticationCanceledException e)
 		{

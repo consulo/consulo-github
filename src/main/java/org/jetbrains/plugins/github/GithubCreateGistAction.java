@@ -15,27 +15,26 @@
  */
 package org.jetbrains.plugins.github;
 
-import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vcs.changes.ChangeListManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ThrowableConvertor;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.Task;
+import consulo.application.util.function.Computable;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.document.FileDocumentManager;
 import consulo.github.icon.GitHubIconGroup;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.language.file.FileTypeManager;
+import consulo.logging.Logger;
+import consulo.platform.Platform;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.ref.Ref;
+import consulo.versionControlSystem.change.ChangeListManager;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubGist;
 import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
@@ -50,6 +49,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.jetbrains.plugins.github.api.GithubGist.FileContent;
 
@@ -167,7 +167,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 				}
 				if(dialog.isOpenInBrowser())
 				{
-					BrowserUtil.browse(url.get());
+					Platform.current().openInBrowser(url.get());
 				}
 				else
 				{
@@ -180,15 +180,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 	@Nonnull
 	private static GithubAuthData getValidAuthData(@Nonnull final Project project) throws IOException
 	{
-		return GithubUtil.computeValueInModal(project, "Access to GitHub", new ThrowableConvertor<ProgressIndicator,
-				GithubAuthData, IOException>()
-		{
-			@Override
-			public GithubAuthData convert(ProgressIndicator indicator) throws IOException
-			{
-				return GithubUtil.getValidAuthDataFromConfig(project, indicator);
-			}
-		});
+		return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> GithubUtil.getValidAuthDataFromConfig(project, indicator));
 	}
 
 	@Nonnull
@@ -296,14 +288,7 @@ public class GithubCreateGistAction extends DumbAwareAction
 		{
 			return getContentFromDirectory(file, project, prefix);
 		}
-		Document document = ApplicationManager.getApplication().runReadAction(new Computable<Document>()
-		{
-			@Override
-			public Document compute()
-			{
-				return FileDocumentManager.getInstance().getDocument(file);
-			}
-		});
+		Document document = ApplicationManager.getApplication().runReadAction((Supplier<Document>) () -> FileDocumentManager.getInstance().getDocument(file));
 		String content;
 		if(document != null)
 		{

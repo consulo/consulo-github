@@ -15,29 +15,32 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import static org.jetbrains.plugins.github.util.GithubAuthData.AuthType;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.credentialStorage.PasswordSafe;
+import consulo.credentialStorage.PasswordSafeException;
+import consulo.ide.ServiceManager;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
+import jakarta.inject.Singleton;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
-import com.intellij.ide.passwordSafe.config.PasswordSafeSettings;
-import com.intellij.ide.passwordSafe.impl.PasswordSafeImpl;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static org.jetbrains.plugins.github.util.GithubAuthData.AuthType;
 
 /**
  * @author oleg
  */
+@Singleton
 @SuppressWarnings("MethodMayBeStatic")
 @State(
 		name = "GithubSettings",
@@ -45,6 +48,8 @@ import com.intellij.openapi.util.text.StringUtil;
 				@Storage(
 						file = StoragePathMacros.APP_CONFIG + "/github_settings.xml")
 		})
+@ServiceAPI(ComponentScope.APPLICATION)
+@ServiceImpl
 public class GithubSettings implements PersistentStateComponent<GithubSettings.State>
 {
 	private static final Logger LOG = GithubUtil.LOG;
@@ -152,8 +157,9 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 
 	public boolean isSavePasswordMakesSense()
 	{
-		final PasswordSafeImpl passwordSafe = (PasswordSafeImpl) PasswordSafe.getInstance();
-		return passwordSafe.getSettings().getProviderType() == PasswordSafeSettings.ProviderType.MASTER_PASSWORD;
+		//		final PasswordSafe  passwordSafe =  PasswordSafe.getInstance();
+		//		return passwordSafe.getSettings().getProviderType() == PasswordSafeSettings.ProviderType.MASTER_PASSWORD;
+		return true;
 	}
 
 	@Nullable
@@ -228,20 +234,9 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 	{
 		try
 		{
-			if(rememberPassword)
-			{
-				PasswordSafe.getInstance().storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY,
-						password);
-			}
-			else
-			{
-				final PasswordSafeImpl passwordSafe = (PasswordSafeImpl) PasswordSafe.getInstance();
-				if(passwordSafe.getSettings().getProviderType() != PasswordSafeSettings.ProviderType.DO_NOT_STORE)
-				{
-					passwordSafe.getMemoryProvider().storePassword(null, GithubSettings.class,
-							GITHUB_SETTINGS_PASSWORD_KEY, password);
-				}
-			}
+			PasswordSafe passwordSafe = PasswordSafe.getInstance();
+
+			passwordSafe.storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password, rememberPassword);
 		}
 		catch(PasswordSafeException e)
 		{

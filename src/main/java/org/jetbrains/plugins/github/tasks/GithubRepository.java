@@ -1,21 +1,16 @@
 package org.jetbrains.plugins.github.tasks;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.PasswordUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.tasks.Comment;
-import com.intellij.tasks.Task;
-import com.intellij.tasks.TaskRepository;
-import com.intellij.tasks.TaskType;
-import com.intellij.tasks.impl.BaseRepository;
 import com.intellij.tasks.impl.BaseRepositoryImpl;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.xmlb.annotations.Tag;
-import com.intellij.util.xmlb.annotations.Transient;
+import consulo.application.util.PasswordUtil;
 import consulo.github.icon.GitHubIconGroup;
+import consulo.logging.Logger;
+import consulo.task.*;
 import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
+import consulo.util.xml.serializer.annotation.Tag;
+import consulo.util.xml.serializer.annotation.Transient;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubIssue;
 import org.jetbrains.plugins.github.api.GithubIssueComment;
@@ -131,14 +126,7 @@ public class GithubRepository extends BaseRepositoryImpl
 			issues = GithubApiUtil.getIssuesQueried(getAuthData(), getRepoAuthor(), getRepoName(), query);
 		}
 
-		return ContainerUtil.map2Array(issues, Task.class, new Function<GithubIssue, Task>()
-		{
-			@Override
-			public Task fun(GithubIssue issue)
-			{
-				return createTask(issue);
-			}
-		});
+		return ContainerUtil.map2Array(issues, Task.class, issue -> createTask(issue));
 	}
 
 	@Nonnull
@@ -246,15 +234,8 @@ public class GithubRepository extends BaseRepositoryImpl
 		List<GithubIssueComment> result = GithubApiUtil.getIssueComments(getAuthData(), getRepoAuthor(),
 				getRepoName(), id);
 
-		return ContainerUtil.map2Array(result, Comment.class, new Function<GithubIssueComment, Comment>()
-		{
-			@Override
-			public Comment fun(GithubIssueComment comment)
-			{
-				return new GithubComment(comment.getCreatedAt(), comment.getUser().getLogin(), comment.getBodyHtml(),
-						comment.getUser().getGravatarId(), comment.getUser().getHtmlUrl());
-			}
-		});
+		return ContainerUtil.map2Array(result, Comment.class, comment -> new GithubComment(comment.getCreatedAt(), comment.getUser().getLogin(), comment.getBodyHtml(),
+				comment.getUser().getGravatarId(), comment.getUser().getHtmlUrl()));
 	}
 
 	@Nullable

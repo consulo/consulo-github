@@ -1,23 +1,20 @@
 package org.jetbrains.plugins.github.extensions;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.annotation.Nullable;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.project.Project;
+import consulo.project.startup.StartupManager;
+import consulo.task.TaskManager;
+import consulo.task.TaskRepository;
+import consulo.versionControlSystem.checkout.CompletedCheckoutListener;
+import git4idea.repo.GitRepository;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.tasks.GithubRepository;
 import org.jetbrains.plugins.github.tasks.GithubRepositoryType;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.vcs.checkout.CheckoutListener;
-import com.intellij.tasks.TaskManager;
-import com.intellij.tasks.TaskRepository;
-import com.intellij.tasks.impl.TaskManagerImpl;
-import git4idea.repo.GitRepository;
+
+import javax.annotation.Nullable;
+import java.io.File;
 
 // TODO: remove ?
 
@@ -25,7 +22,8 @@ import git4idea.repo.GitRepository;
  * @author oleg
  * @date 10/26/10
  */
-public class GithubCheckoutListener implements CheckoutListener
+@ExtensionImpl
+public class GithubCheckoutListener implements CompletedCheckoutListener
 {
 	@Override
 	public boolean processCheckedOutDirectory(Project project, File directory)
@@ -90,7 +88,7 @@ public class GithubCheckoutListener implements CheckoutListener
 	private static void enableGithubTrackerIntegration(final Project project, final String author, final String name)
 	{
 		// Look for github repository type
-		final TaskManagerImpl manager = (TaskManagerImpl) TaskManager.getManager(project);
+		final TaskManager  manager =  TaskManager.getManager(project);
 		final TaskRepository[] allRepositories = manager.getAllRepositories();
 		for(TaskRepository repository : allRepositories)
 		{
@@ -104,9 +102,8 @@ public class GithubCheckoutListener implements CheckoutListener
 		repository.setToken("");
 		repository.setRepoAuthor(author);
 		repository.setRepoName(name);
-		final ArrayList<TaskRepository> repositories = new ArrayList<TaskRepository>(Arrays.asList(allRepositories));
-		repositories.add(repository);
-		manager.setRepositories(repositories);
+
+		manager.addRepository(repository);
 	}
 
 }

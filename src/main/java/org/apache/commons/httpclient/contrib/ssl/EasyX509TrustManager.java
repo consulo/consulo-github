@@ -26,18 +26,16 @@
 
 package org.apache.commons.httpclient.contrib.ssl;
 
+import consulo.logging.Logger;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -68,7 +66,7 @@ public class EasyX509TrustManager implements X509TrustManager
 	/**
 	 * Log object for this class.
 	 */
-	private static final Log LOG = LogFactory.getLog(EasyX509TrustManager.class);
+	private static final Logger LOG = Logger.getInstance(EasyX509TrustManager.class);
 
 	/**
 	 * Constructor for EasyX509TrustManager.

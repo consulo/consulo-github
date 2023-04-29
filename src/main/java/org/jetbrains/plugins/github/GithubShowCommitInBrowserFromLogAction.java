@@ -15,27 +15,24 @@
  */
 package org.jetbrains.plugins.github;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.project.Project;
-import com.intellij.vcs.log.VcsFullCommitDetails;
-import com.intellij.vcs.log.VcsLog;
-import com.intellij.vcs.log.VcsLogDataKeys;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.versionControlSystem.log.VcsFullCommitDetails;
+import consulo.versionControlSystem.log.VcsLog;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction
 {
-
 	@Override
 	public void update(@Nonnull AnActionEvent e)
 	{
-		Project project = e.getData(CommonDataKeys.PROJECT);
-		VcsLog log = e.getData(VcsLogDataKeys.VCS_LOG);
+		Project project = e.getData(Project.KEY);
+		VcsLog log = e.getData(VcsLog.KEY);
 		if(project == null || log == null)
 		{
 			e.getPresentation().setEnabledAndVisible(false);
@@ -55,8 +52,8 @@ public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBr
 	@Override
 	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
-		Project project = e.getRequiredData(CommonDataKeys.PROJECT);
-		VcsFullCommitDetails commit = e.getRequiredData(VcsLogDataKeys.VCS_LOG).getSelectedDetails().get(0);
+		Project project = e.getRequiredData(Project.KEY);
+		VcsFullCommitDetails commit = e.getRequiredData(VcsLog.KEY).getSelectedDetails().get(0);
 		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commit.getRoot());
 		openInBrowser(project, repository, commit.getId().asString());
 	}

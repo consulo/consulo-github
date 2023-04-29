@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubFullPath;
-import com.intellij.openapi.util.text.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov

@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import javax.annotation.Nullable;
+import consulo.project.Project;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
-import com.intellij.openapi.project.Project;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Aleksey Pivovarov

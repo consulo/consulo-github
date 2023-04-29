@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.github.tasks;
 
-import java.util.Date;
+import consulo.application.util.DateFormatUtil;
+import consulo.task.SimpleComment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.tasks.impl.SimpleComment;
-import com.intellij.util.text.DateFormatUtil;
+import java.util.Date;
 
 /**
  * @author Dennis.Ushakov

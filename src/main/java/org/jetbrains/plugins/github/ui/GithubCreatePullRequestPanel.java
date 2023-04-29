@@ -15,24 +15,15 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.Comparator;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.SortedComboBoxModel;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nonnull;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import javax.annotation.Nullable;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.SortedComboBoxModel;
-import com.intellij.util.Consumer;
+import javax.swing.*;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * @author Aleksey Pivovarov
@@ -49,23 +40,9 @@ public class GithubCreatePullRequestPanel
 	public GithubCreatePullRequestPanel(@Nonnull final Consumer<String> showDiff)
 	{
 		myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
-		myBranchModel = new SortedComboBoxModel<String>(new Comparator<String>()
-		{
-			@Override
-			public int compare(String o1, String o2)
-			{
-				return StringUtil.naturalCompare(o1, o2);
-			}
-		});
+		myBranchModel = new SortedComboBoxModel<String>((o1, o2) -> StringUtil.naturalCompare(o1, o2));
 		myBranchComboBox.setModel(myBranchModel);
-		myShowDiffButton.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				showDiff.consume(getBranch());
-			}
-		});
+		myShowDiffButton.addActionListener(e -> showDiff.accept(getBranch()));
 	}
 
 	@Nonnull

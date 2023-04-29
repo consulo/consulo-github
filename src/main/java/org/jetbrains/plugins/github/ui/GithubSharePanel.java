@@ -1,13 +1,9 @@
 package org.jetbrains.plugins.github.ui;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
+import consulo.ui.ex.awt.event.DocumentAdapter;
 
-import com.intellij.ui.DocumentAdapter;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 
 /**
  * @author oleg

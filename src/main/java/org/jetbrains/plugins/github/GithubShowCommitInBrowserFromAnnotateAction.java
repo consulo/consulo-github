@@ -15,22 +15,23 @@
  */
 package org.jetbrains.plugins.github;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.localVcs.UpToDateLineNumberProvider;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.annotate.FileAnnotation;
-import com.intellij.openapi.vcs.annotate.LineNumberListener;
-import com.intellij.openapi.vcs.history.VcsRevisionNumber;
-import com.intellij.openapi.vcs.impl.UpToDateLineNumberProviderImpl;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.document.Document;
+import consulo.document.FileDocumentManager;
+import consulo.ide.impl.idea.openapi.localVcs.UpToDateLineNumberProvider;
+import consulo.ide.impl.idea.openapi.vcs.annotate.LineNumberListener;
+import consulo.ide.impl.idea.openapi.vcs.impl.UpToDateLineNumberProviderImpl;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.versionControlSystem.annotate.FileAnnotation;
+import consulo.versionControlSystem.history.VcsRevisionNumber;
+import consulo.virtualFileSystem.VirtualFile;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Kirill Likhodedov
@@ -108,7 +109,7 @@ public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommi
 	}
 
 	@Override
-	public void consume(Integer integer)
+	public void accept(Integer integer)
 	{
 		myLineNumber = integer;
 	}

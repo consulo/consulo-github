@@ -15,31 +15,30 @@
  */
 package org.jetbrains.plugins.github;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataSink;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.actionSystem.TypeSafeDataProvider;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Splitter;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.vcs.VcsDataKeys;
-import com.intellij.openapi.vcs.VcsException;
-import com.intellij.openapi.vcs.changes.ChangeListManager;
-import com.intellij.openapi.vcs.changes.ui.SelectFilesDialog;
-import com.intellij.openapi.vcs.ui.CommitMessage;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ThrowableConsumer;
-import com.intellij.util.ThrowableConvertor;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.vcsUtil.VcsFileUtil;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.Task;
+import consulo.dataContext.DataSink;
+import consulo.dataContext.TypeSafeDataProvider;
 import consulo.github.icon.GitHubIconGroup;
+import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.openapi.vcs.changes.ui.SelectFilesDialog;
+import consulo.ide.impl.idea.openapi.vcs.ui.CommitMessage;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.ex.awt.Splitter;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.function.ThrowableConsumer;
+import consulo.util.lang.ref.Ref;
+import consulo.versionControlSystem.VcsDataKeys;
+import consulo.versionControlSystem.VcsException;
+import consulo.versionControlSystem.change.ChangeListManager;
+import consulo.versionControlSystem.util.VcsFileUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import git4idea.DialogManager;
 import git4idea.GitLocalBranch;
 import git4idea.GitUtil;
@@ -229,33 +228,27 @@ public class GithubShareAction extends DumbAwareAction
 	{
 		try
 		{
-			return GithubUtil.computeValueInModal(project, "Access to GitHub",
-					new ThrowableConvertor<ProgressIndicator, GithubInfo, IOException>()
-			{
-				@Override
-				public GithubInfo convert(ProgressIndicator indicator) throws IOException
-				{
-					// get existing github repos (network) and validate auth data
-					final Ref<List<GithubRepo>> availableReposRef = new Ref<List<GithubRepo>>();
-					final GithubAuthData auth = GithubUtil.runAndGetValidAuth(project, indicator,
-							new ThrowableConsumer<GithubAuthData, IOException>()
-					{
-						@Override
-						public void consume(GithubAuthData authData) throws IOException
+			return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> {
+				// get existing github repos (network) and validate auth data
+				final Ref<List<GithubRepo>> availableReposRef = new Ref<List<GithubRepo>>();
+				final GithubAuthData auth = GithubUtil.runAndGetValidAuth(project, indicator,
+						new ThrowableConsumer<GithubAuthData, IOException>()
 						{
-							availableReposRef.set(GithubApiUtil.getUserRepos(authData));
-						}
-					});
-					final HashSet<String> names = new HashSet<String>();
-					for(GithubRepo info : availableReposRef.get())
-					{
-						names.add(info.getName());
-					}
-
-					// check access to private repos (network)
-					final GithubUserDetailed userInfo = GithubApiUtil.getCurrentUserDetailed(auth);
-					return new GithubInfo(auth, userInfo, names);
+							@Override
+							public void consume(GithubAuthData authData) throws IOException
+							{
+								availableReposRef.set(GithubApiUtil.getUserRepos(authData));
+							}
+						});
+				final HashSet<String> names = new HashSet<String>();
+				for(GithubRepo info : availableReposRef.get())
+				{
+					names.add(info.getName());
 				}
+
+				// check access to private repos (network)
+				final GithubUserDetailed userInfo = GithubApiUtil.getCurrentUserDetailed(auth);
+				return new GithubInfo(auth, userInfo, names);
 			});
 		}
 		catch(GithubAuthenticationCanceledException e)
@@ -271,10 +264,10 @@ public class GithubShareAction extends DumbAwareAction
 
 	@Nullable
 	private static String createGithubRepository(@Nonnull Project project,
-			@Nonnull GithubAuthData auth,
-			@Nonnull String name,
-			@Nonnull String description,
-			boolean isPrivate)
+												 @Nonnull GithubAuthData auth,
+												 @Nonnull String name,
+												 @Nonnull String description,
+												 boolean isPrivate)
 	{
 
 		try
@@ -290,8 +283,8 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	private static boolean createEmptyGitRepository(@Nonnull Project project,
-			@Nonnull VirtualFile root,
-			@Nonnull ProgressIndicator indicator)
+													@Nonnull VirtualFile root,
+													@Nonnull ProgressIndicator indicator)
 	{
 		final GitLineHandler h = new GitLineHandler(project, root, GitCommand.INIT);
 		GitHandlerUtil.runInCurrentThread(h, indicator, true, GitBundle.message("initializing.title"));
@@ -306,10 +299,10 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	private static boolean addGithubRemote(@Nonnull Project project,
-			@Nonnull VirtualFile root,
-			@Nonnull String remoteName,
-			@Nonnull String remoteUrl,
-			@Nonnull GitRepository repository)
+										   @Nonnull VirtualFile root,
+										   @Nonnull String remoteName,
+										   @Nonnull String remoteUrl,
+										   @Nonnull GitRepository repository)
 	{
 		final GitSimpleHandler addRemoteHandler = new GitSimpleHandler(project, root, GitCommand.REMOTE);
 		addRemoteHandler.setSilent(true);
@@ -334,11 +327,11 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	private static boolean performFirstCommitIfRequired(@Nonnull final Project project,
-			@Nonnull VirtualFile root,
-			@Nonnull GitRepository repository,
-			@Nonnull ProgressIndicator indicator,
-			@Nonnull String name,
-			@Nonnull String url)
+														@Nonnull VirtualFile root,
+														@Nonnull GitRepository repository,
+														@Nonnull ProgressIndicator indicator,
+														@Nonnull String name,
+														@Nonnull String url)
 	{
 		// check if there is no commits
 		if(!repository.isFresh())
@@ -385,7 +378,7 @@ public class GithubShareAction extends DumbAwareAction
 			}
 
 			Collection<VirtualFile> files2add = ContainerUtil.intersection(untrackedFiles, files2commit);
-			Collection<VirtualFile> files2rm = ContainerUtil.subtract(trackedFiles, files2commit);
+			Collection<VirtualFile> files2rm = consulo.ide.impl.idea.util.containers.ContainerUtil.subtract(trackedFiles, files2commit);
 			Collection<VirtualFile> modified = new HashSet<VirtualFile>(trackedFiles);
 			modified.addAll(files2commit);
 
@@ -407,7 +400,7 @@ public class GithubShareAction extends DumbAwareAction
 			LOG.warn(e);
 			GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
 					"Successfully created project ", "'" + name + "'", " on GitHub, but initial commit failed:<br/>" +
-					e.getMessage(), url);
+							e.getMessage(), url);
 			return false;
 		}
 		LOG.info("Successfully created initial commit");
@@ -415,11 +408,11 @@ public class GithubShareAction extends DumbAwareAction
 	}
 
 	private static boolean pushCurrentBranch(@Nonnull Project project,
-			@Nonnull GitRepository repository,
-			@Nonnull String remoteName,
-			@Nonnull String remoteUrl,
-			@Nonnull String name,
-			@Nonnull String url)
+											 @Nonnull GitRepository repository,
+											 @Nonnull String remoteName,
+											 @Nonnull String remoteUrl,
+											 @Nonnull String name,
+											 @Nonnull String url)
 	{
 		Git git = ServiceManager.getService(Git.class);
 
@@ -428,7 +421,7 @@ public class GithubShareAction extends DumbAwareAction
 		{
 			GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
 					"Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed: no " +
-					"current branch", url);
+							"current branch", url);
 			return false;
 		}
 		GitCommandResult result = git.push(repository, remoteName, remoteUrl, null, currentBranch.getName(), true);
@@ -436,7 +429,7 @@ public class GithubShareAction extends DumbAwareAction
 		{
 			GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
 					"Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed:<br/>" +
-					result.getErrorOutputAsHtmlString(), url);
+							result.getErrorOutputAsHtmlString(), url);
 			return false;
 		}
 		return true;
@@ -511,8 +504,8 @@ public class GithubShareAction extends DumbAwareAction
 		private final HashSet<String> myRepositoryNames;
 
 		GithubInfo(@Nonnull GithubAuthData auth,
-				@Nonnull GithubUserDetailed user,
-				@Nonnull HashSet<String> repositoryNames)
+				   @Nonnull GithubUserDetailed user,
+				   @Nonnull HashSet<String> repositoryNames)
 		{
 			myUser = user;
 			myAuthData = auth;

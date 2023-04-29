@@ -15,48 +15,20 @@
  */
 package org.jetbrains.plugins.github;
 
-import static git4idea.commands.GitLocalChangesWouldBeOverwrittenDetector.Operation;
-import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.Task;
 import consulo.github.icon.GitHubIconGroup;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubFullPath;
-import org.jetbrains.plugins.github.api.GithubRepoDetailed;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubSettings;
-import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.VcsException;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ThrowableConvertor;
+import consulo.ide.ServiceManager;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.versionControlSystem.VcsException;
+import consulo.virtualFileSystem.VirtualFile;
 import git4idea.GitUtil;
 import git4idea.actions.BasicAction;
-import git4idea.commands.Git;
-import git4idea.commands.GitCommand;
-import git4idea.commands.GitLineHandler;
-import git4idea.commands.GitLocalChangesWouldBeOverwrittenDetector;
-import git4idea.commands.GitSimpleHandler;
-import git4idea.commands.GitStandardProgressAnalyzer;
-import git4idea.commands.GitTask;
-import git4idea.commands.GitTaskResultHandlerAdapter;
-import git4idea.commands.GitUntrackedFilesOverwrittenByOperationDetector;
+import git4idea.commands.*;
 import git4idea.config.GitVcsSettings;
 import git4idea.rebase.GitRebaseProblemDetector;
 import git4idea.rebase.GitRebaser;
@@ -66,6 +38,23 @@ import git4idea.update.GitFetchResult;
 import git4idea.update.GitFetcher;
 import git4idea.update.GitUpdateResult;
 import git4idea.util.GitPreservingProcess;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubFullPath;
+import org.jetbrains.plugins.github.api.GithubRepoDetailed;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubSettings;
+import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import static git4idea.commands.GitLocalChangesWouldBeOverwrittenDetector.Operation;
+import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
  * Created by IntelliJ IDEA.
@@ -227,15 +216,7 @@ public class GithubRebaseAction extends DumbAwareAction
 
 		try
 		{
-			return GithubUtil.runWithValidAuth(project, indicator, new ThrowableConvertor<GithubAuthData, GithubRepoDetailed, IOException>()
-			{
-				@Override
-				@Nonnull
-				public GithubRepoDetailed convert(GithubAuthData authData) throws IOException
-				{
-					return GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(), userAndRepo.getRepository());
-				}
-			});
+			return GithubUtil.runWithValidAuth(project, indicator, authData -> GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(), userAndRepo.getRepository()));
 		}
 		catch(GithubAuthenticationCanceledException e)
 		{

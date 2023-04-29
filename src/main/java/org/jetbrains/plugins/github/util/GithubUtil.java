@@ -15,30 +15,19 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.api.GithubUserDetailed;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
-import org.jetbrains.plugins.github.ui.GithubBasicLoginDialog;
-import org.jetbrains.plugins.github.ui.GithubLoginDialog;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ThrowableConsumer;
-import com.intellij.util.ThrowableConvertor;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.ProgressManager;
+import consulo.application.progress.Task;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.ThrowableConsumer;
+import consulo.util.lang.function.ThrowableFunction;
+import consulo.util.lang.ref.Ref;
+import consulo.virtualFileSystem.VirtualFile;
 import git4idea.GitUtil;
 import git4idea.config.GitVcsApplicationSettings;
 import git4idea.config.GitVersion;
@@ -46,6 +35,17 @@ import git4idea.i18n.GitBundle;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.api.GithubUserDetailed;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
+import org.jetbrains.plugins.github.ui.GithubBasicLoginDialog;
+import org.jetbrains.plugins.github.ui.GithubLoginDialog;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Various utility methods for the GutHub plugin.
@@ -94,7 +94,7 @@ public class GithubUtil
 	@Nonnull
 	public static <T> T runWithValidAuth(@Nullable Project project,
 			@Nonnull ProgressIndicator indicator,
-			@Nonnull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
+			@Nonnull ThrowableFunction<GithubAuthData, T, IOException> task) throws IOException
 	{
 		GithubAuthData auth = GithubSettings.getInstance().getAuthData();
 		try
@@ -103,12 +103,12 @@ public class GithubUtil
 			{
 				throw new GithubAuthenticationException("Bad authentication type");
 			}
-			return task.convert(auth);
+			return task.apply(auth);
 		}
 		catch(GithubAuthenticationException e)
 		{
 			auth = getValidAuthData(project, indicator);
-			return task.convert(auth);
+			return task.apply(auth);
 		}
 		catch(IOException e)
 		{
@@ -124,7 +124,7 @@ public class GithubUtil
 	public static <T> T runWithValidBasicAuthForHost(@Nullable Project project,
 			@Nonnull ProgressIndicator indicator,
 			@Nonnull String host,
-			@Nonnull ThrowableConvertor<GithubAuthData, T, IOException> task) throws IOException
+			@Nonnull ThrowableFunction<GithubAuthData, T, IOException> task) throws IOException
 	{
 		GithubSettings settings = GithubSettings.getInstance();
 		GithubAuthData auth = null;
@@ -136,12 +136,12 @@ public class GithubUtil
 				throw new GithubAuthenticationException("Bad authentication type");
 			}
 			auth = settings.getAuthData();
-			return task.convert(auth);
+			return task.apply(auth);
 		}
 		catch(GithubAuthenticationException e)
 		{
 			auth = getValidBasicAuthDataForHost(project, indicator, host);
-			return task.convert(auth);
+			return task.apply(auth);
 		}
 		catch(IOException e)
 		{
@@ -278,7 +278,7 @@ public class GithubUtil
 
 	public static <T, E extends Throwable> T computeValueInModal(@Nonnull Project project,
 			@Nonnull String caption,
-			@Nonnull final ThrowableConvertor<ProgressIndicator, T, E> task) throws E
+			@Nonnull final ThrowableFunction<ProgressIndicator, T, E> task) throws E
 	{
 		final Ref<T> dataRef = new Ref<T>();
 		final Ref<E> exceptionRef = new Ref<E>();
@@ -288,7 +288,7 @@ public class GithubUtil
 			{
 				try
 				{
-					dataRef.set(task.convert(indicator));
+					dataRef.set(task.apply(indicator));
 				}
 				catch(Error e)
 				{

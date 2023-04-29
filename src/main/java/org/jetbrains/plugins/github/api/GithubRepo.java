@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.github.api;
 
+import consulo.util.lang.StringUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.intellij.openapi.util.text.StringUtil;
 
 /**
  * @author Aleksey Pivovarov

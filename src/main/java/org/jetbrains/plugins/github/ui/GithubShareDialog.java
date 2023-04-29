@@ -1,15 +1,14 @@
 package org.jetbrains.plugins.github.ui;
 
-import java.util.Set;
-import java.util.regex.Pattern;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import org.jetbrains.annotations.TestOnly;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.text.StringUtil;
+import javax.swing.*;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author oleg

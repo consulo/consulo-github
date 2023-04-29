@@ -1,39 +1,28 @@
 package org.jetbrains.plugins.github.tasks;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import consulo.project.Project;
+import consulo.task.ui.BaseRepositoryEditor;
+import consulo.ui.ex.awt.FormBuilder;
+import consulo.ui.ex.awt.GridBag;
+import consulo.ui.ex.awt.JBLabel;
+import consulo.ui.ex.awt.JBTextField;
+import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
-import javax.annotation.Nonnull;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.util.GithubAuthData;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.tasks.config.BaseRepositoryEditor;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBTextField;
-import com.intellij.util.Consumer;
-import com.intellij.util.ThrowableConvertor;
-import com.intellij.util.ui.FormBuilder;
-import com.intellij.util.ui.GridBag;
+import java.util.function.Consumer;
 
 /**
  * @author Dennis.Ushakov
@@ -50,8 +39,8 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
 	private JBLabel myTokenLabel;
 
 	public GithubRepositoryEditor(final Project project,
-			final GithubRepository repository,
-			Consumer<GithubRepository> changeListener)
+								  final GithubRepository repository,
+								  Consumer<GithubRepository> changeListener)
 	{
 		super(project, repository, changeListener);
 		myUrlLabel.setVisible(false);
@@ -145,25 +134,9 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
 	{
 		try
 		{
-			myToken.setText(GithubUtil.computeValueInModal(myProject, "Access to GitHub",
-					new ThrowableConvertor<ProgressIndicator, String, IOException>()
-			{
-				@Override
-				public String convert(ProgressIndicator indicator) throws IOException
-				{
-					return GithubUtil.runWithValidBasicAuthForHost(myProject, indicator, getHost(),
-							new ThrowableConvertor<GithubAuthData, String, IOException>()
-					{
-						@Nonnull
-						@Override
-						public String convert(GithubAuthData auth) throws IOException
-						{
-							return GithubApiUtil.getReadOnlyToken(auth, getRepoAuthor(), getRepoName(),
-									"Intellij tasks plugin");
-						}
-					});
-				}
-			}));
+			myToken.setText(GithubUtil.computeValueInModal(myProject, "Access to GitHub", indicator -> GithubUtil.runWithValidBasicAuthForHost(myProject, indicator, getHost(),
+					auth -> GithubApiUtil.getReadOnlyToken(auth, getRepoAuthor(), getRepoName(),
+							"Intellij tasks plugin"))));
 		}
 		catch(GithubAuthenticationCanceledException ignore)
 		{

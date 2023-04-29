@@ -15,10 +15,14 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
+import consulo.ide.ServiceManager;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.lang.function.ThrowableFunction;
+import jakarta.inject.Singleton;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -27,17 +31,18 @@ import org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.CalledInAwt;
-import com.intellij.util.ThrowableConvertor;
+import java.io.IOException;
 
 /**
  * Provides various methods to work with SSL certificate protected HTTPS connections.
  *
  * @author Kirill Likhodedov
  */
+@ServiceAPI(ComponentScope.APPLICATION)
+@ServiceImpl
+@Singleton
 public class GithubSslSupport
 {
 
@@ -62,10 +67,10 @@ public class GithubSslSupport
 	 */
 	@Nonnull
 	public HttpMethod executeSelfSignedCertificateAwareRequest(@Nonnull HttpClient client,
-			@Nonnull String uri,
-			@Nonnull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
+															   @Nonnull String uri,
+															   @Nonnull ThrowableFunction<String, HttpMethod, IOException> methodCreator) throws IOException
 	{
-		HttpMethod method = methodCreator.convert(uri);
+		HttpMethod method = methodCreator.apply(uri);
 		try
 		{
 			client.executeMethod(method);
@@ -85,10 +90,10 @@ public class GithubSslSupport
 
 	@Nullable
 	private static HttpMethod handleCertificateExceptionAndRetry(@Nonnull IOException e,
-			@Nonnull String host,
-			@Nonnull HttpClient client,
-			@Nonnull URI uri,
-			@Nonnull ThrowableConvertor<String, HttpMethod, IOException> methodCreator) throws IOException
+																 @Nonnull String host,
+																 @Nonnull HttpClient client,
+																 @Nonnull URI uri,
+																 @Nonnull ThrowableFunction<String, HttpMethod, IOException> methodCreator) throws IOException
 	{
 		if(!isCertificateException(e))
 		{
@@ -107,7 +112,7 @@ public class GithubSslSupport
 			// it is important to use relative URI here, otherwise our custom protocol won't work.
 			// we have to recreate the method, because HttpMethod#setUri won't overwrite the host,
 			// and changing host by hands (HttpMethodBase#setHostConfiguration) is deprecated.
-			HttpMethod method = methodCreator.convert(relativeUri);
+			HttpMethod method = methodCreator.apply(relativeUri);
 			client.executeMethod(hc, method);
 			return method;
 		}
@@ -134,7 +139,7 @@ public class GithubSslSupport
 		GithubSettings.getInstance().addTrustedHost(host);
 	}
 
-	@CalledInAwt
+	@RequiredUIAccess
 	public boolean askIfShouldProceed(final String host)
 	{
 		final String BACK_TO_SAFETY = "No, I don't trust";

@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import static org.jetbrains.plugins.github.util.GithubUtil.getErrorTextFromException;
 
-import java.awt.Component;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.project.ui.notification.event.NotificationListener;
+import consulo.ui.ex.awt.Messages;
+import consulo.versionControlSystem.VcsNotifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 
-import com.intellij.notification.NotificationListener;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.VcsNotifier;
+import static org.jetbrains.plugins.github.util.GithubUtil.getErrorTextFromException;
 
 public class GithubNotifications
 {

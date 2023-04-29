@@ -15,30 +15,30 @@
  */
 package org.jetbrains.plugins.github;
 
-import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.SelectionModel;
 import consulo.github.icon.GitHubIconGroup;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUrlUtil;
-import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.changes.Change;
-import com.intellij.openapi.vcs.changes.ChangeListManager;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.platform.Platform;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.versionControlSystem.change.Change;
+import consulo.versionControlSystem.change.ChangeListManager;
+import consulo.virtualFileSystem.VirtualFile;
 import git4idea.GitLocalBranch;
 import git4idea.GitRemoteBranch;
 import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
+import org.jetbrains.plugins.github.util.GithubNotifications;
+import org.jetbrains.plugins.github.util.GithubUrlUtil;
+import org.jetbrains.plugins.github.util.GithubUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
  * Created by IntelliJ IDEA.
@@ -111,7 +111,7 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 		String urlToOpen = getGithubUrl(project, virtualFile, editor, false);
 		if(urlToOpen != null)
 		{
-			BrowserUtil.launchBrowser(urlToOpen);
+			Platform.current().openInBrowser(urlToOpen);
 		}
 	}
 
@@ -183,7 +183,7 @@ public class GithubOpenInBrowserAction extends DumbAwareAction
 		{
 			return null;
 		}
-		builder.append(githubRepoUrl).append("/blob/").append(branch).append(relativePath);
+		builder.append(githubRepoUrl).append("/tree/").append(branch).append(relativePath);
 
 		if(editor != null && editor.getDocument().getLineCount() >= 1)
 		{

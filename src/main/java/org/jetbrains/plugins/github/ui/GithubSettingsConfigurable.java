@@ -1,27 +1,31 @@
 package org.jetbrains.plugins.github.ui;
 
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.Configurable;
+import consulo.configurable.ConfigurationException;
+import consulo.configurable.SearchableConfigurable;
+import consulo.project.Project;
+import consulo.versionControlSystem.VcsConfigurableProvider;
+import jakarta.inject.Inject;
 import org.jetbrains.plugins.github.util.GithubSettings;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.VcsConfigurableProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author oleg
  */
+@ExtensionImpl
 public class GithubSettingsConfigurable implements SearchableConfigurable, VcsConfigurableProvider
 {
 	private GithubSettingsPanel mySettingsPane;
 	private final GithubSettings mySettings;
 
-	public GithubSettingsConfigurable()
+	@Inject
+	public GithubSettingsConfigurable(GithubSettings githubSettings)
 	{
-		mySettings = GithubSettings.getInstance();
+		mySettings = githubSettings;
 	}
 
 	@Nonnull

@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.github.util.GithubSettings;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.vfs.VirtualFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author oleg

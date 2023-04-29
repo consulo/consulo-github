@@ -16,15 +16,15 @@
 package org.jetbrains.plugins.github;
 
 import consulo.github.icon.GitHubIconGroup;
+import consulo.platform.Platform;
+import consulo.project.Project;
+import consulo.ui.ex.action.DumbAwareAction;
+import git4idea.GitUtil;
+import git4idea.repo.GitRepository;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 import org.jetbrains.plugins.github.util.GithubNotifications;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import git4idea.GitUtil;
-import git4idea.repo.GitRepository;
 
 /**
  * @author Kirill Likhodedov
@@ -56,7 +56,7 @@ abstract class GithubShowCommitInBrowserAction extends DumbAwareAction
 
 		String githubUrl = GithubUrlUtil.getGitHost() + '/' + userAndRepository.getUser() + '/' + userAndRepository
 				.getRepository() + "/commit/" + revisionHash;
-		BrowserUtil.launchBrowser(githubUrl);
+		Platform.current().openInBrowser(githubUrl);
 	}
 
 }

@@ -15,10 +15,11 @@
  */
 package com.intellij.tasks.impl;
 
-import com.intellij.tasks.TaskRepositoryType;
-import com.intellij.tasks.config.TaskSettings;
-import com.intellij.util.net.HttpConfigurable;
 import consulo.annotation.DeprecationInfo;
+import consulo.http.HttpProxyManager;
+import consulo.task.BaseRepository;
+import consulo.task.TaskRepositoryType;
+import consulo.task.TaskSettings;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 
@@ -93,12 +94,12 @@ public abstract class BaseRepositoryImpl extends BaseRepository
 		client.getParams().setSoTimeout(TaskSettings.getInstance().CONNECTION_TIMEOUT);
 		if(isUseProxy())
 		{
-			HttpConfigurable proxy = HttpConfigurable.getInstance();
-			client.getHostConfiguration().setProxy(proxy.PROXY_HOST, proxy.PROXY_PORT);
-			if(proxy.PROXY_AUTHENTICATION)
+			HttpProxyManager proxy = HttpProxyManager.getInstance();
+			client.getHostConfiguration().setProxy(proxy.getProxyHost(), proxy.getProxyPort());
+			if(proxy.isHttpProxyEnabled())
 			{
-				AuthScope authScope = new AuthScope(proxy.PROXY_HOST, proxy.PROXY_PORT);
-				Credentials credentials = getCredentials(proxy.getProxyLogin(), proxy.getPlainProxyPassword(), proxy.PROXY_HOST);
+				AuthScope authScope = new AuthScope(proxy.getProxyHost(), proxy.getProxyPort());
+				Credentials credentials = getCredentials(proxy.getProxyLogin(), proxy.getPlainProxyPassword(), proxy.getProxyHost());
 				client.getState().setProxyCredentials(authScope, credentials);
 			}
 		}

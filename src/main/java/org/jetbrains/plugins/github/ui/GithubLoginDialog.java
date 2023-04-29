@@ -1,18 +1,16 @@
 package org.jetbrains.plugins.github.ui;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-import javax.swing.Action;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.io.IOException;
 
 /**
  * @author oleg
@@ -20,7 +18,6 @@ import com.intellij.openapi.ui.DialogWrapper;
  */
 public class GithubLoginDialog extends DialogWrapper
 {
-
 	protected static final Logger LOG = GithubUtil.LOG;
 
 	protected final GithubLoginPanel myGithubLoginPanel;

@@ -15,20 +15,19 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import java.util.Collection;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.ValidationInfo;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.plugins.github.util.GithubSettings;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * @author Aleksey Pivovarov

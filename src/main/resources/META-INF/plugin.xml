@@ -10,27 +10,6 @@
 		<tag>vcs</tag>
 	</tags>
 
-	<extensions defaultExtensionNs="com.intellij">
-		<checkoutCompletedListener implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutListener"
-								   order="after PlatformProjectCheckoutListener"/>
-		<tasks.repositoryType implementation="org.jetbrains.plugins.github.tasks.GithubRepositoryType"/>
-
-		<checkoutProvider implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutProvider"/>
-		<applicationService serviceInterface="org.jetbrains.plugins.github.util.GithubSettings"
-							serviceImplementation="org.jetbrains.plugins.github.util.GithubSettings"/>
-		<vcsAnnotationGutterActionProvider implementation="org.jetbrains.plugins.github.extensions.GithubAnnotationGutterActionProvider"/>
-		<checkoutCompletedListener implementation="org.jetbrains.plugins.github.extensions.GithubCheckoutListener"
-								   order="after PlatformProjectCheckoutListener"/>
-		<vcsConfigurableProvider implementation="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"/>
-
-		<applicationService serviceInterface="org.jetbrains.plugins.github.util.GithubSslSupport"
-							serviceImplementation="org.jetbrains.plugins.github.util.GithubSslSupport"/>
-	</extensions>
-
-	<extensions defaultExtensionNs="com.intellij.git">
-		<httpAuthDataProvider implementation="org.jetbrains.plugins.github.extensions.GithubHttpAuthDataProvider"/>
-	</extensions>
-
 	<actions>
 		<action id="Github.Share" class="org.jetbrains.plugins.github.GithubShareAction">
 			<add-to-group group-id="Vcs.Import"/>

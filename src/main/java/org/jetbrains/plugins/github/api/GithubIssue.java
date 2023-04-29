@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.util.lang.StringUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Date;
 
 /**

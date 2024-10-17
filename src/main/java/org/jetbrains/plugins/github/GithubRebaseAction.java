@@ -20,8 +20,10 @@ import consulo.application.progress.Task;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.ide.ServiceManager;
 import consulo.language.editor.PlatformDataKeys;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.versionControlSystem.VcsException;
@@ -57,10 +59,8 @@ import static git4idea.commands.GitLocalChangesWouldBeOverwrittenDetector.Operat
 import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
- * Created by IntelliJ IDEA.
- *
  * @author oleg
- * @date 12/8/10
+ * @since 2010-12-08
  */
 public class GithubRebaseAction extends DumbAwareAction {
     private static final Logger LOG = GithubUtil.LOG;
@@ -70,9 +70,11 @@ public class GithubRebaseAction extends DumbAwareAction {
         super("Rebase my GitHub fork", "Rebase your GitHub forked repository relative to the origin", GitHubIconGroup.github_icon());
     }
 
+    @Override
+    @RequiredUIAccess
     public void update(AnActionEvent e) {
-        final Project project = e.getData(PlatformDataKeys.PROJECT);
-        final VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        final Project project = e.getData(Project.KEY);
+        final VirtualFile file = e.getData(VirtualFile.KEY);
         if (project == null || project.isDefault()) {
             setVisibleEnabled(e, false, false);
             return;
@@ -93,6 +95,7 @@ public class GithubRebaseAction extends DumbAwareAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(final AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         final VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
@@ -104,6 +107,7 @@ public class GithubRebaseAction extends DumbAwareAction {
         rebaseMyGithubFork(project, file);
     }
 
+    @RequiredUIAccess
     private static void rebaseMyGithubFork(@Nonnull final Project project, @Nullable final VirtualFile file) {
         final GitRepository gitRepository = GithubUtil.getGitRepository(project, file);
         if (gitRepository == null) {
@@ -295,6 +299,7 @@ public class GithubRebaseAction extends DumbAwareAction {
         process.execute();
     }
 
+    @RequiredUIAccess
     private static void doRebaseCurrentBranch(
         @Nonnull final Project project,
         @Nonnull final VirtualFile root,
@@ -316,7 +321,7 @@ public class GithubRebaseAction extends DumbAwareAction {
             new GitLocalChangesWouldBeOverwrittenDetector(root, Operation.CHECKOUT);
         handler.addLineListener(untrackedFilesDetector);
         handler.addLineListener(localChangesDetector);
-        GitTask pullTask = new GitTask(project, handler, "Rebasing from upstream/master");
+        GitTask pullTask = new GitTask(project, handler, LocalizeValue.localizeTODO("Rebasing from upstream/master"));
         pullTask.setProgressIndicator(indicator);
         pullTask.setProgressAnalyzer(new GitStandardProgressAnalyzer());
         pullTask.execute(
@@ -336,8 +341,8 @@ public class GithubRebaseAction extends DumbAwareAction {
                         rebaser.handleRebaseFailure(handler, root, rebaseConflictDetector, untrackedFilesDetector, localChangesDetector);
                     repositoryManager.updateRepository(root);
                     if (result == GitUpdateResult.NOTHING_TO_UPDATE
-						|| result == GitUpdateResult.SUCCESS
-						|| result == GitUpdateResult.SUCCESS_WITH_RESOLVED_CONFLICTS) {
+                        || result == GitUpdateResult.SUCCESS
+                        || result == GitUpdateResult.SUCCESS_WITH_RESOLVED_CONFLICTS) {
                         GithubNotifications.showInfo(project, "Success", "Successfully rebased GitHub fork");
                     }
                 }

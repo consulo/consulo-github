@@ -15,24 +15,26 @@
  */
 package org.jetbrains.plugins.github;
 
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.dataContext.DataSink;
 import consulo.dataContext.TypeSafeDataProvider;
+import consulo.git.localize.GitLocalize;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.openapi.vcs.changes.ui.SelectFilesDialog;
 import consulo.ide.impl.idea.openapi.vcs.ui.CommitMessage;
 import consulo.language.editor.PlatformDataKeys;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.ui.ex.awt.Splitter;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
-import consulo.util.lang.function.ThrowableConsumer;
 import consulo.util.lang.ref.Ref;
 import consulo.versionControlSystem.VcsDataKeys;
 import consulo.versionControlSystem.VcsException;
@@ -45,7 +47,6 @@ import git4idea.GitUtil;
 import git4idea.actions.BasicAction;
 import git4idea.actions.GitInit;
 import git4idea.commands.*;
-import git4idea.i18n.GitBundle;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
 import git4idea.util.GitFileUtils;
@@ -81,6 +82,8 @@ public class GithubShareAction extends DumbAwareAction {
         super("Share project on GitHub", "Easily share project on GitHub", GitHubIconGroup.github_icon());
     }
 
+    @Override
+    @RequiredUIAccess
     public void update(AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         if (project == null || project.isDefault()) {
@@ -100,6 +103,7 @@ public class GithubShareAction extends DumbAwareAction {
     // make first commit
     // push everything (net)
     @Override
+    @RequiredUIAccess
     public void actionPerformed(final AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         final VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
@@ -111,6 +115,7 @@ public class GithubShareAction extends DumbAwareAction {
         shareProjectOnGithub(project, file);
     }
 
+    @RequiredUIAccess
     public static void shareProjectOnGithub(@Nonnull final Project project, @Nullable final VirtualFile file) {
         BasicAction.saveAll();
 
@@ -211,16 +216,11 @@ public class GithubShareAction extends DumbAwareAction {
         try {
             return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> {
                 // get existing github repos (network) and validate auth data
-                final Ref<List<GithubRepo>> availableReposRef = new Ref<List<GithubRepo>>();
+                final Ref<List<GithubRepo>> availableReposRef = new Ref<>();
                 final GithubAuthData auth = GithubUtil.runAndGetValidAuth(
                     project,
                     indicator,
-                    new ThrowableConsumer<GithubAuthData, IOException>() {
-                        @Override
-                        public void consume(GithubAuthData authData) throws IOException {
-                            availableReposRef.set(GithubApiUtil.getUserRepos(authData));
-                        }
-                    }
+                    authData -> availableReposRef.set(GithubApiUtil.getUserRepos(authData))
                 );
                 final HashSet<String> names = new HashSet<String>();
                 for (GithubRepo info : availableReposRef.get()) {
@@ -260,15 +260,16 @@ public class GithubShareAction extends DumbAwareAction {
         }
     }
 
+    @RequiredUIAccess
     private static boolean createEmptyGitRepository(
         @Nonnull Project project,
         @Nonnull VirtualFile root,
         @Nonnull ProgressIndicator indicator
     ) {
         final GitLineHandler h = new GitLineHandler(project, root, GitCommand.INIT);
-        GitHandlerUtil.runInCurrentThread(h, indicator, true, GitBundle.message("initializing.title"));
+        GitHandlerUtil.runInCurrentThread(h, indicator, true, GitLocalize.initializingTitle());
         if (!h.errors().isEmpty()) {
-            GitUIUtil.showOperationErrors(project, h.errors(), "git init");
+            GitUIUtil.showOperationErrors(project, h.errors(), LocalizeValue.localizeTODO("git init"));
             LOG.info("Failed to create empty git repo: " + h.errors());
             return false;
         }
@@ -325,22 +326,19 @@ public class GithubShareAction extends DumbAwareAction {
             final List<VirtualFile> trackedFiles = ChangeListManager.getInstance(project).getAffectedFiles();
             final Collection<VirtualFile> untrackedFiles = repository.getUntrackedFilesHolder()
                 .retrieveUntrackedFiles();
-            final List<VirtualFile> allFiles = new ArrayList<VirtualFile>();
+            final List<VirtualFile> allFiles = new ArrayList<>();
             allFiles.addAll(trackedFiles);
             allFiles.addAll(untrackedFiles);
 
-            final Ref<GithubUntrackedFilesDialog> dialogRef = new Ref<GithubUntrackedFilesDialog>();
-            ApplicationManager.getApplication().invokeAndWait(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        GithubUntrackedFilesDialog dialog = new GithubUntrackedFilesDialog(project, allFiles);
-                        if (!trackedFiles.isEmpty()) {
-                            dialog.setSelectedFiles(trackedFiles);
-                        }
-                        DialogManager.show(dialog);
-                        dialogRef.set(dialog);
+            final Ref<GithubUntrackedFilesDialog> dialogRef = new Ref<>();
+            Application.get().invokeAndWait(
+                () -> {
+                    GithubUntrackedFilesDialog dialog = new GithubUntrackedFilesDialog(project, allFiles);
+                    if (!trackedFiles.isEmpty()) {
+                        dialog.setSelectedFiles(trackedFiles);
                     }
+                    DialogManager.show(dialog);
+                    dialogRef.set(dialog);
                 },
                 indicator.getModalityState()
             );
@@ -354,7 +352,7 @@ public class GithubShareAction extends DumbAwareAction {
 
             Collection<VirtualFile> files2add = ContainerUtil.intersection(untrackedFiles, files2commit);
             Collection<VirtualFile> files2rm = consulo.ide.impl.idea.util.containers.ContainerUtil.subtract(trackedFiles, files2commit);
-            Collection<VirtualFile> modified = new HashSet<VirtualFile>(trackedFiles);
+            Collection<VirtualFile> modified = new HashSet<>(trackedFiles);
             modified.addAll(files2commit);
 
             GitFileUtils.addFiles(project, root, files2add);

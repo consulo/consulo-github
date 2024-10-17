@@ -1,1 +1,1 @@
-![Build Status](http://must-be.org/vulcan/statusImage?name=consulo-github)
+[![Build Status](https://ci.consulo.io/job/consulo-github/badge/icon)](https://ci.consulo.io/job/consulo-github/)

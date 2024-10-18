@@ -25,42 +25,36 @@ import java.util.Map;
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"FieldCanBeLocal",
-		"UnusedDeclaration",
-		"MismatchedQueryAndUpdateOfCollection"
-})
-class GithubGistRequest
-{
-	@Nonnull
-	private final String description;
-	@Nonnull
-	private final Map<String, GistFile> files;
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
+class GithubGistRequest {
+    @Nonnull
+    private final String description;
+    @Nonnull
+    private final Map<String, GistFile> files;
 
-	@SerializedName("public")
-	private final boolean isPublic;
+    @SerializedName("public")
+    private final boolean isPublic;
 
-	public static class GistFile
-	{
-		@Nonnull
-		private final String content;
+    public static class GistFile {
+        @Nonnull
+        private final String content;
 
-		public GistFile(@Nonnull String content)
-		{
-			this.content = content;
-		}
-	}
+        public GistFile(@Nonnull String content) {
+            this.content = content;
+        }
+    }
 
-	public GithubGistRequest(@Nonnull List<GithubGist.FileContent> files, @Nonnull String description,
-			boolean isPublic)
-	{
-		this.description = description;
-		this.isPublic = isPublic;
+    public GithubGistRequest(
+        @Nonnull List<GithubGist.FileContent> files,
+        @Nonnull String description,
+        boolean isPublic
+    ) {
+        this.description = description;
+        this.isPublic = isPublic;
 
-		this.files = new HashMap<String, GistFile>();
-		for(GithubGist.FileContent file : files)
-		{
-			this.files.put(file.getFileName(), new GistFile(file.getContent()));
-		}
-	}
+        this.files = new HashMap<>();
+        for (GithubGist.FileContent file : files) {
+            this.files.put(file.getFileName(), new GistFile(file.getContent()));
+        }
+    }
 }

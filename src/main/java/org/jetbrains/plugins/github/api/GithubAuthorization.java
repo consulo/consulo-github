@@ -22,28 +22,24 @@ import javax.annotation.Nonnull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubAuthorization
-{
-	@Nonnull
-	private final String myToken;
-	@Nonnull
-	private final List<String> myScopes;
+public class GithubAuthorization {
+    @Nonnull
+    private final String myToken;
+    @Nonnull
+    private final List<String> myScopes;
 
-	public GithubAuthorization(@Nonnull String token, @Nonnull List<String> scopes)
-	{
-		myToken = token;
-		myScopes = scopes;
-	}
+    public GithubAuthorization(@Nonnull String token, @Nonnull List<String> scopes) {
+        myToken = token;
+        myScopes = scopes;
+    }
 
-	@Nonnull
-	public String getToken()
-	{
-		return myToken;
-	}
+    @Nonnull
+    public String getToken() {
+        return myToken;
+    }
 
-	@Nonnull
-	public List<String> getScopes()
-	{
-		return myScopes;
-	}
+    @Nonnull
+    public List<String> getScopes() {
+        return myScopes;
+    }
 }

@@ -18,25 +18,20 @@ package org.jetbrains.plugins.github.exceptions;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubAuthenticationCanceledException extends GithubAuthenticationException
-{
-	public GithubAuthenticationCanceledException()
-	{
-		super();
-	}
+public class GithubAuthenticationCanceledException extends GithubAuthenticationException {
+    public GithubAuthenticationCanceledException() {
+        super();
+    }
 
-	public GithubAuthenticationCanceledException(String message)
-	{
-		super(message);
-	}
+    public GithubAuthenticationCanceledException(String message) {
+        super(message);
+    }
 
-	public GithubAuthenticationCanceledException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public GithubAuthenticationCanceledException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public GithubAuthenticationCanceledException(Throwable cause)
-	{
-		super(cause);
-	}
+    public GithubAuthenticationCanceledException(Throwable cause) {
+        super(cause);
+    }
 }

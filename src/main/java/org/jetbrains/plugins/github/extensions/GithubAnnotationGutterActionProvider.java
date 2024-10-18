@@ -27,13 +27,10 @@ import javax.annotation.Nonnull;
  * @author Kirill Likhodedov
  */
 @ExtensionImpl
-public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider
-{
-	@Nonnull
-	@Override
-	public AnAction createAction(@Nonnull FileAnnotation annotation)
-	{
-		return new GithubShowCommitInBrowserFromAnnotateAction(annotation);
-	}
-
+public class GithubAnnotationGutterActionProvider implements AnnotationGutterActionProvider {
+    @Nonnull
+    @Override
+    public AnAction createAction(@Nonnull FileAnnotation annotation) {
+        return new GithubShowCommitInBrowserFromAnnotateAction(annotation);
+    }
 }

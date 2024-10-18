@@ -20,29 +20,21 @@ import javax.annotation.Nonnull;
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"FieldCanBeLocal",
-		"UnusedDeclaration"
-})
-class GithubPullRequestRequest
-{
-	@Nonnull
-	private final String title;
-	@Nonnull
-	private final String body;
-	@Nonnull
-	private final String head; // branch with changes
-	@Nonnull
-	private final String base; // branch requested to
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+class GithubPullRequestRequest {
+    @Nonnull
+    private final String title;
+    @Nonnull
+    private final String body;
+    @Nonnull
+    private final String head; // branch with changes
+    @Nonnull
+    private final String base; // branch requested to
 
-	public GithubPullRequestRequest(@Nonnull String title,
-			@Nonnull String description,
-			@Nonnull String head,
-			@Nonnull String base)
-	{
-		this.title = title;
-		this.body = description;
-		this.head = head;
-		this.base = base;
-	}
+    public GithubPullRequestRequest(@Nonnull String title, @Nonnull String description, @Nonnull String head, @Nonnull String base) {
+        this.title = title;
+        this.body = description;
+        this.head = head;
+        this.base = base;
+    }
 }

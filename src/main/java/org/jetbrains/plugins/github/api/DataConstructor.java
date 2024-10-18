@@ -19,19 +19,17 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov
- *         <p/>
- *         All fields of the raw type are nullable by the nature of GSon parser;
- *         but some of them are required, so we want them to be @NotNull in the actual data class,
- *         otherwise there is an error in JSon data received from the server
- *         <p/>
- *         So we create Data class assuming that all required fields actually notnull and
- *         catch exception if they are not.
- *         <p/>
- *         Probably, these interfaces shouldn't be used outside of GithubApiUtil.createDataFromRaw()
+ * <p/>
+ * All fields of the raw type are nullable by the nature of GSon parser;
+ * but some of them are required, so we want them to be @NotNull in the actual data class,
+ * otherwise there is an error in JSon data received from the server
+ * <p/>
+ * So we create Data class assuming that all required fields actually notnull and
+ * catch exception if they are not.
+ * <p/>
+ * Probably, these interfaces shouldn't be used outside of GithubApiUtil.createDataFromRaw()
  */
-interface DataConstructor
-{
-	@Nonnull
-	<T> T create(@Nonnull Class<T> resultClass) throws IllegalArgumentException, NullPointerException,
-			ClassCastException;
+interface DataConstructor {
+    @Nonnull
+    <T> T create(@Nonnull Class<T> resultClass) throws IllegalArgumentException, NullPointerException, ClassCastException;
 }

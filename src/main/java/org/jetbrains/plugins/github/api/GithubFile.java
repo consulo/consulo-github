@@ -21,75 +21,68 @@ import javax.annotation.Nonnull;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubFile
-{
-	@Nonnull
-	private final String myFilename;
+public class GithubFile {
+    @Nonnull
+    private final String myFilename;
 
-	private final int myAdditions;
-	private final int myDeletions;
-	private final int myChanges;
-	@Nonnull
-	private final String myStatus;
+    private final int myAdditions;
+    private final int myDeletions;
+    private final int myChanges;
+    @Nonnull
+    private final String myStatus;
 
-	@Nonnull
-	private final String myRawUrl;
-	@Nonnull
-	private final String myPatch;
+    @Nonnull
+    private final String myRawUrl;
+    @Nonnull
+    private final String myPatch;
 
-	public GithubFile(@Nonnull String filename,
-			int additions,
-			int deletions,
-			int changes,
-			@Nonnull String status,
-			@Nonnull String rawUrl,
-			@Nonnull String patch)
-	{
-		myFilename = filename;
-		myAdditions = additions;
-		myDeletions = deletions;
-		myChanges = changes;
-		myStatus = status;
-		myRawUrl = rawUrl;
-		myPatch = patch;
-	}
+    public GithubFile(
+        @Nonnull String filename,
+        int additions,
+        int deletions,
+        int changes,
+        @Nonnull String status,
+        @Nonnull String rawUrl,
+        @Nonnull String patch
+    ) {
+        myFilename = filename;
+        myAdditions = additions;
+        myDeletions = deletions;
+        myChanges = changes;
+        myStatus = status;
+        myRawUrl = rawUrl;
+        myPatch = patch;
+    }
 
-	@Nonnull
-	public String getFilename()
-	{
-		return myFilename;
-	}
+    @Nonnull
+    public String getFilename() {
+        return myFilename;
+    }
 
-	public int getAdditions()
-	{
-		return myAdditions;
-	}
+    public int getAdditions() {
+        return myAdditions;
+    }
 
-	public int getDeletions()
-	{
-		return myDeletions;
-	}
+    public int getDeletions() {
+        return myDeletions;
+    }
 
-	public int getChanges()
-	{
-		return myChanges;
-	}
+    public int getChanges() {
+        return myChanges;
+    }
 
-	@Nonnull
-	public String getStatus()
-	{
-		return myStatus;
-	}
+    @Nonnull
+    public String getStatus() {
+        return myStatus;
+    }
 
-	@Nonnull
-	public String getRawUrl()
-	{
-		return myRawUrl;
-	}
+    @Nonnull
+    public String getRawUrl() {
+        return myRawUrl;
+    }
 
-	@Nonnull
-	public String getPatch()
-	{
-		return myPatch;
-	}
+    @Nonnull
+    public String getPatch() {
+        return myPatch;
+    }
 }

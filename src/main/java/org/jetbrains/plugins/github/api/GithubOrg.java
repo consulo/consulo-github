@@ -20,19 +20,16 @@ import javax.annotation.Nonnull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubOrg
-{
-	@Nonnull
-	private final String myLogin;
+public class GithubOrg {
+    @Nonnull
+    private final String myLogin;
 
-	public GithubOrg(@Nonnull String login)
-	{
-		myLogin = login;
-	}
+    public GithubOrg(@Nonnull String login) {
+        myLogin = login;
+    }
 
-	@Nonnull
-	public String getLogin()
-	{
-		return myLogin;
-	}
+    @Nonnull
+    public String getLogin() {
+        return myLogin;
+    }
 }

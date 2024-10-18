@@ -21,28 +21,24 @@ import javax.annotation.Nonnull;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubCommitSha
-{
-	@Nonnull
-	private final String myUrl;
-	@Nonnull
-	private final String mySha;
+public class GithubCommitSha {
+    @Nonnull
+    private final String myUrl;
+    @Nonnull
+    private final String mySha;
 
-	public GithubCommitSha(@Nonnull String url, @Nonnull String sha)
-	{
-		myUrl = url;
-		mySha = sha;
-	}
+    public GithubCommitSha(@Nonnull String url, @Nonnull String sha) {
+        myUrl = url;
+        mySha = sha;
+    }
 
-	@Nonnull
-	public String getUrl()
-	{
-		return myUrl;
-	}
+    @Nonnull
+    public String getUrl() {
+        return myUrl;
+    }
 
-	@Nonnull
-	public String getSha()
-	{
-		return mySha;
-	}
+    @Nonnull
+    public String getSha() {
+        return mySha;
+    }
 }

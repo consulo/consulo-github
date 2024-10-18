@@ -22,43 +22,39 @@ import javax.annotation.Nullable;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubFileRaw implements DataConstructor
-{
-	@Nullable
-	public String filename;
+class GithubFileRaw implements DataConstructor {
+    @Nullable
+    public String filename;
 
-	@Nullable
-	public Integer additions;
-	@Nullable
-	public Integer deletions;
-	@Nullable
-	public Integer changes;
-	@Nullable
-	public String status;
-	@Nullable
-	public String rawUrl;
-	@Nullable
-	public String blobUrl;
-	@Nullable
-	public String patch;
+    @Nullable
+    public Integer additions;
+    @Nullable
+    public Integer deletions;
+    @Nullable
+    public Integer changes;
+    @Nullable
+    public String status;
+    @Nullable
+    public String rawUrl;
+    @Nullable
+    public String blobUrl;
+    @Nullable
+    public String patch;
 
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	public GithubFile createFile()
-	{
-		return new GithubFile(filename, additions, deletions, changes, status, rawUrl, patch);
-	}
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull
+    public GithubFile createFile() {
+        return new GithubFile(filename, additions, deletions, changes, status, rawUrl, patch);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> T create(@Nonnull Class<T> resultClass)
-	{
-		if(resultClass.isAssignableFrom(GithubFile.class))
-		{
-			return (T) createFile();
-		}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> T create(@Nonnull Class<T> resultClass) {
+        if (resultClass.isAssignableFrom(GithubFile.class)) {
+            return (T)createFile();
+        }
 
-		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-	}
+        throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+    }
 }

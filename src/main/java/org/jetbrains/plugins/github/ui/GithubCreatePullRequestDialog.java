@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.github.ui;
 
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.ValidationInfo;
 import consulo.util.lang.StringUtil;
@@ -32,106 +33,97 @@ import java.util.regex.Pattern;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubCreatePullRequestDialog extends DialogWrapper
-{
-	private final GithubCreatePullRequestPanel myGithubCreatePullRequestPanel;
-	private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+");
+public class GithubCreatePullRequestDialog extends DialogWrapper {
+    private final GithubCreatePullRequestPanel myGithubCreatePullRequestPanel;
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+");
 
-	public GithubCreatePullRequestDialog(@Nonnull final Project project,
-			@Nonnull Collection<String> branches,
-			@Nullable String suggestedBranch,
-			@Nonnull Consumer<String> showDiff)
-	{
-		super(project, true);
-		myGithubCreatePullRequestPanel = new GithubCreatePullRequestPanel(showDiff);
+    public GithubCreatePullRequestDialog(
+        @Nonnull final Project project,
+        @Nonnull Collection<String> branches,
+        @Nullable String suggestedBranch,
+        @Nonnull Consumer<String> showDiff
+    ) {
+        super(project, true);
+        myGithubCreatePullRequestPanel = new GithubCreatePullRequestPanel(showDiff);
 
-		myGithubCreatePullRequestPanel.setBranches(branches);
+        myGithubCreatePullRequestPanel.setBranches(branches);
 
-		String configBranch = GithubSettings.getInstance().getCreatePullRequestDefaultBranch();
-		myGithubCreatePullRequestPanel.setSelectedBranch(configBranch != null ? configBranch : suggestedBranch);
+        String configBranch = GithubSettings.getInstance().getCreatePullRequestDefaultBranch();
+        myGithubCreatePullRequestPanel.setSelectedBranch(configBranch != null ? configBranch : suggestedBranch);
 
-		setTitle("Create Pull Request");
-		init();
-	}
+        setTitle("Create Pull Request");
+        init();
+    }
 
-	@Nullable
-	@Override
-	protected JComponent createCenterPanel()
-	{
-		return myGithubCreatePullRequestPanel.getPanel();
-	}
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return myGithubCreatePullRequestPanel.getPanel();
+    }
 
-	@Nullable
-	@Override
-	public JComponent getPreferredFocusedComponent()
-	{
-		return myGithubCreatePullRequestPanel.getPreferredComponent();
-	}
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    public JComponent getPreferredFocusedComponent() {
+        return myGithubCreatePullRequestPanel.getPreferredComponent();
+    }
 
-	@Override
-	protected String getHelpId()
-	{
-		return "github.create.pull.request.dialog";
-	}
+    @Override
+    protected String getHelpId() {
+        return "github.create.pull.request.dialog";
+    }
 
-	@Override
-	protected String getDimensionServiceKey()
-	{
-		return "Github.CreatePullRequestDialog";
-	}
+    @Override
+    protected String getDimensionServiceKey() {
+        return "Github.CreatePullRequestDialog";
+    }
 
-	@Nonnull
-	public String getRequestTitle()
-	{
-		return myGithubCreatePullRequestPanel.getTitle();
-	}
+    @Nonnull
+    public String getRequestTitle() {
+        return myGithubCreatePullRequestPanel.getTitle();
+    }
 
-	@Nonnull
-	public String getDescription()
-	{
-		return myGithubCreatePullRequestPanel.getDescription();
-	}
+    @Nonnull
+    public String getDescription() {
+        return myGithubCreatePullRequestPanel.getDescription();
+    }
 
-	@Nonnull
-	public String getTargetBranch()
-	{
-		return myGithubCreatePullRequestPanel.getBranch();
-	}
+    @Nonnull
+    public String getTargetBranch() {
+        return myGithubCreatePullRequestPanel.getBranch();
+    }
 
-	@Override
-	protected void doOKAction()
-	{
-		super.doOKAction();
-		GithubSettings.getInstance().setCreatePullRequestDefaultBranch(getTargetBranch());
-	}
+    @Override
+    protected void doOKAction() {
+        super.doOKAction();
+        GithubSettings.getInstance().setCreatePullRequestDefaultBranch(getTargetBranch());
+    }
 
-	@Nullable
-	@Override
-	protected ValidationInfo doValidate()
-	{
-		if(StringUtil.isEmptyOrSpaces(getRequestTitle()))
-		{
-			return new ValidationInfo("Title can't be empty'", myGithubCreatePullRequestPanel.getTitleTextField());
-		}
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    protected ValidationInfo doValidate() {
+        if (StringUtil.isEmptyOrSpaces(getRequestTitle())) {
+            return new ValidationInfo("Title can't be empty'", myGithubCreatePullRequestPanel.getTitleTextField());
+        }
 
-		if(!GITHUB_REPO_PATTERN.matcher(getTargetBranch()).matches())
-		{
-			return new ValidationInfo("Branch must be specified like 'username:branch'",
-					myGithubCreatePullRequestPanel.getBranchEditor());
-		}
+        if (!GITHUB_REPO_PATTERN.matcher(getTargetBranch()).matches()) {
+            return new ValidationInfo(
+                "Branch must be specified like 'username:branch'",
+                myGithubCreatePullRequestPanel.getBranchEditor()
+            );
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@TestOnly
-	public void setRequestTitle(String title)
-	{
-		myGithubCreatePullRequestPanel.setTitle(title);
-	}
+    @TestOnly
+    public void setRequestTitle(String title) {
+        myGithubCreatePullRequestPanel.setTitle(title);
+    }
 
-	@TestOnly
-	public void setBranch(String branch)
-	{
-		myGithubCreatePullRequestPanel.setSelectedBranch(branch);
-	}
+    @TestOnly
+    public void setBranch(String branch) {
+        myGithubCreatePullRequestPanel.setSelectedBranch(branch);
+    }
 }

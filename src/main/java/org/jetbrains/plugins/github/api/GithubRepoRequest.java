@@ -16,29 +16,25 @@
 package org.jetbrains.plugins.github.api;
 
 import javax.annotation.Nonnull;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"FieldCanBeLocal",
-		"UnusedDeclaration"
-})
-class GithubRepoRequest
-{
-	@Nonnull
-	private final String name;
-	@Nonnull
-	private final String description;
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+class GithubRepoRequest {
+    @Nonnull
+    private final String name;
+    @Nonnull
+    private final String description;
 
-	@SerializedName("public")
-	private final boolean isPublic;
+    @SerializedName("public")
+    private final boolean isPublic;
 
-	GithubRepoRequest(@Nonnull String name, @Nonnull String description, boolean aPublic)
-	{
-		this.name = name;
-		this.description = description;
-		isPublic = aPublic;
-	}
+    GithubRepoRequest(@Nonnull String name, @Nonnull String description, boolean aPublic) {
+        this.name = name;
+        this.description = description;
+        isPublic = aPublic;
+    }
 }

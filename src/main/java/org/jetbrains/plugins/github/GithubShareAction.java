@@ -157,6 +157,7 @@ public class GithubShareAction extends DumbAwareAction {
         final boolean finalExternalRemoteDetected = externalRemoteDetected;
         new Task.Backgroundable(project, "Sharing project on GitHub...") {
             @Override
+            @RequiredUIAccess
             public void run(@Nonnull ProgressIndicator indicator) {
                 // create GitHub repo (network)
                 LOG.info("Creating GitHub repository");
@@ -212,6 +213,7 @@ public class GithubShareAction extends DumbAwareAction {
     }
 
     @Nullable
+    @RequiredUIAccess
     private static GithubInfo loadGithubInfoWithModal(@Nonnull final Project project) {
         try {
             return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> {
@@ -222,7 +224,7 @@ public class GithubShareAction extends DumbAwareAction {
                     indicator,
                     authData -> availableReposRef.set(GithubApiUtil.getUserRepos(authData))
                 );
-                final HashSet<String> names = new HashSet<String>();
+                final HashSet<String> names = new HashSet<>();
                 for (GithubRepo info : availableReposRef.get()) {
                     names.add(info.getName());
                 }
@@ -370,9 +372,13 @@ public class GithubShareAction extends DumbAwareAction {
         }
         catch (VcsException e) {
             LOG.warn(e);
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial commit failed:<br/>" +
-                    e.getMessage(), url
+            GithubNotifications.showErrorURL(
+                project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial commit failed:<br/>" + e.getMessage(),
+                url
             );
             return false;
         }
@@ -392,17 +398,23 @@ public class GithubShareAction extends DumbAwareAction {
 
         GitLocalBranch currentBranch = repository.getCurrentBranch();
         if (currentBranch == null) {
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed: no " +
-                    "current branch", url
+            GithubNotifications.showErrorURL(
+                project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial push failed: no current branch",
+                url
             );
             return false;
         }
         GitCommandResult result = git.push(repository, remoteName, remoteUrl, null, currentBranch.getName(), true);
         if (!result.success()) {
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed:<br/>" +
-                    result.getErrorOutputAsHtmlString(), url
+            GithubNotifications.showErrorURL(project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial push failed:<br/>" + result.getErrorOutputAsHtmlString(), url
             );
             return false;
         }

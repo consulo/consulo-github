@@ -20,18 +20,15 @@ import java.io.IOException;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubStatusCodeException extends IOException
-{
-	private final int myStatusCode;
+public class GithubStatusCodeException extends IOException {
+    private final int myStatusCode;
 
-	public GithubStatusCodeException(String message, int statusCode)
-	{
-		super(message);
-		myStatusCode = statusCode;
-	}
+    public GithubStatusCodeException(String message, int statusCode) {
+        super(message);
+        myStatusCode = statusCode;
+    }
 
-	public int getStatusCode()
-	{
-		return myStatusCode;
-	}
+    public int getStatusCode() {
+        return myStatusCode;
+    }
 }

@@ -21,92 +21,82 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubUserDetailed extends GithubUser
-{
-	@Nullable
-	private final String myName;
-	@Nullable
-	private final String myEmail;
+public class GithubUserDetailed extends GithubUser {
+    @Nullable
+    private final String myName;
+    @Nullable
+    private final String myEmail;
 
-	private final int myOwnedPrivateRepos;
+    private final int myOwnedPrivateRepos;
 
-	@Nonnull
-	private final String myType;
-	@Nonnull
-	private final UserPlan myPlan;
+    @Nonnull
+    private final String myType;
+    @Nonnull
+    private final UserPlan myPlan;
 
-	public static class UserPlan
-	{
-		@Nonnull
-		private final String myName;
-		private final long myPrivateRepos;
+    public static class UserPlan {
+        @Nonnull
+        private final String myName;
+        private final long myPrivateRepos;
 
-		public UserPlan(@Nonnull String name, long privateRepos)
-		{
-			myName = name;
-			myPrivateRepos = privateRepos;
-		}
+        public UserPlan(@Nonnull String name, long privateRepos) {
+            myName = name;
+            myPrivateRepos = privateRepos;
+        }
 
-		@Nonnull
-		public String getName()
-		{
-			return myName;
-		}
+        @Nonnull
+        public String getName() {
+            return myName;
+        }
 
-		public long getPrivateRepos()
-		{
-			return myPrivateRepos;
-		}
-	}
+        public long getPrivateRepos() {
+            return myPrivateRepos;
+        }
+    }
 
-	public boolean canCreatePrivateRepo()
-	{
-		return getPlan().getPrivateRepos() > getOwnedPrivateRepos();
-	}
+    public boolean canCreatePrivateRepo() {
+        return getPlan().getPrivateRepos() > getOwnedPrivateRepos();
+    }
 
-	public GithubUserDetailed(@Nonnull String login,
-			@Nonnull String htmlUrl,
-			@Nullable String gravatarId,
-			@Nullable String name,
-			@Nullable String email,
-			int ownedPrivateRepos,
-			@Nonnull String type,
-			@Nonnull UserPlan plan)
-	{
-		super(login, htmlUrl, gravatarId);
-		myName = name;
-		myEmail = email;
-		myOwnedPrivateRepos = ownedPrivateRepos;
-		myType = type;
-		myPlan = plan;
-	}
+    public GithubUserDetailed(
+        @Nonnull String login,
+        @Nonnull String htmlUrl,
+        @Nullable String gravatarId,
+        @Nullable String name,
+        @Nullable String email,
+        int ownedPrivateRepos,
+        @Nonnull String type,
+        @Nonnull UserPlan plan
+    ) {
+        super(login, htmlUrl, gravatarId);
+        myName = name;
+        myEmail = email;
+        myOwnedPrivateRepos = ownedPrivateRepos;
+        myType = type;
+        myPlan = plan;
+    }
 
-	@Nullable
-	public String getName()
-	{
-		return myName;
-	}
+    @Nullable
+    public String getName() {
+        return myName;
+    }
 
-	@Nullable
-	public String getEmail()
-	{
-		return myEmail;
-	}
+    @Nullable
+    public String getEmail() {
+        return myEmail;
+    }
 
-	@Nonnull
-	public String getType()
-	{
-		return myType;
-	}
+    @Nonnull
+    public String getType() {
+        return myType;
+    }
 
-	public int getOwnedPrivateRepos()
-	{
-		return myOwnedPrivateRepos;
-	}
+    public int getOwnedPrivateRepos() {
+        return myOwnedPrivateRepos;
+    }
 
-	@Nonnull
-	public UserPlan getPlan()
-	{
-		return myPlan;
-	}
+    @Nonnull
+    public UserPlan getPlan() {
+        return myPlan;
+    }
 }

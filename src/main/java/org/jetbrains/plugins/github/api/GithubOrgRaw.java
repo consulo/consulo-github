@@ -22,32 +22,28 @@ import javax.annotation.Nullable;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubOrgRaw implements DataConstructor
-{
-	@Nullable
-	public String login;
-	@Nullable
-	public Long id;
-	@Nullable
-	public String url;
+class GithubOrgRaw implements DataConstructor {
+    @Nullable
+    public String login;
+    @Nullable
+    public Long id;
+    @Nullable
+    public String url;
 
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	public GithubOrg createGithubOrg()
-	{
-		return new GithubOrg(login);
-	}
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull
+    public GithubOrg createGithubOrg() {
+        return new GithubOrg(login);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> T create(@Nonnull Class<T> resultClass)
-	{
-		if(resultClass.isAssignableFrom(GithubOrg.class))
-		{
-			return (T) createGithubOrg();
-		}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> T create(@Nonnull Class<T> resultClass) {
+        if (resultClass.isAssignableFrom(GithubOrg.class)) {
+            return (T)createGithubOrg();
+        }
 
-		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-	}
+        throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+    }
 }

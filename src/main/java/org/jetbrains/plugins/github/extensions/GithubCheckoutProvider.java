@@ -18,6 +18,7 @@ package org.jetbrains.plugins.github.extensions;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.ide.ServiceManager;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.function.ThrowableFunction;
 import consulo.versionControlSystem.checkout.CheckoutProvider;
 import consulo.virtualFileSystem.LocalFileSystem;
@@ -38,7 +39,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -47,6 +47,7 @@ import java.util.List;
 @ExtensionImpl
 public class GithubCheckoutProvider implements CheckoutProvider {
     @Override
+    @RequiredUIAccess
     public void doCheckout(@Nonnull final Project project, @Nullable final Listener listener) {
         if (!GithubUtil.testGitExecutable(project)) {
             return;
@@ -55,10 +56,14 @@ public class GithubCheckoutProvider implements CheckoutProvider {
 
         List<GithubRepo> availableRepos;
         try {
-            availableRepos = GithubUtil.computeValueInModal(project,
+            availableRepos = GithubUtil.computeValueInModal(
+                project,
                 "Access to GitHub",
-                indicator -> GithubUtil.runWithValidAuth(project, indicator, (ThrowableFunction<GithubAuthData,
-                    List<GithubRepo>, IOException>)authData -> GithubApiUtil.getAvailableRepos(authData))
+                indicator -> GithubUtil.runWithValidAuth(
+                    project,
+                    indicator,
+                    (ThrowableFunction<GithubAuthData, List<GithubRepo>, IOException>)authData -> GithubApiUtil.getAvailableRepos(authData)
+                )
             );
         }
         catch (GithubAuthenticationCanceledException e) {
@@ -68,13 +73,13 @@ public class GithubCheckoutProvider implements CheckoutProvider {
             GithubNotifications.showError(project, "Couldn't get the list of GitHub repositories", e);
             return;
         }
-        Collections.sort(availableRepos, new Comparator<GithubRepo>() {
-            @Override
-            public int compare(final GithubRepo r1, final GithubRepo r2) {
+        Collections.sort(
+            availableRepos,
+            (r1, r2) -> {
                 final int comparedOwners = r1.getUserName().compareTo(r2.getUserName());
                 return comparedOwners != 0 ? comparedOwners : r1.getName().compareTo(r2.getName());
             }
-        });
+        );
 
         final GitCloneDialog dialog = new GitCloneDialog(project);
         // Add predefined repositories to history

@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.github.util;
 
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressManager;
 import consulo.application.progress.Task;
+import consulo.git.localize.GitLocalize;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
@@ -31,7 +33,6 @@ import consulo.virtualFileSystem.VirtualFile;
 import git4idea.GitUtil;
 import git4idea.config.GitVcsApplicationSettings;
 import git4idea.config.GitVersion;
-import git4idea.i18n.GitBundle;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
@@ -142,16 +143,8 @@ public class GithubUtil {
     private static boolean checkSSLCertificate(IOException e, final String host, ProgressIndicator indicator) {
         final GithubSslSupport sslSupport = GithubSslSupport.getInstance();
         if (GithubSslSupport.isCertificateException(e)) {
-            final Ref<Boolean> result = new Ref<Boolean>();
-            ApplicationManager.getApplication().invokeAndWait(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        result.set(sslSupport.askIfShouldProceed(host));
-                    }
-                },
-                indicator.getModalityState()
-            );
+            final Ref<Boolean> result = new Ref<>();
+            Application.get().invokeAndWait(() -> result.set(sslSupport.askIfShouldProceed(host)), indicator.getModalityState());
             return result.get();
         }
         return false;
@@ -166,15 +159,7 @@ public class GithubUtil {
         @Nonnull ProgressIndicator indicator
     ) throws GithubAuthenticationCanceledException {
         final GithubLoginDialog dialog = new GithubLoginDialog(project);
-        ApplicationManager.getApplication().invokeAndWait(
-            new Runnable() {
-                @Override
-                public void run() {
-                    dialog.show();
-                }
-            },
-            indicator.getModalityState()
-        );
+        Application.get().invokeAndWait(dialog::show, indicator.getModalityState());
         if (!dialog.isOK()) {
             throw new GithubAuthenticationCanceledException("Can't get valid credentials");
         }
@@ -192,15 +177,7 @@ public class GithubUtil {
     ) throws GithubAuthenticationCanceledException {
         final GithubLoginDialog dialog = new GithubBasicLoginDialog(project);
         dialog.lockHost(host);
-        ApplicationManager.getApplication().invokeAndWait(
-            new Runnable() {
-                @Override
-                public void run() {
-                    dialog.show();
-                }
-            },
-            indicator.getModalityState()
-        );
+        Application.get().invokeAndWait(dialog::show, indicator.getModalityState());
         if (!dialog.isOK()) {
             throw new GithubAuthenticationCanceledException("Can't get valid credentials");
         }
@@ -261,17 +238,15 @@ public class GithubUtil {
         @Nonnull String caption,
         @Nonnull final ThrowableFunction<ProgressIndicator, T, E> task
     ) throws E {
-        final Ref<T> dataRef = new Ref<T>();
-        final Ref<E> exceptionRef = new Ref<E>();
+        final Ref<T> dataRef = new Ref<>();
+        final Ref<E> exceptionRef = new Ref<>();
         ProgressManager.getInstance().run(new Task.Modal(project, caption, true) {
+            @Override
             public void run(@Nonnull ProgressIndicator indicator) {
                 try {
                     dataRef.set(task.apply(indicator));
                 }
-                catch (Error e) {
-                    throw e;
-                }
-                catch (RuntimeException e) {
+                catch (Error | RuntimeException e) {
                     throw e;
                 }
                 catch (Throwable e) {
@@ -335,6 +310,7 @@ public class GithubUtil {
         return null;
     }
 
+    @RequiredUIAccess
     public static boolean testGitExecutable(final Project project) {
         final GitVcsApplicationSettings settings = GitVcsApplicationSettings.getInstance();
         final String executable = settings.getPathToGit();
@@ -343,15 +319,15 @@ public class GithubUtil {
             version = GitVersion.identifyVersion(executable);
         }
         catch (Exception e) {
-            GithubNotifications.showErrorDialog(project, GitBundle.message("find.git.error.title"), e);
+            GithubNotifications.showErrorDialog(project, GitLocalize.findGitErrorTitle().get(), e);
             return false;
         }
 
         if (!version.isSupported()) {
             GithubNotifications.showWarningDialog(
                 project,
-                GitBundle.message("find.git.unsupported.message", version.toString(), GitVersion.MIN),
-                GitBundle.message("find.git.success.title")
+                GitLocalize.findGitUnsupportedMessage(version.toString(), GitVersion.MIN).get(),
+                GitLocalize.findGitSuccessTitle().get()
             );
             return false;
         }

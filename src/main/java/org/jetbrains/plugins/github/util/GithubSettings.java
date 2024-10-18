@@ -54,10 +54,12 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 
     private State myState = new State();
 
+    @Override
     public State getState() {
         return myState;
     }
 
+    @Override
     public void loadState(State state) {
         myState = state;
     }
@@ -74,7 +76,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
         public boolean PRIVATE_GIST = true;
         public boolean SAVE_PASSWORD = true;
         @Nonnull
-        public Collection<String> TRUSTED_HOSTS = new ArrayList<String>();
+        public Collection<String> TRUSTED_HOSTS = new ArrayList<>();
         @Nullable
         public String CREATE_PULL_REQUEST_DEFAULT_BRANCH = null;
         public boolean VALID_GIT_AUTH = true;

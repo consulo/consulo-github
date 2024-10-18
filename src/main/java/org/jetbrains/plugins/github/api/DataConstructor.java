@@ -31,6 +31,5 @@ import javax.annotation.Nonnull;
  */
 interface DataConstructor {
     @Nonnull
-    <T> T create(@Nonnull Class<T> resultClass) throws IllegalArgumentException, NullPointerException,
-        ClassCastException;
+    <T> T create(@Nonnull Class<T> resultClass) throws IllegalArgumentException, NullPointerException, ClassCastException;
 }

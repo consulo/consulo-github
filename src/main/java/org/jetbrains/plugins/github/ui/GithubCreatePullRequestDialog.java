@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.github.ui;
 
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.ValidationInfo;
 import consulo.util.lang.StringUtil;
@@ -62,6 +63,7 @@ public class GithubCreatePullRequestDialog extends DialogWrapper {
 
     @Nullable
     @Override
+    @RequiredUIAccess
     public JComponent getPreferredFocusedComponent() {
         return myGithubCreatePullRequestPanel.getPreferredComponent();
     }
@@ -99,6 +101,7 @@ public class GithubCreatePullRequestDialog extends DialogWrapper {
 
     @Nullable
     @Override
+    @RequiredUIAccess
     protected ValidationInfo doValidate() {
         if (StringUtil.isEmptyOrSpaces(getRequestTitle())) {
             return new ValidationInfo("Title can't be empty'", myGithubCreatePullRequestPanel.getTitleTextField());

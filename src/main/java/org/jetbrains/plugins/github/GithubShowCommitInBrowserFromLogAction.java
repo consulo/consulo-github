@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.github;
 
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.versionControlSystem.log.VcsFullCommitDetails;
 import consulo.versionControlSystem.log.VcsLog;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction {
     @Override
+    @RequiredUIAccess
     public void update(@Nonnull AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         VcsLog log = e.getData(VcsLog.KEY);
@@ -45,6 +47,7 @@ public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBr
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(@Nonnull AnActionEvent e) {
         Project project = e.getRequiredData(Project.KEY);
         VcsFullCommitDetails commit = e.getRequiredData(VcsLog.KEY).getSelectedDetails().get(0);

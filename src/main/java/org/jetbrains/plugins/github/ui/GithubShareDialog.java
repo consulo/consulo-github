@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.github.ui;
 
 import consulo.project.Project;
-import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.annotation.RequiredUIAccess;import consulo.ui.ex.awt.DialogWrapper;
 import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.TestOnly;
 
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author oleg
- * @date 10/22/10
+ * @since 2010-10-22
  */
 public class GithubShareDialog extends DialogWrapper {
     private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("[a-zA-Z0-9_.-]+");
@@ -48,6 +48,7 @@ public class GithubShareDialog extends DialogWrapper {
     }
 
     @Override
+    @RequiredUIAccess
     public JComponent getPreferredFocusedComponent() {
         return myGithubSharePanel.getPreferredFocusComponent();
     }

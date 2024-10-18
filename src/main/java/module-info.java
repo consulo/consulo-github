@@ -1,6 +1,6 @@
 /**
  * @author VISTALL
- * @since 29/04/2023
+ * @since 2023-04-29
  */
 open module org.jetbrains.plugins.github {
     requires consulo.ide.api;

@@ -5,6 +5,7 @@ import consulo.configurable.Configurable;
 import consulo.configurable.ConfigurationException;
 import consulo.configurable.SearchableConfigurable;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.versionControlSystem.VcsConfigurableProvider;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.github.util.GithubSettings;
@@ -27,16 +28,20 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
     }
 
     @Nonnull
+    @Override
     public String getDisplayName() {
         return "GitHub";
     }
 
     @Nonnull
+    @Override
     public String getHelpTopic() {
         return "settings.github";
     }
 
     @Nonnull
+    @Override
+    @RequiredUIAccess
     public JComponent createComponent() {
         if (mySettingsPane == null) {
             mySettingsPane = new GithubSettingsPanel(mySettings);
@@ -44,10 +49,14 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
         return mySettingsPane.getPanel();
     }
 
+    @Override
+    @RequiredUIAccess
     public boolean isModified() {
         return mySettingsPane != null && mySettingsPane.isModified();
     }
 
+    @Override
+    @RequiredUIAccess
     public void apply() throws ConfigurationException {
         if (mySettingsPane != null) {
             mySettings.setCredentials(mySettingsPane.getHost(), mySettingsPane.getAuthData(), true);
@@ -55,21 +64,27 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
         }
     }
 
+    @Override
+    @RequiredUIAccess
     public void reset() {
         if (mySettingsPane != null) {
             mySettingsPane.reset();
         }
     }
 
+    @Override
+    @RequiredUIAccess
     public void disposeUIResources() {
         mySettingsPane = null;
     }
 
+    @Override
     @Nonnull
     public String getId() {
         return getHelpTopic();
     }
 
+    @Override
     public Runnable enableSearch(String option) {
         return null;
     }

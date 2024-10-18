@@ -157,6 +157,7 @@ public class GithubShareAction extends DumbAwareAction {
         final boolean finalExternalRemoteDetected = externalRemoteDetected;
         new Task.Backgroundable(project, "Sharing project on GitHub...") {
             @Override
+            @RequiredUIAccess
             public void run(@Nonnull ProgressIndicator indicator) {
                 // create GitHub repo (network)
                 LOG.info("Creating GitHub repository");
@@ -212,6 +213,7 @@ public class GithubShareAction extends DumbAwareAction {
     }
 
     @Nullable
+    @RequiredUIAccess
     private static GithubInfo loadGithubInfoWithModal(@Nonnull final Project project) {
         try {
             return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> {
@@ -222,7 +224,7 @@ public class GithubShareAction extends DumbAwareAction {
                     indicator,
                     authData -> availableReposRef.set(GithubApiUtil.getUserRepos(authData))
                 );
-                final HashSet<String> names = new HashSet<String>();
+                final HashSet<String> names = new HashSet<>();
                 for (GithubRepo info : availableReposRef.get()) {
                     names.add(info.getName());
                 }

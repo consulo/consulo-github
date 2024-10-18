@@ -19,6 +19,7 @@ package org.jetbrains.plugins.github.util;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.project.ui.notification.event.NotificationListener;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.Messages;
 import consulo.versionControlSystem.VcsNotifier;
 
@@ -99,6 +100,7 @@ public class GithubNotifications {
             postfix, NotificationListener.URL_OPENING_LISTENER);
     }
 
+    @RequiredUIAccess
     public static void showInfoDialog(
         final @Nullable Project project,
         final @Nonnull String title,
@@ -108,6 +110,7 @@ public class GithubNotifications {
         Messages.showInfoMessage(project, message, title);
     }
 
+    @RequiredUIAccess
     public static void showInfoDialog(
         final @Nonnull Component component,
         final @Nonnull String title,
@@ -117,6 +120,7 @@ public class GithubNotifications {
         Messages.showInfoMessage(component, message, title);
     }
 
+    @RequiredUIAccess
     public static void showWarningDialog(
         final @Nullable Project project,
         final @Nonnull String title,
@@ -126,6 +130,7 @@ public class GithubNotifications {
         Messages.showWarningDialog(project, message, title);
     }
 
+    @RequiredUIAccess
     public static void showWarningDialog(
         final @Nonnull Component component,
         final @Nonnull String title,
@@ -135,6 +140,7 @@ public class GithubNotifications {
         Messages.showWarningDialog(component, message, title);
     }
 
+    @RequiredUIAccess
     public static void showErrorDialog(
         final @Nullable Project project,
         final @Nonnull String title,
@@ -144,6 +150,7 @@ public class GithubNotifications {
         Messages.showErrorDialog(project, message, title);
     }
 
+    @RequiredUIAccess
     public static void showErrorDialog(
         final @Nullable Project project,
         final @Nonnull String title,
@@ -153,6 +160,7 @@ public class GithubNotifications {
         Messages.showErrorDialog(project, getErrorTextFromException(e), title);
     }
 
+    @RequiredUIAccess
     public static void showErrorDialog(
         final @Nonnull Component component,
         final @Nonnull String title,
@@ -162,6 +170,7 @@ public class GithubNotifications {
         Messages.showErrorDialog(component, message, title);
     }
 
+    @RequiredUIAccess
     public static void showErrorDialog(
         final @Nonnull Component component,
         final @Nonnull String title,
@@ -171,7 +180,7 @@ public class GithubNotifications {
         Messages.showInfoMessage(component, getErrorTextFromException(e), title);
     }
 
-    @Messages.YesNoResult
+    @RequiredUIAccess
     public static int showYesNoDialog(
         final @Nullable Project project,
         final @Nonnull String title,

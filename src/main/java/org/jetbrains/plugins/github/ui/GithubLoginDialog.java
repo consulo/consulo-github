@@ -2,7 +2,7 @@ package org.jetbrains.plugins.github.ui;
 
 import consulo.logging.Logger;
 import consulo.project.Project;
-import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.annotation.RequiredUIAccess;import consulo.ui.ex.awt.DialogWrapper;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubSettings;
 import org.jetbrains.plugins.github.util.GithubUtil;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * @author oleg
- * @date 10/20/10
+ * @since 2010-10-20
  */
 public class GithubLoginDialog extends DialogWrapper {
     protected static final Logger LOG = GithubUtil.LOG;
@@ -44,6 +44,7 @@ public class GithubLoginDialog extends DialogWrapper {
     }
 
     @Nonnull
+    @Override
     protected Action[] createActions() {
         return new Action[]{
             getOKAction(),
@@ -63,6 +64,7 @@ public class GithubLoginDialog extends DialogWrapper {
     }
 
     @Override
+    @RequiredUIAccess
     public JComponent getPreferredFocusedComponent() {
         return myGithubLoginPanel.getPreferrableFocusComponent();
     }

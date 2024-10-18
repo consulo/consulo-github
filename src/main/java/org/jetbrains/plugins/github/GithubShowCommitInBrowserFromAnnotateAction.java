@@ -22,6 +22,7 @@ import consulo.ide.impl.idea.openapi.vcs.annotate.LineNumberListener;
 import consulo.ide.impl.idea.openapi.vcs.impl.UpToDateLineNumberProviderImpl;
 import consulo.language.editor.PlatformDataKeys;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.versionControlSystem.annotate.FileAnnotation;
 import consulo.versionControlSystem.history.VcsRevisionNumber;
@@ -46,7 +47,8 @@ public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommi
     }
 
     @Override
-    public void update(AnActionEvent e) {
+    @RequiredUIAccess
+    public void update(@Nonnull AnActionEvent e) {
         EventData eventData = calcData(e, myLineNumber);
         if (eventData == null) {
             e.getPresentation().setEnabled(false);
@@ -59,7 +61,8 @@ public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommi
     }
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    @RequiredUIAccess
+    public void actionPerformed(@Nonnull AnActionEvent e) {
         EventData eventData = calcData(e, myLineNumber);
         if (eventData == null) {
             return;

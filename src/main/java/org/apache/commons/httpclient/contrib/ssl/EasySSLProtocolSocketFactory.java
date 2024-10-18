@@ -125,7 +125,8 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
     /**
      * @see SecureProtocolSocketFactory#createSocket(java.lang.String, int, java.net.InetAddress, int)
      */
-    public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort) throws IOException, UnknownHostException {
+    @Override
+    public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort) throws IOException {
         return getSSLContext().getSocketFactory().createSocket(host, port, clientHost, clientPort);
     }
 
@@ -138,23 +139,23 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
      * timeout expires, the controller terminates and throws an {@link ConnectTimeoutException}
      * </p>
      *
-     * @param host       the host name/IP
-     * @param port       the port on the host
-     * @param clientHost the local host name/IP to bind the socket to
-     * @param clientPort the port on the local machine
-     * @param params     {@link HttpConnectionParams Http connection parameters}
+     * @param host         the host name/IP
+     * @param port         the port on the host
+     * @param localAddress the local host name/IP to bind the socket to
+     * @param localPort    the port on the local machine
+     * @param params       {@link HttpConnectionParams Http connection parameters}
      * @return Socket a new socket
      * @throws IOException          if an I/O error occurs while creating the socket
-     * @throws UnknownHostException if the IP address of the host cannot be
-     *                              determined
+     * @throws UnknownHostException if the IP address of the host cannot be determined
      */
+    @Override
     public Socket createSocket(
         final String host,
         final int port,
         final InetAddress localAddress,
         final int localPort,
         final HttpConnectionParams params
-    ) throws IOException, UnknownHostException, ConnectTimeoutException {
+    ) throws IOException {
         if (params == null) {
             throw new IllegalArgumentException("Parameters may not be null");
         }
@@ -176,21 +177,25 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
     /**
      * @see SecureProtocolSocketFactory#createSocket(java.lang.String, int)
      */
-    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+    @Override
+    public Socket createSocket(String host, int port) throws IOException {
         return getSSLContext().getSocketFactory().createSocket(host, port);
     }
 
     /**
      * @see SecureProtocolSocketFactory#createSocket(java.net.Socket, java.lang.String, int, boolean)
      */
-    public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+    @Override
+    public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
         return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
     }
 
+    @Override
     public boolean equals(Object obj) {
         return ((obj != null) && obj.getClass().equals(EasySSLProtocolSocketFactory.class));
     }
 
+    @Override
     public int hashCode() {
         return EasySSLProtocolSocketFactory.class.hashCode();
     }

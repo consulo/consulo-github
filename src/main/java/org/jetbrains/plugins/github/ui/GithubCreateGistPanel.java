@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 
 /**
  * @author oleg
- * @date 9/27/11
+ * @since 2011-09-27
  */
 public class GithubCreateGistPanel {
     private JTextArea myDescriptionTextArea;

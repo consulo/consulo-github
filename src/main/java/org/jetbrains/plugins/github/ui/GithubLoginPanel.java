@@ -19,6 +19,7 @@ import consulo.ide.impl.idea.util.ui.table.ComponentsListFocusTraversalPolicy;
 import consulo.platform.Platform;
 import consulo.ui.ex.awt.ComboBox;
 import consulo.ui.ex.awt.HyperlinkAdapter;
+import consulo.ui.ex.awt.JBUI;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import consulo.util.collection.ContainerUtil;
@@ -33,13 +34,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author oleg
- * @date 10/20/10
+ * @since 2010-10-20
  */
 public class GithubLoginPanel {
     private JPanel myPane;
@@ -48,7 +48,7 @@ public class GithubLoginPanel {
     private JPasswordField myPasswordField;
     private JTextPane mySignupTextField;
     private JCheckBox mySavePasswordCheckBox;
-    private ComboBox myAuthTypeComboBox;
+    private ComboBox<String> myAuthTypeComboBox;
     private JLabel myPasswordLabel;
     private JLabel myLoginLabel;
 
@@ -64,9 +64,8 @@ public class GithubLoginPanel {
         };
         myLoginTextField.getDocument().addDocumentListener(listener);
         myPasswordField.getDocument().addDocumentListener(listener);
-        mySignupTextField.setText("<html>Do not have an account at github.com? <a href=\"https://github.com\">Sign " +
-            "up</a>.</html>");
-        mySignupTextField.setMargin(new Insets(5, 0, 0, 0));
+        mySignupTextField.setText("<html>Do not have an account at github.com? <a href=\"https://github.com\">Sign up</a>.</html>");
+        mySignupTextField.setMargin(JBUI.insetsTop(5));
         mySignupTextField.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
             protected void hyperlinkActivated(final HyperlinkEvent e) {
@@ -79,31 +78,28 @@ public class GithubLoginPanel {
         myAuthTypeComboBox.addItem(AUTH_PASSWORD);
         myAuthTypeComboBox.addItem(AUTH_TOKEN);
 
-        myAuthTypeComboBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    String item = e.getItem().toString();
-                    if (AUTH_PASSWORD.equals(item)) {
-                        myPasswordLabel.setText("Password:");
-                        mySavePasswordCheckBox.setText("Save password");
-                        myLoginLabel.setVisible(true);
-                        myLoginTextField.setVisible(true);
-                    }
-                    else if (AUTH_TOKEN.equals(item)) {
-                        myPasswordLabel.setText("Token:");
-                        mySavePasswordCheckBox.setText("Save token");
-                        myLoginLabel.setVisible(false);
-                        myLoginTextField.setVisible(false);
-                    }
-                    if (dialog.isShowing()) {
-                        dialog.pack();
-                    }
+        myAuthTypeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String item = e.getItem().toString();
+                if (AUTH_PASSWORD.equals(item)) {
+                    myPasswordLabel.setText("Password:");
+                    mySavePasswordCheckBox.setText("Save password");
+                    myLoginLabel.setVisible(true);
+                    myLoginTextField.setVisible(true);
+                }
+                else if (AUTH_TOKEN.equals(item)) {
+                    myPasswordLabel.setText("Token:");
+                    mySavePasswordCheckBox.setText("Save token");
+                    myLoginLabel.setVisible(false);
+                    myLoginTextField.setVisible(false);
+                }
+                if (dialog.isShowing()) {
+                    dialog.pack();
                 }
             }
         });
 
-        List<Component> order = new ArrayList<Component>();
+        List<Component> order = new ArrayList<>();
         order.add(myHostTextField);
         order.add(myAuthTypeComboBox);
         order.add(myLoginTextField);

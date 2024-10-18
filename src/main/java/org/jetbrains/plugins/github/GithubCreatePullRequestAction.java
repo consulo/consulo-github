@@ -25,6 +25,7 @@ import consulo.ide.impl.idea.ui.TabbedPaneImpl;
 import consulo.language.editor.PlatformDataKeys;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.ui.ex.awt.DialogWrapper;
@@ -35,7 +36,6 @@ import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.function.ThrowableConsumer;
 import consulo.util.lang.ref.Ref;
 import consulo.versionControlSystem.VcsException;
 import consulo.versionControlSystem.change.Change;
@@ -78,6 +78,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
         super("Create Pull Request", "Create pull request from current branch", GitHubIconGroup.github_icon());
     }
 
+    @Override
+    @RequiredUIAccess
     public void update(AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         final VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
@@ -101,6 +103,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         final VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
@@ -112,6 +115,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
         createPullRequest(project, file);
     }
 
+    @RequiredUIAccess
     static void createPullRequest(@Nonnull final Project project, @Nullable final VirtualFile file) {
         final Git git = ServiceManager.getService(Git.class);
 
@@ -155,7 +159,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
 
         GithubRepo parent = info.getRepo().getParent();
         String suggestedBranch = parent == null ? null : parent.getUserName() + ":" + parent.getDefaultBranch();
-        Collection<String> suggestions = ContainerUtil.map(branches, remoteBranch -> remoteBranch.getReference());
+        Collection<String> suggestions = ContainerUtil.map(branches, RemoteBranch::getReference);
         Consumer<String> showDiff = s -> showDiffByRef(project, s, branches, repository, currentBranch.getName());
         final GithubCreatePullRequestDialog dialog = new GithubCreatePullRequestDialog(project, suggestions, suggestedBranch, showDiff);
         DialogManager.show(dialog);
@@ -209,6 +213,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     }
 
     @Nullable
+    @RequiredUIAccess
     private static GithubInfo loadGithubInfoWithModal(
         @Nonnull final Project project,
         @Nonnull final GithubFullPath userAndRepo,
@@ -216,16 +221,15 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     ) {
         try {
             return GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> {
-                final Ref<GithubRepoDetailed> reposRef = new Ref<GithubRepoDetailed>();
-                final GithubAuthData auth = GithubUtil.runAndGetValidAuth(project, indicator,
-                    new ThrowableConsumer<GithubAuthData, IOException>() {
-                        @Override
-                        public void consume(GithubAuthData authData) throws IOException {
-                            reposRef.set(GithubApiUtil.getDetailedRepoInfo(authData, userAndRepo.getUser(),
-                                userAndRepo.getRepository()
-                            ));
-                        }
-                    }
+                final Ref<GithubRepoDetailed> reposRef = new Ref<>();
+                final GithubAuthData auth = GithubUtil.runAndGetValidAuth(
+                    project,
+                    indicator,
+                    authData -> reposRef.set(GithubApiUtil.getDetailedRepoInfo(
+                        authData,
+                        userAndRepo.getUser(),
+                        userAndRepo.getRepository()
+                    ))
                 );
                 List<RemoteBranch> branches = loadAvailableBranchesFromGithub(project, auth, reposRef.get(), upstreamUserAndRepo);
                 return new GithubInfo(auth, reposRef.get(), branches);
@@ -321,7 +325,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
 
     @Nonnull
     private static Set<RemoteBranch> getAvailableBranchesFromGit(@Nonnull GitRepository gitRepository) {
-        Set<RemoteBranch> result = new HashSet<RemoteBranch>();
+        Set<RemoteBranch> result = new HashSet<>();
         for (GitRemoteBranch remoteBranch : gitRepository.getBranches().getRemoteBranches()) {
             for (String url : remoteBranch.getRemote().getUrls()) {
                 if (GithubUrlUtil.isGithubUrl(url)) {
@@ -345,7 +349,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
         @Nonnull final GithubRepoDetailed repo,
         @Nullable final GithubFullPath upstreamPath
     ) {
-        List<RemoteBranch> result = new ArrayList<RemoteBranch>();
+        List<RemoteBranch> result = new ArrayList<>();
         try {
             final GithubRepo parent = repo.getParent();
             final GithubRepo source = repo.getSource();
@@ -383,19 +387,14 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     }
 
     private static boolean equals(@Nonnull GithubRepo repo1, @Nullable GithubRepo repo2) {
-        if (repo2 == null) {
-            return false;
-        }
-        return StringUtil.equalsIgnoreCase(repo1.getUserName(), repo2.getUserName());
+        return repo2 != null && StringUtil.equalsIgnoreCase(repo1.getUserName(), repo2.getUserName());
     }
 
     private static boolean equals(@Nonnull GithubFullPath repo1, @Nullable GithubRepo repo2) {
-        if (repo2 == null) {
-            return false;
-        }
-        return StringUtil.equalsIgnoreCase(repo1.getUser(), repo2.getUserName());
+        return repo2 != null && StringUtil.equalsIgnoreCase(repo1.getUser(), repo2.getUserName());
     }
 
+    @RequiredUIAccess
     private static void showDiffByRef(
         @Nonnull Project project,
         @Nullable String ref,
@@ -567,7 +566,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
             @Nonnull GitCommitListPanel sourcePanel,
             @Nonnull final ChangesBrowser changesBrowser
         ) {
-            sourcePanel.addListSelectionListener(commit -> changesBrowser.setChangesToDisplay(new ArrayList<Change>(commit.getChanges())));
+            sourcePanel.addListSelectionListener(commit -> changesBrowser.setChangesToDisplay(new ArrayList<>(commit.getChanges())));
         }
     }
 
@@ -629,23 +628,10 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            RemoteBranch that = (RemoteBranch)o;
-
-            if (!StringUtil.equalsIgnoreCase(myUser, that.myUser)) {
-                return false;
-            }
-            if (!StringUtil.equalsIgnoreCase(myBranch, that.myBranch)) {
-                return false;
-            }
-
-            return true;
+            return this == o
+                || o instanceof RemoteBranch that
+                && StringUtil.equalsIgnoreCase(myUser, that.myUser)
+                && StringUtil.equalsIgnoreCase(myBranch, that.myBranch);
         }
 
         @Override

@@ -7,7 +7,7 @@ import javax.swing.event.DocumentEvent;
 
 /**
  * @author oleg
- * @date 10/22/10
+ * @since 2010-10-22
  */
 public class GithubSharePanel {
     private JPanel myPanel;

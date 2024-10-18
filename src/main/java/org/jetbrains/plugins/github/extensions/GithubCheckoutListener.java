@@ -20,7 +20,7 @@ import java.io.File;
 
 /**
  * @author oleg
- * @date 10/26/10
+ * @since 2010-10-26
  */
 @ExtensionImpl
 public class GithubCheckoutListener implements CompletedCheckoutListener {
@@ -54,14 +54,12 @@ public class GithubCheckoutListener implements CompletedCheckoutListener {
 
     private static void processProject(final Project openedProject, final String author, final String name) {
         // try to enable git tasks integration
-        final Runnable taskInitializationRunnable = new Runnable() {
-            public void run() {
-                try {
-                    enableGithubTrackerIntegration(openedProject, author, name);
-                }
-                catch (Exception e) {
-                    // Ignore it
-                }
+        final Runnable taskInitializationRunnable = () -> {
+            try {
+                enableGithubTrackerIntegration(openedProject, author, name);
+            }
+            catch (Exception e) {
+                // Ignore it
             }
         };
         if (openedProject.isInitialized()) {

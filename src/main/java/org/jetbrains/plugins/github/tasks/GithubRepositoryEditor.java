@@ -19,8 +19,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -94,11 +92,9 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
         myTokenLabel = new JBLabel("API Token:", SwingConstants.RIGHT);
         myToken = new MyTextField("OAuth2 token");
         myTokenButton = new JButton("Create API token");
-        myTokenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                generateToken();
-                doApply();
-            }
+        myTokenButton.addActionListener(e -> {
+            generateToken();
+            doApply();
         });
 
         JPanel myTokenPanel = new JPanel();

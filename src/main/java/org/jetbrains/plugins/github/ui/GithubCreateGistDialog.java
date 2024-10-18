@@ -17,6 +17,7 @@ package org.jetbrains.plugins.github.ui;
 
 import consulo.codeEditor.Editor;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.github.util.GithubSettings;
@@ -27,7 +28,7 @@ import javax.swing.*;
 
 /**
  * @author oleg
- * @date 9/27/11
+ * @since 2011-09-27
  */
 public class GithubCreateGistDialog extends DialogWrapper {
     private final GithubCreateGistPanel myGithubCreateGistPanel;
@@ -93,6 +94,7 @@ public class GithubCreateGistDialog extends DialogWrapper {
     }
 
     @Override
+    @RequiredUIAccess
     public JComponent getPreferredFocusedComponent() {
         return myGithubCreateGistPanel.getDescriptionTextArea();
     }

@@ -21,6 +21,7 @@ import consulo.github.icon.GitHubIconGroup;
 import consulo.language.editor.PlatformDataKeys;
 import consulo.platform.Platform;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.versionControlSystem.change.Change;
@@ -41,10 +42,8 @@ import javax.annotation.Nullable;
 import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
 
 /**
- * Created by IntelliJ IDEA.
- *
  * @author oleg
- * @date 12/10/10
+ * @since 2010-12-10
  */
 public class GithubOpenInBrowserAction extends DumbAwareAction {
     public static final String CANNOT_OPEN_IN_BROWSER = "Cannot open in browser";
@@ -54,6 +53,7 @@ public class GithubOpenInBrowserAction extends DumbAwareAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void update(final AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
@@ -90,6 +90,7 @@ public class GithubOpenInBrowserAction extends DumbAwareAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void actionPerformed(final AnActionEvent e) {
         final Project project = e.getData(PlatformDataKeys.PROJECT);
         final VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);

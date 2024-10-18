@@ -7,7 +7,6 @@ import consulo.logging.Logger;
 import consulo.task.*;
 import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
-import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
 import consulo.util.xml.serializer.annotation.Tag;
 import consulo.util.xml.serializer.annotation.Transient;
@@ -24,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,10 +86,7 @@ public class GithubRepository extends BaseRepositoryImpl {
         try {
             return getIssues(query);
         }
-        catch (GithubAuthenticationException e) {
-            throw new Exception(e.getMessage(), e);
-        }
-        catch (GithubStatusCodeException e) {
+        catch (GithubAuthenticationException | GithubStatusCodeException e) {
             throw new Exception(e.getMessage(), e);
         }
         catch (GithubJsonException e) {
@@ -110,7 +107,7 @@ public class GithubRepository extends BaseRepositoryImpl {
             issues = GithubApiUtil.getIssuesQueried(getAuthData(), getRepoAuthor(), getRepoName(), query);
         }
 
-        return ContainerUtil.map2Array(issues, Task.class, issue -> createTask(issue));
+        return ContainerUtil.map2Array(issues, Task.class, this::createTask);
     }
 
     @Nonnull
@@ -141,6 +138,7 @@ public class GithubRepository extends BaseRepositoryImpl {
                 return issue.getTitle();
             }
 
+            @Override
             public String getDescription() {
                 return issue.getBody();
             }
@@ -214,17 +212,19 @@ public class GithubRepository extends BaseRepositoryImpl {
     }
 
     @Nullable
-    public String extractId(String taskName) {
+    @Override
+    public String extractId(@Nonnull String taskName) {
         Matcher matcher = myPattern.matcher(taskName);
         return matcher.find() ? matcher.group(1) : null;
     }
 
     @Nullable
     @Override
-    public Task findTask(String id) throws Exception {
+    public Task findTask(@Nonnull String id) throws Exception {
         return createTask(GithubApiUtil.getIssue(getAuthData(), getRepoAuthor(), getRepoName(), id));
     }
 
+    @Nonnull
     @Override
     public BaseRepository clone() {
         return new GithubRepository(this);
@@ -288,25 +288,11 @@ public class GithubRepository extends BaseRepositoryImpl {
 
     @Override
     public boolean equals(Object o) {
-        if (!super.equals(o)) {
-            return false;
-        }
-        if (!(o instanceof GithubRepository)) {
-            return false;
-        }
-
-        GithubRepository that = (GithubRepository)o;
-        if (!Comparing.equal(getRepoAuthor(), that.getRepoAuthor())) {
-            return false;
-        }
-        if (!Comparing.equal(getRepoName(), that.getRepoName())) {
-            return false;
-        }
-        if (!Comparing.equal(getToken(), that.getToken())) {
-            return false;
-        }
-
-        return true;
+        return super.equals(o)
+            && o instanceof GithubRepository that
+            && Objects.equals(getRepoAuthor(), that.getRepoAuthor())
+            && Objects.equals(getRepoName(), that.getRepoName())
+            && Objects.equals(getToken(), that.getToken());
     }
 
     @Override

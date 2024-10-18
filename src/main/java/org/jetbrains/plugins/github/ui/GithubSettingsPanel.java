@@ -38,12 +38,14 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
 import java.io.IOException;
 
 /**
  * @author oleg
- * @date 10/20/10
+ * @since 2010-10-20
  */
 public class GithubSettingsPanel {
     private static final String DEFAULT_PASSWORD_TEXT = "************";
@@ -61,7 +63,7 @@ public class GithubSettingsPanel {
     private JPanel myPane;
     private JButton myTestButton;
     private JTextField myHostTextField;
-    private ComboBox myAuthTypeComboBox;
+    private ComboBox<String> myAuthTypeComboBox;
     private JPanel myCardPanel;
 
     private boolean myCredentialsModified;
@@ -81,28 +83,30 @@ public class GithubSettingsPanel {
         myAuthTypeComboBox.addItem(AUTH_PASSWORD);
         myAuthTypeComboBox.addItem(AUTH_TOKEN);
 
-        myTestButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    GithubUser user = GithubUtil.checkAuthData(getAuthData());
-                    if (GithubAuthData.AuthType.TOKEN.equals(getAuthType())) {
-                        GithubNotifications.showInfoDialog(myPane, "Success", "Connection successful for user " + user
-                            .getLogin());
-                    }
-                    else {
-                        GithubNotifications.showInfoDialog(myPane, "Success", "Connection successful");
-                    }
+        myTestButton.addActionListener(e -> {
+            try {
+                GithubUser user = GithubUtil.checkAuthData(getAuthData());
+                if (GithubAuthData.AuthType.TOKEN.equals(getAuthType())) {
+                    GithubNotifications.showInfoDialog(myPane, "Success", "Connection successful for user " + user.getLogin());
                 }
-                catch (GithubAuthenticationException ex) {
-                    GithubNotifications.showErrorDialog(myPane, "Login Failure", "Can't login using given credentials:" +
-                        " " + ex.getMessage());
+                else {
+                    GithubNotifications.showInfoDialog(myPane, "Success", "Connection successful");
                 }
-                catch (IOException ex) {
-                    LOG.info(ex);
-                    GithubNotifications.showErrorDialog(myPane, "Login Failure", "Can't login: " + GithubUtil
-                        .getErrorTextFromException(ex));
-                }
+            }
+            catch (GithubAuthenticationException ex) {
+                GithubNotifications.showErrorDialog(
+                    myPane,
+                    "Login Failure",
+                    "Can't login using given credentials: " + ex.getMessage()
+                );
+            }
+            catch (IOException ex) {
+                LOG.info(ex);
+                GithubNotifications.showErrorDialog(
+                    myPane,
+                    "Login Failure",
+                    "Can't login: " + GithubUtil.getErrorTextFromException(ex)
+                );
             }
         });
 
@@ -137,19 +141,16 @@ public class GithubSettingsPanel {
             }
         });
 
-        myAuthTypeComboBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    String item = e.getItem().toString();
-                    if (AUTH_PASSWORD.equals(item)) {
-                        ((CardLayout)myCardPanel.getLayout()).show(myCardPanel, AUTH_PASSWORD);
-                    }
-                    else if (AUTH_TOKEN.equals(item)) {
-                        ((CardLayout)myCardPanel.getLayout()).show(myCardPanel, AUTH_TOKEN);
-                    }
-                    erasePassword();
+        myAuthTypeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String item = e.getItem().toString();
+                if (AUTH_PASSWORD.equals(item)) {
+                    ((CardLayout)myCardPanel.getLayout()).show(myCardPanel, AUTH_PASSWORD);
                 }
+                else if (AUTH_TOKEN.equals(item)) {
+                    ((CardLayout)myCardPanel.getLayout()).show(myCardPanel, AUTH_TOKEN);
+                }
+                erasePassword();
             }
         });
 

@@ -21,6 +21,7 @@ import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.awt.UIUtil;
 import consulo.util.lang.function.ThrowableFunction;
 import jakarta.inject.Singleton;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -113,10 +114,7 @@ public class GithubSslSupport {
 
     public static boolean isCertificateException(IOException e) {
         Throwable cause = e.getCause();
-        if (cause != null) {
-            return "sun.security.validator.ValidatorException".equals(cause.getClass().getName());
-        }
-        return false;
+        return cause != null && "sun.security.validator.ValidatorException".equals(cause.getClass().getName());
     }
 
     private static boolean isTrusted(@Nonnull String host) {
@@ -144,7 +142,7 @@ public class GithubSslSupport {
                 TRUST
             },
             0,
-            Messages.getErrorIcon(),
+            UIUtil.getErrorIcon(),
             null
         );
         boolean trust = (choice == 1);

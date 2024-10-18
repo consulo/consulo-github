@@ -43,6 +43,7 @@ public class GithubComment extends SimpleComment {
         myUserHtmlUrl = userHtmlUrl;
     }
 
+    @Override
     public void appendTo(StringBuilder builder) {
         builder.append("<hr>");
         builder.append("<table>");

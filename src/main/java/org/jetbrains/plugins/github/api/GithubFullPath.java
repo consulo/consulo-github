@@ -42,29 +42,17 @@ public class GithubFullPath {
     }
 
     @Nonnull
+    @Override
     public String toString() {
         return myUserName + '/' + myRepositoryName;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        GithubFullPath that = (GithubFullPath)o;
-
-        if (!myRepositoryName.equals(that.myRepositoryName)) {
-            return false;
-        }
-        if (!myUserName.equals(that.myUserName)) {
-            return false;
-        }
-
-        return true;
+        return this == o
+            || o instanceof GithubFullPath that
+            && myRepositoryName.equals(that.myRepositoryName)
+            && myUserName.equals(that.myUserName);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class GithubCreatePullRequestPanel {
 
     public GithubCreatePullRequestPanel(@Nonnull final Consumer<String> showDiff) {
         myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
-        myBranchModel = new SortedComboBoxModel<String>((o1, o2) -> StringUtil.naturalCompare(o1, o2));
+        myBranchModel = new SortedComboBoxModel<>(StringUtil::naturalCompare);
         myBranchComboBox.setModel(myBranchModel);
         myShowDiffButton.addActionListener(e -> showDiff.accept(getBranch()));
     }

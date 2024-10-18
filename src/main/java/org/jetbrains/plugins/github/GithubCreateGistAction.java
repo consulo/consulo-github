@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github;
 
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.application.util.function.Computable;
@@ -55,7 +55,7 @@ import static org.jetbrains.plugins.github.api.GithubGist.FileContent;
 
 /**
  * @author oleg
- * @since 9/27/11
+ * @since 2011-09-27
  */
 public class GithubCreateGistAction extends DumbAwareAction {
     private static final Logger LOG = GithubUtil.LOG;
@@ -104,13 +104,13 @@ public class GithubCreateGistAction extends DumbAwareAction {
         createGistAction(project, editor, file, files);
     }
 
+    @RequiredUIAccess
     static void createGistAction(
         @Nonnull final Project project,
         @Nullable final Editor editor,
         @Nullable final VirtualFile file,
         @Nullable final VirtualFile[] files
     ) {
-
         // Ask for description and other params
         final GithubCreateGistDialog dialog = new GithubCreateGistDialog(project, editor, files, file);
         dialog.show();
@@ -132,7 +132,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
             }
         }
 
-        final Ref<String> url = new Ref<String>();
+        final Ref<String> url = new Ref<>();
         final GithubAuthData finalAuth = auth;
         new Task.Backgroundable(project, "Creating Gist...") {
             @Override
@@ -188,7 +188,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
             }
         }
         if (files != null) {
-            List<FileContent> contents = new ArrayList<FileContent>();
+            List<FileContent> contents = new ArrayList<>();
             for (VirtualFile vf : files) {
                 contents.addAll(getContentFromFile(vf, project, null));
             }
@@ -232,7 +232,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
 
     @Nullable
     private static String getContentFromEditor(@Nonnull final Editor editor) {
-        String text = ApplicationManager.getApplication().runReadAction(new Computable<String>() {
+        String text = Application.get().runReadAction(new Computable<String>() {
             @Nullable
             @Override
             public String compute() {
@@ -259,7 +259,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
         if (file.isDirectory()) {
             return getContentFromDirectory(file, project, prefix);
         }
-        Document document = ApplicationManager.getApplication()
+        Document document = Application.get()
             .runReadAction((Supplier<Document>)() -> FileDocumentManager.getInstance().getDocument(file));
         String content;
         if (document != null) {
@@ -285,7 +285,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
         @Nonnull Project project,
         @Nullable String prefix
     ) {
-        List<FileContent> contents = new ArrayList<FileContent>();
+        List<FileContent> contents = new ArrayList<>();
         for (VirtualFile file : dir.getChildren()) {
             if (!isFileIgnored(file, project)) {
                 String pref = addPrefix(dir.getName(), prefix, true);
@@ -297,7 +297,7 @@ public class GithubCreateGistAction extends DumbAwareAction {
 
     @Nullable
     private static String readFile(@Nonnull final VirtualFile file) {
-        return ApplicationManager.getApplication().runReadAction(new Computable<String>() {
+        return Application.get().runReadAction(new Computable<String>() {
             @Nullable
             @Override
             public String compute() {

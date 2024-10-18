@@ -22,70 +22,64 @@ import java.util.Date;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubIssueComment
-{
-	private final long myId;
+public class GithubIssueComment {
+    private final long myId;
 
-	@Nonnull
-	private final String myHtmlUrl;
-	@Nonnull
-	private final String myBodyHtml;
+    @Nonnull
+    private final String myHtmlUrl;
+    @Nonnull
+    private final String myBodyHtml;
 
-	@Nonnull
-	private final Date myCreatedAt;
-	@Nonnull
-	private final Date myUpdatedAt;
+    @Nonnull
+    private final Date myCreatedAt;
+    @Nonnull
+    private final Date myUpdatedAt;
 
-	@Nonnull
-	private final GithubUser myUser;
+    @Nonnull
+    private final GithubUser myUser;
 
-	public GithubIssueComment(long id,
-			@Nonnull String htmlUrl,
-			@Nonnull String bodyHtml,
-			@Nonnull Date createdAt,
-			@Nonnull Date updatedAt,
-			@Nonnull GithubUser user)
-	{
-		myId = id;
-		myHtmlUrl = htmlUrl;
-		myBodyHtml = bodyHtml;
-		myCreatedAt = createdAt;
-		myUpdatedAt = updatedAt;
-		myUser = user;
-	}
+    public GithubIssueComment(
+        long id,
+        @Nonnull String htmlUrl,
+        @Nonnull String bodyHtml,
+        @Nonnull Date createdAt,
+        @Nonnull Date updatedAt,
+        @Nonnull GithubUser user
+    ) {
+        myId = id;
+        myHtmlUrl = htmlUrl;
+        myBodyHtml = bodyHtml;
+        myCreatedAt = createdAt;
+        myUpdatedAt = updatedAt;
+        myUser = user;
+    }
 
-	public long getId()
-	{
-		return myId;
-	}
+    public long getId() {
+        return myId;
+    }
 
-	@Nonnull
-	public String getHtmlUrl()
-	{
-		return myHtmlUrl;
-	}
+    @Nonnull
+    public String getHtmlUrl() {
+        return myHtmlUrl;
+    }
 
-	@Nonnull
-	public String getBodyHtml()
-	{
-		return myBodyHtml;
-	}
+    @Nonnull
+    public String getBodyHtml() {
+        return myBodyHtml;
+    }
 
-	@Nonnull
-	public Date getCreatedAt()
-	{
-		return myCreatedAt;
-	}
+    @Nonnull
+    public Date getCreatedAt() {
+        return myCreatedAt;
+    }
 
-	@Nonnull
-	public Date getUpdatedAt()
-	{
-		return myUpdatedAt;
-	}
+    @Nonnull
+    public Date getUpdatedAt() {
+        return myUpdatedAt;
+    }
 
-	@Nonnull
-	public GithubUser getUser()
-	{
-		return myUser;
-	}
+    @Nonnull
+    public GithubUser getUser() {
+        return myUser;
+    }
 }

@@ -24,22 +24,17 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubBasicLoginDialog extends GithubLoginDialog
-{
+public class GithubBasicLoginDialog extends GithubLoginDialog {
+    public GithubBasicLoginDialog(@Nullable Project project) {
+        super(project);
+        myGithubLoginPanel.lockAuthType(GithubAuthData.AuthType.BASIC);
+    }
 
-	public GithubBasicLoginDialog(@Nullable Project project)
-	{
-		super(project);
-		myGithubLoginPanel.lockAuthType(GithubAuthData.AuthType.BASIC);
-	}
-
-	@Override
-	protected void saveCredentials(GithubAuthData auth)
-	{
-		final GithubSettings settings = GithubSettings.getInstance();
-		if(settings.getAuthType() != GithubAuthData.AuthType.TOKEN)
-		{
-			settings.setCredentials(myGithubLoginPanel.getHost(), auth, myGithubLoginPanel.isSavePasswordSelected());
-		}
-	}
+    @Override
+    protected void saveCredentials(GithubAuthData auth) {
+        final GithubSettings settings = GithubSettings.getInstance();
+        if (settings.getAuthType() != GithubAuthData.AuthType.TOKEN) {
+            settings.setCredentials(myGithubLoginPanel.getHost(), auth, myGithubLoginPanel.isSavePasswordSelected());
+        }
+    }
 }

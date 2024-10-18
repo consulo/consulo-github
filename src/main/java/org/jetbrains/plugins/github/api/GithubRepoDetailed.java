@@ -21,38 +21,36 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubRepoDetailed extends GithubRepo
-{
-	@Nullable
-	private final GithubRepo myParent;
-	@Nullable
-	private final GithubRepo mySource;
+public class GithubRepoDetailed extends GithubRepo {
+    @Nullable
+    private final GithubRepo myParent;
+    @Nullable
+    private final GithubRepo mySource;
 
-	public GithubRepoDetailed(@Nonnull String name,
-			@Nullable String description,
-			boolean isPrivate,
-			boolean isFork,
-			@Nonnull String htmlUrl,
-			@Nonnull String cloneUrl,
-			@Nullable String defaultBranch,
-			@Nonnull GithubUser owner,
-			@Nullable GithubRepo parent,
-			@Nullable GithubRepo source)
-	{
-		super(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch, owner);
-		myParent = parent;
-		mySource = source;
-	}
+    public GithubRepoDetailed(
+        @Nonnull String name,
+        @Nullable String description,
+        boolean isPrivate,
+        boolean isFork,
+        @Nonnull String htmlUrl,
+        @Nonnull String cloneUrl,
+        @Nullable String defaultBranch,
+        @Nonnull GithubUser owner,
+        @Nullable GithubRepo parent,
+        @Nullable GithubRepo source
+    ) {
+        super(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch, owner);
+        myParent = parent;
+        mySource = source;
+    }
 
-	@Nullable
-	public GithubRepo getParent()
-	{
-		return myParent;
-	}
+    @Nullable
+    public GithubRepo getParent() {
+        return myParent;
+    }
 
-	@Nullable
-	public GithubRepo getSource()
-	{
-		return mySource;
-	}
+    @Nullable
+    public GithubRepo getSource() {
+        return mySource;
+    }
 }

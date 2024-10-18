@@ -25,125 +25,111 @@ import java.util.List;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubCommit extends GithubCommitSha
-{
-	@Nullable
-	private final GithubUser myAuthor;
-	@Nullable
-	private final GithubUser myCommitter;
+public class GithubCommit extends GithubCommitSha {
+    @Nullable
+    private final GithubUser myAuthor;
+    @Nullable
+    private final GithubUser myCommitter;
 
-	@Nonnull
-	private final List<GithubCommitSha> myParents;
+    @Nonnull
+    private final List<GithubCommitSha> myParents;
 
-	@Nonnull
-	private final GitCommit myCommit;
+    @Nonnull
+    private final GitCommit myCommit;
 
-	public static class GitCommit
-	{
-		@Nonnull
-		private final String myMessage;
+    public static class GitCommit {
+        @Nonnull
+        private final String myMessage;
 
-		@Nonnull
-		private final GitUser myAuthor;
-		@Nonnull
-		private final GitUser myCommitter;
+        @Nonnull
+        private final GitUser myAuthor;
+        @Nonnull
+        private final GitUser myCommitter;
 
-		public GitCommit(@Nonnull String message, @Nonnull GitUser author, @Nonnull GitUser committer)
-		{
-			myMessage = message;
-			myAuthor = author;
-			myCommitter = committer;
-		}
+        public GitCommit(@Nonnull String message, @Nonnull GitUser author, @Nonnull GitUser committer) {
+            myMessage = message;
+            myAuthor = author;
+            myCommitter = committer;
+        }
 
-		@Nonnull
-		public String getMessage()
-		{
-			return myMessage;
-		}
+        @Nonnull
+        public String getMessage() {
+            return myMessage;
+        }
 
-		@Nonnull
-		public GitUser getAuthor()
-		{
-			return myAuthor;
-		}
+        @Nonnull
+        public GitUser getAuthor() {
+            return myAuthor;
+        }
 
-		@Nonnull
-		public GitUser getCommitter()
-		{
-			return myCommitter;
-		}
-	}
+        @Nonnull
+        public GitUser getCommitter() {
+            return myCommitter;
+        }
+    }
 
-	public static class GitUser
-	{
-		@Nonnull
-		private final String myName;
-		@Nonnull
-		private final String myEmail;
-		@Nonnull
-		private final Date myDate;
+    public static class GitUser {
+        @Nonnull
+        private final String myName;
+        @Nonnull
+        private final String myEmail;
+        @Nonnull
+        private final Date myDate;
 
-		public GitUser(@Nonnull String name, @Nonnull String email, @Nonnull Date date)
-		{
-			myName = name;
-			myEmail = email;
-			myDate = date;
-		}
+        public GitUser(@Nonnull String name, @Nonnull String email, @Nonnull Date date) {
+            myName = name;
+            myEmail = email;
+            myDate = date;
+        }
 
-		@Nonnull
-		public String getName()
-		{
-			return myName;
-		}
+        @Nonnull
+        public String getName() {
+            return myName;
+        }
 
-		@Nonnull
-		public String getEmail()
-		{
-			return myEmail;
-		}
+        @Nonnull
+        public String getEmail() {
+            return myEmail;
+        }
 
-		@Nonnull
-		public Date getDate()
-		{
-			return myDate;
-		}
-	}
+        @Nonnull
+        public Date getDate() {
+            return myDate;
+        }
+    }
 
-	public GithubCommit(@Nonnull String url,
-			@Nonnull String sha,
-			@Nullable GithubUser author,
-			@Nullable GithubUser committer,
-			@Nonnull List<GithubCommitSha> parents,
-			@Nonnull GitCommit commit)
-	{
-		super(url, sha);
-		myAuthor = author;
-		myCommitter = committer;
-		myParents = parents;
-		myCommit = commit;
-	}
+    public GithubCommit(
+        @Nonnull String url,
+        @Nonnull String sha,
+        @Nullable GithubUser author,
+        @Nullable GithubUser committer,
+        @Nonnull List<GithubCommitSha> parents,
+        @Nonnull GitCommit commit
+    ) {
+        super(url, sha);
+        myAuthor = author;
+        myCommitter = committer;
+        myParents = parents;
+        myCommit = commit;
+    }
 
-	@Nullable
-	public GithubUser getAuthor()
-	{
-		return myAuthor;
-	}
+    @Nullable
+    public GithubUser getAuthor() {
+        return myAuthor;
+    }
 
-	@Nullable
-	public GithubUser getCommitter()
-	{
-		return myCommitter;
-	}
+    @Nullable
+    public GithubUser getCommitter() {
+        return myCommitter;
+    }
 
-	@Nonnull
-	public List<GithubCommitSha> getParents()
-	{
-		return myParents;
-	}
+    @Nonnull
+    public List<GithubCommitSha> getParents() {
+        return myParents;
+    }
 
-	@Nonnull
-	public GitCommit getCommit()
-	{
-		return myCommit;
-	}
+    @Nonnull
+    public GitCommit getCommit() {
+        return myCommit;
+    }
 }

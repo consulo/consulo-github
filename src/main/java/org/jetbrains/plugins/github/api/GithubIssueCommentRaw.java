@@ -24,45 +24,41 @@ import javax.annotation.Nullable;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubIssueCommentRaw implements DataConstructor
-{
-	@Nullable
-	public Long id;
+class GithubIssueCommentRaw implements DataConstructor {
+    @Nullable
+    public Long id;
 
-	@Nullable
-	public String url;
-	@Nullable
-	public String htmlUrl;
-	@Nullable
-	public String body;
-	@Nullable
-	public String bodyHtml;
+    @Nullable
+    public String url;
+    @Nullable
+    public String htmlUrl;
+    @Nullable
+    public String body;
+    @Nullable
+    public String bodyHtml;
 
-	@Nullable
-	public Date createdAt;
-	@Nullable
-	public Date updatedAt;
+    @Nullable
+    public Date createdAt;
+    @Nullable
+    public Date updatedAt;
 
-	@Nullable
-	public GithubUserRaw user;
+    @Nullable
+    public GithubUserRaw user;
 
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	public GithubIssueComment createIssueComment()
-	{
-		return new GithubIssueComment(id, htmlUrl, bodyHtml, createdAt, updatedAt, user.createUser());
-	}
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull
+    public GithubIssueComment createIssueComment() {
+        return new GithubIssueComment(id, htmlUrl, bodyHtml, createdAt, updatedAt, user.createUser());
+    }
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> T create(@Nonnull Class<T> resultClass)
-	{
-		if(resultClass.isAssignableFrom(GithubIssueComment.class))
-		{
-			return (T) createIssueComment();
-		}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> T create(@Nonnull Class<T> resultClass) {
+        if (resultClass.isAssignableFrom(GithubIssueComment.class)) {
+            return (T)createIssueComment();
+        }
 
-		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-	}
+        throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+    }
 }

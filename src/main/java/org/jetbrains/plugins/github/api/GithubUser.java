@@ -21,39 +21,34 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubUser
-{
-	@Nonnull
-	private final String myLogin;
+public class GithubUser {
+    @Nonnull
+    private final String myLogin;
 
-	@Nonnull
-	private final String myHtmlUrl;
+    @Nonnull
+    private final String myHtmlUrl;
 
-	@Nullable
-	private final String myGravatarId;
+    @Nullable
+    private final String myGravatarId;
 
-	public GithubUser(@Nonnull String login, @Nonnull String htmlUrl, @Nullable String gravatarId)
-	{
-		myLogin = login;
-		myHtmlUrl = htmlUrl;
-		myGravatarId = gravatarId;
-	}
+    public GithubUser(@Nonnull String login, @Nonnull String htmlUrl, @Nullable String gravatarId) {
+        myLogin = login;
+        myHtmlUrl = htmlUrl;
+        myGravatarId = gravatarId;
+    }
 
-	@Nonnull
-	public String getLogin()
-	{
-		return myLogin;
-	}
+    @Nonnull
+    public String getLogin() {
+        return myLogin;
+    }
 
-	@Nonnull
-	public String getHtmlUrl()
-	{
-		return myHtmlUrl;
-	}
+    @Nonnull
+    public String getHtmlUrl() {
+        return myHtmlUrl;
+    }
 
-	@Nullable
-	public String getGravatarId()
-	{
-		return myGravatarId;
-	}
+    @Nullable
+    public String getGravatarId() {
+        return myGravatarId;
+    }
 }

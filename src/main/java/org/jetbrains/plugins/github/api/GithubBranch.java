@@ -20,19 +20,16 @@ import javax.annotation.Nonnull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubBranch
-{
-	@Nonnull
-	private final String name;
+public class GithubBranch {
+    @Nonnull
+    private final String name;
 
-	public GithubBranch(@Nonnull String name)
-	{
-		this.name = name;
-	}
+    public GithubBranch(@Nonnull String name) {
+        this.name = name;
+    }
 
-	@Nonnull
-	public String getName()
-	{
-		return name;
-	}
+    @Nonnull
+    public String getName() {
+        return name;
+    }
 }

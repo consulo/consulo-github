@@ -25,46 +25,42 @@ import java.util.Date;
 /**
  * @author Dennis.Ushakov
  */
-public class GithubComment extends SimpleComment
-{
-	@Nullable
-	private final String myGravatarId;
-	@Nonnull
-	private final String myUserHtmlUrl;
+public class GithubComment extends SimpleComment {
+    @Nullable
+    private final String myGravatarId;
+    @Nonnull
+    private final String myUserHtmlUrl;
 
-	public GithubComment(@Nullable Date date,
-			@Nullable String author,
-			@Nonnull String text,
-			@Nullable String gravatarId,
-			@Nonnull String userHtmlUrl)
-	{
-		super(date, author, text);
-		myGravatarId = gravatarId;
-		myUserHtmlUrl = userHtmlUrl;
-	}
+    public GithubComment(
+        @Nullable Date date,
+        @Nullable String author,
+        @Nonnull String text,
+        @Nullable String gravatarId,
+        @Nonnull String userHtmlUrl
+    ) {
+        super(date, author, text);
+        myGravatarId = gravatarId;
+        myUserHtmlUrl = userHtmlUrl;
+    }
 
-	public void appendTo(StringBuilder builder)
-	{
-		builder.append("<hr>");
-		builder.append("<table>");
-		builder.append("<tr><td>");
-		if(myGravatarId != null)
-		{
-			builder.append("<img src=\"").append("http://www.gravatar.com/avatar/").append(myGravatarId).append
-					("?s=40\"/><br>");
-		}
-		builder.append("</td><td>");
-		if(getAuthor() != null)
-		{
-			builder.append("<b>Author:</b> <a href=\"").append(myUserHtmlUrl).append("\">").append(getAuthor()).append
-					("</a><br>");
-		}
-		if(getDate() != null)
-		{
-			builder.append("<b>Date:</b> ").append(DateFormatUtil.formatDateTime(getDate())).append("<br>");
-		}
-		builder.append("</td></tr></table>");
+    public void appendTo(StringBuilder builder) {
+        builder.append("<hr>");
+        builder.append("<table>");
+        builder.append("<tr><td>");
+        if (myGravatarId != null) {
+            builder.append("<img src=\"").append("http://www.gravatar.com/avatar/").append(myGravatarId).append
+                ("?s=40\"/><br>");
+        }
+        builder.append("</td><td>");
+        if (getAuthor() != null) {
+            builder.append("<b>Author:</b> <a href=\"").append(myUserHtmlUrl).append("\">").append(getAuthor())
+                .append("</a><br>");
+        }
+        if (getDate() != null) {
+            builder.append("<b>Date:</b> ").append(DateFormatUtil.formatDateTime(getDate())).append("<br>");
+        }
+        builder.append("</td></tr></table>");
 
-		builder.append(getText()).append("<br>");
-	}
+        builder.append(getText()).append("<br>");
+    }
 }

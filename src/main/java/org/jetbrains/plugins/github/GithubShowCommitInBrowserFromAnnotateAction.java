@@ -36,115 +36,97 @@ import javax.annotation.Nullable;
 /**
  * @author Kirill Likhodedov
  */
-public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommitInBrowserAction implements
-		LineNumberListener
-{
+public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommitInBrowserAction implements LineNumberListener {
+    private final FileAnnotation myAnnotation;
+    private int myLineNumber = -1;
 
-	private final FileAnnotation myAnnotation;
-	private int myLineNumber = -1;
+    public GithubShowCommitInBrowserFromAnnotateAction(FileAnnotation annotation) {
+        super();
+        myAnnotation = annotation;
+    }
 
-	public GithubShowCommitInBrowserFromAnnotateAction(FileAnnotation annotation)
-	{
-		super();
-		myAnnotation = annotation;
-	}
+    @Override
+    public void update(AnActionEvent e) {
+        EventData eventData = calcData(e, myLineNumber);
+        if (eventData == null) {
+            e.getPresentation().setEnabled(false);
+            e.getPresentation().setVisible(false);
+            return;
+        }
+        int corrected = eventData.getCorrectedLineNumber();
+        e.getPresentation().setEnabled(corrected >= 0 && myAnnotation.getLineRevisionNumber(corrected) != null);
+        e.getPresentation().setVisible(GithubUtil.isRepositoryOnGitHub(eventData.getRepository()));
+    }
 
-	@Override
-	public void update(AnActionEvent e)
-	{
-		EventData eventData = calcData(e, myLineNumber);
-		if(eventData == null)
-		{
-			e.getPresentation().setEnabled(false);
-			e.getPresentation().setVisible(false);
-			return;
-		}
-		int corrected = eventData.getCorrectedLineNumber();
-		e.getPresentation().setEnabled(corrected >= 0 && myAnnotation.getLineRevisionNumber(corrected) != null);
-		e.getPresentation().setVisible(GithubUtil.isRepositoryOnGitHub(eventData.getRepository()));
-	}
+    @Override
+    public void actionPerformed(AnActionEvent e) {
+        EventData eventData = calcData(e, myLineNumber);
+        if (eventData == null) {
+            return;
+        }
 
-	@Override
-	public void actionPerformed(AnActionEvent e)
-	{
-		EventData eventData = calcData(e, myLineNumber);
-		if(eventData == null)
-		{
-			return;
-		}
+        final VcsRevisionNumber revisionNumber = myAnnotation.getLineRevisionNumber(eventData.getCorrectedLineNumber
+            ());
+        if (revisionNumber != null) {
+            openInBrowser(eventData.getProject(), eventData.getRepository(), revisionNumber.asString());
+        }
+    }
 
-		final VcsRevisionNumber revisionNumber = myAnnotation.getLineRevisionNumber(eventData.getCorrectedLineNumber
-				());
-		if(revisionNumber != null)
-		{
-			openInBrowser(eventData.getProject(), eventData.getRepository(), revisionNumber.asString());
-		}
-	}
+    @Nullable
+    private static EventData calcData(AnActionEvent e, int lineNumber) {
+        Project project = e.getData(PlatformDataKeys.PROJECT);
+        VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        if (project == null || virtualFile == null) {
+            return null;
+        }
+        Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
+        if (document == null) {
+            return null;
+        }
+        final UpToDateLineNumberProvider myGetUpToDateLineNumber = new UpToDateLineNumberProviderImpl(
+            document,
+            project
+        );
+        int corrected = myGetUpToDateLineNumber.getLineNumber(lineNumber);
 
-	@Nullable
-	private static EventData calcData(AnActionEvent e, int lineNumber)
-	{
-		Project project = e.getData(PlatformDataKeys.PROJECT);
-		VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-		if(project == null || virtualFile == null)
-		{
-			return null;
-		}
-		Document document = FileDocumentManager.getInstance().getDocument(virtualFile);
-		if(document == null)
-		{
-			return null;
-		}
-		final UpToDateLineNumberProvider myGetUpToDateLineNumber = new UpToDateLineNumberProviderImpl(document,
-				project);
-		int corrected = myGetUpToDateLineNumber.getLineNumber(lineNumber);
+        GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForFile(virtualFile);
+        if (repository == null) {
+            return null;
+        }
 
-		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForFile(virtualFile);
-		if(repository == null)
-		{
-			return null;
-		}
+        return new EventData(project, repository, corrected);
+    }
 
-		return new EventData(project, repository, corrected);
-	}
+    @Override
+    public void accept(Integer integer) {
+        myLineNumber = integer;
+    }
 
-	@Override
-	public void accept(Integer integer)
-	{
-		myLineNumber = integer;
-	}
+    private static class EventData {
+        @Nonnull
+        private final Project myProject;
+        @Nonnull
+        private final GitRepository myRepository;
+        private final int myCorrectedLineNumber;
 
-	private static class EventData
-	{
-		@Nonnull
-		private final Project myProject;
-		@Nonnull
-		private final GitRepository myRepository;
-		private final int myCorrectedLineNumber;
+        private EventData(@Nonnull Project project, @Nonnull GitRepository repository, int correctedLineNumber) {
+            myProject = project;
+            myRepository = repository;
+            myCorrectedLineNumber = correctedLineNumber;
+        }
 
-		private EventData(@Nonnull Project project, @Nonnull GitRepository repository, int correctedLineNumber)
-		{
-			myProject = project;
-			myRepository = repository;
-			myCorrectedLineNumber = correctedLineNumber;
-		}
+        @Nonnull
+        public Project getProject() {
+            return myProject;
+        }
 
-		@Nonnull
-		public Project getProject()
-		{
-			return myProject;
-		}
+        @Nonnull
+        public GitRepository getRepository() {
+            return myRepository;
+        }
 
-		@Nonnull
-		public GitRepository getRepository()
-		{
-			return myRepository;
-		}
-
-		private int getCorrectedLineNumber()
-		{
-			return myCorrectedLineNumber;
-		}
-	}
-
+        private int getCorrectedLineNumber() {
+            return myCorrectedLineNumber;
+        }
+    }
 }

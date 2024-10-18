@@ -24,37 +24,28 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"UnusedDeclaration",
-		"ConstantConditions"
-})
-class GithubIssuesSearchResultRaw implements DataConstructor
-{
-	@Nullable
-	public List<GithubIssueRaw> items;
+@SuppressWarnings({"UnusedDeclaration", "ConstantConditions"})
+class GithubIssuesSearchResultRaw implements DataConstructor {
+    @Nullable
+    public List<GithubIssueRaw> items;
 
-	@Nonnull
-	GithubIssuesSearchResult createIssueSearchResult()
-	{
-		List<GithubIssue> issues = new ArrayList<GithubIssue>();
-		for(GithubIssueRaw raw : items)
-		{
-			issues.add(raw.createIssue());
-		}
-		return new GithubIssuesSearchResult(issues);
-	}
+    @Nonnull
+    GithubIssuesSearchResult createIssueSearchResult() {
+        List<GithubIssue> issues = new ArrayList<GithubIssue>();
+        for (GithubIssueRaw raw : items) {
+            issues.add(raw.createIssue());
+        }
+        return new GithubIssuesSearchResult(issues);
+    }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> T create(@Nonnull Class<T> resultClass) {
+        if (resultClass.isAssignableFrom(GithubIssuesSearchResult.class)) {
+            return (T)createIssueSearchResult();
+        }
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> T create(@Nonnull Class<T> resultClass)
-	{
-		if(resultClass.isAssignableFrom(GithubIssuesSearchResult.class))
-		{
-			return (T) createIssueSearchResult();
-		}
-
-		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-	}
+        throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+    }
 }

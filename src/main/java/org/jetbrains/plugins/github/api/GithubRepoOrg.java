@@ -21,55 +21,47 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"FieldCanBeLocal",
-		"UnusedDeclaration"
-})
-public class GithubRepoOrg extends GithubRepo
-{
-	@Nonnull
-	private final Permissions myPermissions;
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+public class GithubRepoOrg extends GithubRepo {
+    @Nonnull
+    private final Permissions myPermissions;
 
-	public static class Permissions
-	{
-		private final boolean myAdmin;
-		private final boolean myPull;
-		private final boolean myPush;
+    public static class Permissions {
+        private final boolean myAdmin;
+        private final boolean myPull;
+        private final boolean myPush;
 
-		public Permissions(boolean admin, boolean pull, boolean push)
-		{
-			myAdmin = admin;
-			myPull = pull;
-			myPush = push;
-		}
+        public Permissions(boolean admin, boolean pull, boolean push) {
+            myAdmin = admin;
+            myPull = pull;
+            myPush = push;
+        }
 
-		public boolean isAdmin()
-		{
-			return myAdmin;
-		}
+        public boolean isAdmin() {
+            return myAdmin;
+        }
 
-		public boolean isPull()
-		{
-			return myPull;
-		}
+        public boolean isPull() {
+            return myPull;
+        }
 
-		public boolean isPush()
-		{
-			return myPush;
-		}
-	}
+        public boolean isPush() {
+            return myPush;
+        }
+    }
 
-	public GithubRepoOrg(@Nonnull String name,
-			@Nullable String description,
-			boolean isPrivate,
-			boolean isFork,
-			@Nonnull String htmlUrl,
-			@Nonnull String cloneUrl,
-			@Nullable String defaultBranch,
-			@Nonnull GithubUser owner,
-			@Nonnull Permissions permissions)
-	{
-		super(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch, owner);
-		myPermissions = permissions;
-	}
+    public GithubRepoOrg(
+        @Nonnull String name,
+        @Nullable String description,
+        boolean isPrivate,
+        boolean isFork,
+        @Nonnull String htmlUrl,
+        @Nonnull String cloneUrl,
+        @Nullable String defaultBranch,
+        @Nonnull GithubUser owner,
+        @Nonnull Permissions permissions
+    ) {
+        super(name, description, isPrivate, isFork, htmlUrl, cloneUrl, defaultBranch, owner);
+        myPermissions = permissions;
+    }
 }

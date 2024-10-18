@@ -28,85 +28,71 @@ import java.util.function.Consumer;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubCreatePullRequestPanel
-{
-	private JTextField myTitleTextField;
-	private JTextArea myDescriptionTextArea;
-	private ComboBox myBranchComboBox;
-	private SortedComboBoxModel<String> myBranchModel;
-	private JPanel myPanel;
-	private JButton myShowDiffButton;
+public class GithubCreatePullRequestPanel {
+    private JTextField myTitleTextField;
+    private JTextArea myDescriptionTextArea;
+    private ComboBox myBranchComboBox;
+    private SortedComboBoxModel<String> myBranchModel;
+    private JPanel myPanel;
+    private JButton myShowDiffButton;
 
-	public GithubCreatePullRequestPanel(@Nonnull final Consumer<String> showDiff)
-	{
-		myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
-		myBranchModel = new SortedComboBoxModel<String>((o1, o2) -> StringUtil.naturalCompare(o1, o2));
-		myBranchComboBox.setModel(myBranchModel);
-		myShowDiffButton.addActionListener(e -> showDiff.accept(getBranch()));
-	}
+    public GithubCreatePullRequestPanel(@Nonnull final Consumer<String> showDiff) {
+        myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
+        myBranchModel = new SortedComboBoxModel<String>((o1, o2) -> StringUtil.naturalCompare(o1, o2));
+        myBranchComboBox.setModel(myBranchModel);
+        myShowDiffButton.addActionListener(e -> showDiff.accept(getBranch()));
+    }
 
-	@Nonnull
-	public String getTitle()
-	{
-		return myTitleTextField.getText();
-	}
+    @Nonnull
+    public String getTitle() {
+        return myTitleTextField.getText();
+    }
 
-	@Nonnull
-	public String getDescription()
-	{
-		return myDescriptionTextArea.getText();
-	}
+    @Nonnull
+    public String getDescription() {
+        return myDescriptionTextArea.getText();
+    }
 
-	@Nonnull
-	public String getBranch()
-	{
-		return myBranchComboBox.getSelectedItem().toString();
-	}
+    @Nonnull
+    public String getBranch() {
+        return myBranchComboBox.getSelectedItem().toString();
+    }
 
-	public void setSelectedBranch(@Nullable String branch)
-	{
-		if(StringUtil.isEmptyOrSpaces(branch))
-		{
-			myBranchComboBox.setSelectedItem("");
-			return;
-		}
+    public void setSelectedBranch(@Nullable String branch) {
+        if (StringUtil.isEmptyOrSpaces(branch)) {
+            myBranchComboBox.setSelectedItem("");
+            return;
+        }
 
-		if(myBranchModel.indexOf(branch) == -1)
-		{
-			myBranchModel.add(branch);
-		}
-		myBranchComboBox.setSelectedItem(branch);
-	}
+        if (myBranchModel.indexOf(branch) == -1) {
+            myBranchModel.add(branch);
+        }
+        myBranchComboBox.setSelectedItem(branch);
+    }
 
-	public void setBranches(@Nonnull Collection<String> branches)
-	{
-		myBranchModel.clear();
-		myBranchModel.addAll(branches);
-	}
+    public void setBranches(@Nonnull Collection<String> branches) {
+        myBranchModel.clear();
+        myBranchModel.addAll(branches);
+    }
 
-	public JPanel getPanel()
-	{
-		return myPanel;
-	}
+    public JPanel getPanel() {
+        return myPanel;
+    }
 
-	@Nonnull
-	public JComponent getPreferredComponent()
-	{
-		return myTitleTextField;
-	}
+    @Nonnull
+    public JComponent getPreferredComponent() {
+        return myTitleTextField;
+    }
 
-	public JComponent getBranchEditor()
-	{
-		return myBranchComboBox;
-	}
+    public JComponent getBranchEditor() {
+        return myBranchComboBox;
+    }
 
-	public JComponent getTitleTextField()
-	{
-		return myTitleTextField;
-	}
+    public JComponent getTitleTextField() {
+        return myTitleTextField;
+    }
 
-	public void setTitle(String title)
-	{
-		myTitleTextField.setText(title);
-	}
+    public void setTitle(String title) {
+        myTitleTextField.setText(title);
+    }
 }

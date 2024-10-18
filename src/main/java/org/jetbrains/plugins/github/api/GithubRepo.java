@@ -23,108 +23,97 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubRepo
-{
-	@Nonnull
-	private final String myName;
-	@Nonnull
-	private final String myDescription;
+public class GithubRepo {
+    @Nonnull
+    private final String myName;
+    @Nonnull
+    private final String myDescription;
 
-	private final boolean myIsPrivate;
-	private final boolean myIsFork;
+    private final boolean myIsPrivate;
+    private final boolean myIsFork;
 
-	@Nonnull
-	private final String myHtmlUrl;
-	@Nonnull
-	private final String myCloneUrl;
+    @Nonnull
+    private final String myHtmlUrl;
+    @Nonnull
+    private final String myCloneUrl;
 
-	@Nullable
-	private final String myDefaultBranch;
+    @Nullable
+    private final String myDefaultBranch;
 
-	@Nonnull
-	private final GithubUser myOwner;
+    @Nonnull
+    private final GithubUser myOwner;
 
-	public GithubRepo(@Nonnull String name,
-			@Nullable String description,
-			boolean isPrivate,
-			boolean isFork,
-			@Nonnull String htmlUrl,
-			@Nonnull String cloneUrl,
-			@Nullable String defaultBranch,
-			@Nonnull GithubUser owner)
-	{
-		myName = name;
-		myDescription = StringUtil.notNullize(description);
-		myIsPrivate = isPrivate;
-		myIsFork = isFork;
-		myHtmlUrl = htmlUrl;
-		myCloneUrl = cloneUrl;
-		myDefaultBranch = defaultBranch;
-		myOwner = owner;
-	}
+    public GithubRepo(
+        @Nonnull String name,
+        @Nullable String description,
+        boolean isPrivate,
+        boolean isFork,
+        @Nonnull String htmlUrl,
+        @Nonnull String cloneUrl,
+        @Nullable String defaultBranch,
+        @Nonnull GithubUser owner
+    ) {
+        myName = name;
+        myDescription = StringUtil.notNullize(description);
+        myIsPrivate = isPrivate;
+        myIsFork = isFork;
+        myHtmlUrl = htmlUrl;
+        myCloneUrl = cloneUrl;
+        myDefaultBranch = defaultBranch;
+        myOwner = owner;
+    }
 
-	@Nonnull
-	public String getName()
-	{
-		return myName;
-	}
+    @Nonnull
+    public String getName() {
+        return myName;
+    }
 
-	@Nonnull
-	public String getFullName()
-	{
-		return getUserName() + "/" + getName();
-	}
+    @Nonnull
+    public String getFullName() {
+        return getUserName() + "/" + getName();
+    }
 
-	@Nonnull
-	public String getDescription()
-	{
-		return myDescription;
-	}
+    @Nonnull
+    public String getDescription() {
+        return myDescription;
+    }
 
-	public boolean isPrivate()
-	{
-		return myIsPrivate;
-	}
+    public boolean isPrivate() {
+        return myIsPrivate;
+    }
 
-	public boolean isFork()
-	{
-		return myIsFork;
-	}
+    public boolean isFork() {
+        return myIsFork;
+    }
 
-	@Nonnull
-	public String getHtmlUrl()
-	{
-		return myHtmlUrl;
-	}
+    @Nonnull
+    public String getHtmlUrl() {
+        return myHtmlUrl;
+    }
 
-	@Nonnull
-	public String getCloneUrl()
-	{
-		return myCloneUrl;
-	}
+    @Nonnull
+    public String getCloneUrl() {
+        return myCloneUrl;
+    }
 
-	@Nullable
-	public String getDefaultBranch()
-	{
-		return myDefaultBranch;
-	}
+    @Nullable
+    public String getDefaultBranch() {
+        return myDefaultBranch;
+    }
 
-	@Nonnull
-	public GithubUser getOwner()
-	{
-		return myOwner;
-	}
+    @Nonnull
+    public GithubUser getOwner() {
+        return myOwner;
+    }
 
-	@Nonnull
-	public String getUserName()
-	{
-		return getOwner().getLogin();
-	}
+    @Nonnull
+    public String getUserName() {
+        return getOwner().getLogin();
+    }
 
-	@Nonnull
-	public GithubFullPath getFullPath()
-	{
-		return new GithubFullPath(getUserName(), getName());
-	}
+    @Nonnull
+    public GithubFullPath getFullPath() {
+        return new GithubFullPath(getUserName(), getName());
+    }
 }
 

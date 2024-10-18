@@ -45,75 +45,73 @@ import java.util.List;
  * @author oleg
  */
 @ExtensionImpl
-public class GithubCheckoutProvider implements CheckoutProvider
-{
+public class GithubCheckoutProvider implements CheckoutProvider {
+    @Override
+    public void doCheckout(@Nonnull final Project project, @Nullable final Listener listener) {
+        if (!GithubUtil.testGitExecutable(project)) {
+            return;
+        }
+        BasicAction.saveAll();
 
-	@Override
-	public void doCheckout(@Nonnull final Project project, @Nullable final Listener listener)
-	{
-		if(!GithubUtil.testGitExecutable(project))
-		{
-			return;
-		}
-		BasicAction.saveAll();
+        List<GithubRepo> availableRepos;
+        try {
+            availableRepos = GithubUtil.computeValueInModal(project,
+                "Access to GitHub",
+                indicator -> GithubUtil.runWithValidAuth(project, indicator, (ThrowableFunction<GithubAuthData,
+                    List<GithubRepo>, IOException>)authData -> GithubApiUtil.getAvailableRepos(authData))
+            );
+        }
+        catch (GithubAuthenticationCanceledException e) {
+            return;
+        }
+        catch (IOException e) {
+            GithubNotifications.showError(project, "Couldn't get the list of GitHub repositories", e);
+            return;
+        }
+        Collections.sort(availableRepos, new Comparator<GithubRepo>() {
+            @Override
+            public int compare(final GithubRepo r1, final GithubRepo r2) {
+                final int comparedOwners = r1.getUserName().compareTo(r2.getUserName());
+                return comparedOwners != 0 ? comparedOwners : r1.getName().compareTo(r2.getName());
+            }
+        });
 
-		List<GithubRepo> availableRepos;
-		try
-		{
-			availableRepos = GithubUtil.computeValueInModal(project, "Access to GitHub", indicator -> GithubUtil.runWithValidAuth(project, indicator, (ThrowableFunction<GithubAuthData,
-					List<GithubRepo>, IOException>) authData -> GithubApiUtil.getAvailableRepos(authData)));
-		}
-		catch(GithubAuthenticationCanceledException e)
-		{
-			return;
-		}
-		catch(IOException e)
-		{
-			GithubNotifications.showError(project, "Couldn't get the list of GitHub repositories", e);
-			return;
-		}
-		Collections.sort(availableRepos, new Comparator<GithubRepo>()
-		{
-			@Override
-			public int compare(final GithubRepo r1, final GithubRepo r2)
-			{
-				final int comparedOwners = r1.getUserName().compareTo(r2.getUserName());
-				return comparedOwners != 0 ? comparedOwners : r1.getName().compareTo(r2.getName());
-			}
-		});
+        final GitCloneDialog dialog = new GitCloneDialog(project);
+        // Add predefined repositories to history
+        dialog.prependToHistory("-----------------------------------------------");
+        for (int i = availableRepos.size() - 1; i >= 0; i--) {
+            dialog.prependToHistory(availableRepos.get(i).getCloneUrl());
+        }
+        dialog.show();
+        if (!dialog.isOK()) {
+            return;
+        }
+        dialog.rememberSettings();
+        final VirtualFile destinationParent = LocalFileSystem.getInstance()
+            .findFileByIoFile(new File(dialog.getParentDirectory()));
+        if (destinationParent == null) {
+            return;
+        }
+        final String sourceRepositoryURL = dialog.getSourceRepositoryURL();
+        final String directoryName = dialog.getDirectoryName();
+        final String parentDirectory = dialog.getParentDirectory();
+        final String puttyKey = dialog.getPuttyKeyFile();
 
-		final GitCloneDialog dialog = new GitCloneDialog(project);
-		// Add predefined repositories to history
-		dialog.prependToHistory("-----------------------------------------------");
-		for(int i = availableRepos.size() - 1; i >= 0; i--)
-		{
-			dialog.prependToHistory(availableRepos.get(i).getCloneUrl());
-		}
-		dialog.show();
-		if(!dialog.isOK())
-		{
-			return;
-		}
-		dialog.rememberSettings();
-		final VirtualFile destinationParent = LocalFileSystem.getInstance().findFileByIoFile(new File(dialog
-				.getParentDirectory()));
-		if(destinationParent == null)
-		{
-			return;
-		}
-		final String sourceRepositoryURL = dialog.getSourceRepositoryURL();
-		final String directoryName = dialog.getDirectoryName();
-		final String parentDirectory = dialog.getParentDirectory();
-		final String puttyKey = dialog.getPuttyKeyFile();
+        Git git = ServiceManager.getService(Git.class);
+        GitCheckoutProvider.clone(
+            project,
+            git,
+            listener,
+            destinationParent,
+            sourceRepositoryURL,
+            directoryName,
+            parentDirectory,
+            puttyKey
+        );
+    }
 
-		Git git = ServiceManager.getService(Git.class);
-		GitCheckoutProvider.clone(project, git, listener, destinationParent, sourceRepositoryURL, directoryName,
-				parentDirectory, puttyKey);
-	}
-
-	@Override
-	public String getVcsName()
-	{
-		return "Git_Hub";
-	}
+    @Override
+    public String getVcsName() {
+        return "Git_Hub";
+    }
 }

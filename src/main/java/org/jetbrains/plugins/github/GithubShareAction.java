@@ -370,9 +370,13 @@ public class GithubShareAction extends DumbAwareAction {
         }
         catch (VcsException e) {
             LOG.warn(e);
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial commit failed:<br/>" +
-                    e.getMessage(), url
+            GithubNotifications.showErrorURL(
+                project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial commit failed:<br/>" + e.getMessage(),
+                url
             );
             return false;
         }
@@ -392,17 +396,23 @@ public class GithubShareAction extends DumbAwareAction {
 
         GitLocalBranch currentBranch = repository.getCurrentBranch();
         if (currentBranch == null) {
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed: no " +
-                    "current branch", url
+            GithubNotifications.showErrorURL(
+                project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial push failed: no current branch",
+                url
             );
             return false;
         }
         GitCommandResult result = git.push(repository, remoteName, remoteUrl, null, currentBranch.getName(), true);
         if (!result.success()) {
-            GithubNotifications.showErrorURL(project, "Can't finish GitHub sharing process",
-                "Successfully created project ", "'" + name + "'", " on GitHub, but initial push failed:<br/>" +
-                    result.getErrorOutputAsHtmlString(), url
+            GithubNotifications.showErrorURL(project,
+                "Can't finish GitHub sharing process",
+                "Successfully created project ",
+                "'" + name + "'",
+                " on GitHub, but initial push failed:<br/>" + result.getErrorOutputAsHtmlString(), url
             );
             return false;
         }

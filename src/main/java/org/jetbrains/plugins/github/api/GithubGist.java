@@ -25,170 +25,155 @@ import java.util.List;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubGist
-{
-	@Nonnull
-	private final String myId;
-	@Nonnull
-	private final String myDescription;
+public class GithubGist {
+    @Nonnull
+    private final String myId;
+    @Nonnull
+    private final String myDescription;
 
-	private final boolean myIsPublic;
+    private final boolean myIsPublic;
 
-	@Nonnull
-	private final String myHtmlUrl;
+    @Nonnull
+    private final String myHtmlUrl;
 
-	@Nonnull
-	private final List<GistFile> myFiles;
+    @Nonnull
+    private final List<GistFile> myFiles;
 
-	@Nullable
-	private final GithubUser myUser;
+    @Nullable
+    private final GithubUser myUser;
 
-	public static class GistFile
-	{
-		@Nonnull
-		private final String myFilename;
-		@Nonnull
-		private final String myContent;
+    public static class GistFile {
+        @Nonnull
+        private final String myFilename;
+        @Nonnull
+        private final String myContent;
 
-		@Nonnull
-		private final String myRawUrl;
+        @Nonnull
+        private final String myRawUrl;
 
-		public GistFile(@Nonnull String filename, @Nonnull String content, @Nonnull String rawUrl)
-		{
-			myFilename = filename;
-			myContent = content;
-			myRawUrl = rawUrl;
-		}
+        public GistFile(@Nonnull String filename, @Nonnull String content, @Nonnull String rawUrl) {
+            myFilename = filename;
+            myContent = content;
+            myRawUrl = rawUrl;
+        }
 
-		@Nonnull
-		public String getFilename()
-		{
-			return myFilename;
-		}
+        @Nonnull
+        public String getFilename() {
+            return myFilename;
+        }
 
-		@Nonnull
-		public String getContent()
-		{
-			return myContent;
-		}
+        @Nonnull
+        public String getContent() {
+            return myContent;
+        }
 
-		@Nonnull
-		public String getRawUrl()
-		{
-			return myRawUrl;
-		}
-	}
+        @Nonnull
+        public String getRawUrl() {
+            return myRawUrl;
+        }
+    }
 
-	@Nonnull
-	public List<FileContent> getContent()
-	{
-		List<FileContent> ret = new ArrayList<FileContent>();
-		for(GistFile file : getFiles())
-		{
-			ret.add(new FileContent(file.getFilename(), file.getContent()));
-		}
-		return ret;
-	}
+    @Nonnull
+    public List<FileContent> getContent() {
+        List<FileContent> ret = new ArrayList<FileContent>();
+        for (GistFile file : getFiles()) {
+            ret.add(new FileContent(file.getFilename(), file.getContent()));
+        }
+        return ret;
+    }
 
-	public GithubGist(@Nonnull String id,
-			@Nullable String description,
-			boolean isPublic,
-			@Nonnull String htmlUrl,
-			@Nonnull List<GistFile> files,
-			@Nullable GithubUser user)
-	{
-		myId = id;
-		myDescription = StringUtil.notNullize(description);
-		myIsPublic = isPublic;
-		myHtmlUrl = htmlUrl;
-		myFiles = files;
-		myUser = user;
-	}
+    public GithubGist(
+        @Nonnull String id,
+        @Nullable String description,
+        boolean isPublic,
+        @Nonnull String htmlUrl,
+        @Nonnull List<GistFile> files,
+        @Nullable GithubUser user
+    ) {
+        myId = id;
+        myDescription = StringUtil.notNullize(description);
+        myIsPublic = isPublic;
+        myHtmlUrl = htmlUrl;
+        myFiles = files;
+        myUser = user;
+    }
 
-	@Nonnull
-	public String getId()
-	{
-		return myId;
-	}
+    @Nonnull
+    public String getId() {
+        return myId;
+    }
 
-	@Nonnull
-	public String getDescription()
-	{
-		return myDescription;
-	}
+    @Nonnull
+    public String getDescription() {
+        return myDescription;
+    }
 
-	public boolean isPublic()
-	{
-		return myIsPublic;
-	}
+    public boolean isPublic() {
+        return myIsPublic;
+    }
 
-	@Nonnull
-	public String getHtmlUrl()
-	{
-		return myHtmlUrl;
-	}
+    @Nonnull
+    public String getHtmlUrl() {
+        return myHtmlUrl;
+    }
 
-	@Nonnull
-	public List<GistFile> getFiles()
-	{
-		return myFiles;
-	}
+    @Nonnull
+    public List<GistFile> getFiles() {
+        return myFiles;
+    }
 
-	@Nullable
-	public GithubUser getUser()
-	{
-		return myUser;
-	}
+    @Nullable
+    public GithubUser getUser() {
+        return myUser;
+    }
 
-	public static class FileContent
-	{
-		@Nonnull
-		private final String myFileName;
-		@Nonnull
-		private final String myContent;
+    public static class FileContent {
+        @Nonnull
+        private final String myFileName;
+        @Nonnull
+        private final String myContent;
 
-		public FileContent(@Nonnull String fileName, @Nonnull String content)
-		{
-			myFileName = fileName;
-			myContent = content;
-		}
+        public FileContent(@Nonnull String fileName, @Nonnull String content) {
+            myFileName = fileName;
+            myContent = content;
+        }
 
-		@Nonnull
-		public String getFileName()
-		{
-			return myFileName;
-		}
+        @Nonnull
+        public String getFileName() {
+            return myFileName;
+        }
 
-		@Nonnull
-		public String getContent()
-		{
-			return myContent;
-		}
+        @Nonnull
+        public String getContent() {
+            return myContent;
+        }
 
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this == o)
-				return true;
-			if(o == null || getClass() != o.getClass())
-				return false;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
-			FileContent that = (FileContent) o;
+            FileContent that = (FileContent)o;
 
-			if(!myContent.equals(that.myContent))
-				return false;
-			if(!myFileName.equals(that.myFileName))
-				return false;
+            if (!myContent.equals(that.myContent)) {
+                return false;
+            }
+            if (!myFileName.equals(that.myFileName)) {
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		@Override
-		public int hashCode()
-		{
-			int result = myFileName.hashCode();
-			result = 31 * result + myContent.hashCode();
-			return result;
-		}
-	}
+        @Override
+        public int hashCode() {
+            int result = myFileName.hashCode();
+            result = 31 * result + myContent.hashCode();
+            return result;
+        }
+    }
 }

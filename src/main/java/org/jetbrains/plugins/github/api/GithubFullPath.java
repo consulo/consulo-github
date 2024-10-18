@@ -20,68 +20,57 @@ import javax.annotation.Nonnull;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubFullPath
-{
-	@Nonnull
-	private final String myUserName;
-	@Nonnull
-	private final String myRepositoryName;
+public class GithubFullPath {
+    @Nonnull
+    private final String myUserName;
+    @Nonnull
+    private final String myRepositoryName;
 
-	public GithubFullPath(@Nonnull String userName, @Nonnull String repositoryName)
-	{
-		myUserName = userName;
-		myRepositoryName = repositoryName;
-	}
+    public GithubFullPath(@Nonnull String userName, @Nonnull String repositoryName) {
+        myUserName = userName;
+        myRepositoryName = repositoryName;
+    }
 
-	@Nonnull
-	public String getUser()
-	{
-		return myUserName;
-	}
+    @Nonnull
+    public String getUser() {
+        return myUserName;
+    }
 
-	@Nonnull
-	public String getRepository()
-	{
-		return myRepositoryName;
-	}
+    @Nonnull
+    public String getRepository() {
+        return myRepositoryName;
+    }
 
-	@Nonnull
-	public String toString()
-	{
-		return myUserName + '/' + myRepositoryName;
-	}
+    @Nonnull
+    public String toString() {
+        return myUserName + '/' + myRepositoryName;
+    }
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o)
-		{
-			return true;
-		}
-		if(o == null || getClass() != o.getClass())
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-		GithubFullPath that = (GithubFullPath) o;
+        GithubFullPath that = (GithubFullPath)o;
 
-		if(!myRepositoryName.equals(that.myRepositoryName))
-		{
-			return false;
-		}
-		if(!myUserName.equals(that.myUserName))
-		{
-			return false;
-		}
+        if (!myRepositoryName.equals(that.myRepositoryName)) {
+            return false;
+        }
+        if (!myUserName.equals(that.myUserName)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		int result = myUserName.hashCode();
-		result = 31 * result + myRepositoryName.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = myUserName.hashCode();
+        result = 31 * result + myRepositoryName.hashCode();
+        return result;
+    }
 }

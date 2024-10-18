@@ -20,25 +20,20 @@ import java.io.IOException;
 /**
  * @author Aleksey Pivovarov
  */
-public class GithubAuthenticationException extends IOException
-{
-	public GithubAuthenticationException()
-	{
-		super();
-	}
+public class GithubAuthenticationException extends IOException {
+    public GithubAuthenticationException() {
+        super();
+    }
 
-	public GithubAuthenticationException(String message)
-	{
-		super(message);
-	}
+    public GithubAuthenticationException(String message) {
+        super(message);
+    }
 
-	public GithubAuthenticationException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public GithubAuthenticationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public GithubAuthenticationException(Throwable cause)
-	{
-		super(cause);
-	}
+    public GithubAuthenticationException(Throwable cause) {
+        super(cause);
+    }
 }

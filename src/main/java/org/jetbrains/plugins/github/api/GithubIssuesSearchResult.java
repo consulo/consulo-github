@@ -23,19 +23,16 @@ import javax.annotation.Nonnull;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-public class GithubIssuesSearchResult
-{
-	@Nonnull
-	private final List<GithubIssue> issues;
+public class GithubIssuesSearchResult {
+    @Nonnull
+    private final List<GithubIssue> issues;
 
-	public GithubIssuesSearchResult(@Nonnull List<GithubIssue> issues)
-	{
-		this.issues = issues;
-	}
+    public GithubIssuesSearchResult(@Nonnull List<GithubIssue> issues) {
+        this.issues = issues;
+    }
 
-	@Nonnull
-	public List<GithubIssue> getIssues()
-	{
-		return issues;
-	}
+    @Nonnull
+    public List<GithubIssue> getIssues() {
+        return issues;
+    }
 }

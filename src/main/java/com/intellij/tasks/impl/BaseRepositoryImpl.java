@@ -35,177 +35,143 @@ import java.net.URLEncoder;
  */
 @Deprecated
 @DeprecationInfo("Old version with old httpclient3")
-public abstract class BaseRepositoryImpl extends BaseRepository
-{
-	private final HttpClient myClient;
+public abstract class BaseRepositoryImpl extends BaseRepository {
+    private final HttpClient myClient;
 
-	protected BaseRepositoryImpl()
-	{
-		myClient = createClient();
-	}
+    protected BaseRepositoryImpl() {
+        myClient = createClient();
+    }
 
-	protected BaseRepositoryImpl(TaskRepositoryType type)
-	{
-		super(type);
-		myClient = createClient();
-	}
+    protected BaseRepositoryImpl(TaskRepositoryType type) {
+        super(type);
+        myClient = createClient();
+    }
 
-	protected BaseRepositoryImpl(BaseRepositoryImpl other)
-	{
-		super(other);
-		myClient = other.myClient;
-	}
+    protected BaseRepositoryImpl(BaseRepositoryImpl other) {
+        super(other);
+        myClient = other.myClient;
+    }
 
-	protected static String encodeUrl(@Nonnull String s)
-	{
-		try
-		{
-			return URLEncoder.encode(s, "UTF-8");
-		}
-		catch(UnsupportedEncodingException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+    protected static String encodeUrl(@Nonnull String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	protected HttpClient getHttpClient()
-	{
-		return myClient;
-	}
+    protected HttpClient getHttpClient() {
+        return myClient;
+    }
 
-	private HttpClient createClient()
-	{
-		HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
-		configureHttpClient(client);
-		return client;
-	}
+    private HttpClient createClient() {
+        HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
+        configureHttpClient(client);
+        return client;
+    }
 
-	protected final void reconfigureClient()
-	{
-		synchronized(myClient)
-		{
-			configureHttpClient(myClient);
-		}
-	}
+    protected final void reconfigureClient() {
+        synchronized (myClient) {
+            configureHttpClient(myClient);
+        }
+    }
 
-	protected void configureHttpClient(HttpClient client)
-	{
-		client.getParams().setConnectionManagerTimeout(3000);
-		client.getParams().setSoTimeout(TaskSettings.getInstance().CONNECTION_TIMEOUT);
-		if(isUseProxy())
-		{
-			HttpProxyManager proxy = HttpProxyManager.getInstance();
-			client.getHostConfiguration().setProxy(proxy.getProxyHost(), proxy.getProxyPort());
-			if(proxy.isHttpProxyEnabled())
-			{
-				AuthScope authScope = new AuthScope(proxy.getProxyHost(), proxy.getProxyPort());
-				Credentials credentials = getCredentials(proxy.getProxyLogin(), proxy.getPlainProxyPassword(), proxy.getProxyHost());
-				client.getState().setProxyCredentials(authScope, credentials);
-			}
-		}
-		if(isUseHttpAuthentication())
-		{
-			client.getParams().setCredentialCharset("UTF-8");
-			client.getParams().setAuthenticationPreemptive(true);
-			client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
-		}
-		else
-		{
-			client.getState().clearCredentials();
-			client.getParams().setAuthenticationPreemptive(false);
-		}
-	}
+    protected void configureHttpClient(HttpClient client) {
+        client.getParams().setConnectionManagerTimeout(3000);
+        client.getParams().setSoTimeout(TaskSettings.getInstance().CONNECTION_TIMEOUT);
+        if (isUseProxy()) {
+            HttpProxyManager proxy = HttpProxyManager.getInstance();
+            client.getHostConfiguration().setProxy(proxy.getProxyHost(), proxy.getProxyPort());
+            if (proxy.isHttpProxyEnabled()) {
+                AuthScope authScope = new AuthScope(proxy.getProxyHost(), proxy.getProxyPort());
+                Credentials credentials = getCredentials(proxy.getProxyLogin(), proxy.getPlainProxyPassword(), proxy.getProxyHost());
+                client.getState().setProxyCredentials(authScope, credentials);
+            }
+        }
+        if (isUseHttpAuthentication()) {
+            client.getParams().setCredentialCharset("UTF-8");
+            client.getParams().setAuthenticationPreemptive(true);
+            client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(getUsername(), getPassword()));
+        }
+        else {
+            client.getState().clearCredentials();
+            client.getParams().setAuthenticationPreemptive(false);
+        }
+    }
 
-	@Nullable
-	private static Credentials getCredentials(String login, String password, String host)
-	{
-		int domainIndex = login.indexOf("\\");
-		if(domainIndex > 0)
-		{
-			// if the username is in the form "user\domain"
-			// then use NTCredentials instead of UsernamePasswordCredentials
-			String domain = login.substring(0, domainIndex);
-			if(login.length() > domainIndex + 1)
-			{
-				String user = login.substring(domainIndex + 1);
-				return new NTCredentials(user, password, host, domain);
-			}
-			else
-			{
-				return null;
-			}
-		}
-		else
-		{
-			return new UsernamePasswordCredentials(login, password);
-		}
-	}
+    @Nullable
+    private static Credentials getCredentials(String login, String password, String host) {
+        int domainIndex = login.indexOf("\\");
+        if (domainIndex > 0) {
+            // if the username is in the form "user\domain"
+            // then use NTCredentials instead of UsernamePasswordCredentials
+            String domain = login.substring(0, domainIndex);
+            if (login.length() > domainIndex + 1) {
+                String user = login.substring(domainIndex + 1);
+                return new NTCredentials(user, password, host, domain);
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            return new UsernamePasswordCredentials(login, password);
+        }
+    }
 
-	protected void configureHttpMethod(HttpMethod method)
-	{
-	}
+    protected void configureHttpMethod(HttpMethod method) {
+    }
 
-	public abstract static class HttpTestConnection<T extends HttpMethod> extends CancellableConnection
-	{
-		protected T myMethod;
+    public abstract static class HttpTestConnection<T extends HttpMethod> extends CancellableConnection {
+        protected T myMethod;
 
-		public HttpTestConnection(T method)
-		{
-			myMethod = method;
-		}
+        public HttpTestConnection(T method) {
+            myMethod = method;
+        }
 
-		@Override
-		protected void doTest() throws Exception
-		{
-			doTest(myMethod);
-		}
+        @Override
+        protected void doTest() throws Exception {
+            doTest(myMethod);
+        }
 
-		@Override
-		public void cancel()
-		{
-			myMethod.abort();
-		}
+        @Override
+        public void cancel() {
+            myMethod.abort();
+        }
 
-		protected abstract void doTest(T method) throws Exception;
-	}
+        protected abstract void doTest(T method) throws Exception;
+    }
 
-	@Override
-	public void setUseProxy(boolean useProxy)
-	{
-		if(useProxy != isUseProxy())
-		{
-			super.setUseProxy(useProxy);
-			reconfigureClient();
-		}
-	}
+    @Override
+    public void setUseProxy(boolean useProxy) {
+        if (useProxy != isUseProxy()) {
+            super.setUseProxy(useProxy);
+            reconfigureClient();
+        }
+    }
 
-	@Override
-	public void setUseHttpAuthentication(boolean useHttpAuthentication)
-	{
-		if(useHttpAuthentication != isUseHttpAuthentication())
-		{
-			super.setUseHttpAuthentication(useHttpAuthentication);
-			reconfigureClient();
-		}
-	}
+    @Override
+    public void setUseHttpAuthentication(boolean useHttpAuthentication) {
+        if (useHttpAuthentication != isUseHttpAuthentication()) {
+            super.setUseHttpAuthentication(useHttpAuthentication);
+            reconfigureClient();
+        }
+    }
 
-	@Override
-	public void setPassword(String password)
-	{
-		if(!password.equals(getPassword()))
-		{
-			super.setPassword(password);
-			reconfigureClient();
-		}
-	}
+    @Override
+    public void setPassword(String password) {
+        if (!password.equals(getPassword())) {
+            super.setPassword(password);
+            reconfigureClient();
+        }
+    }
 
-	@Override
-	public void setUsername(String username)
-	{
-		if(!username.equals(getUsername()))
-		{
-			super.setUsername(username);
-			reconfigureClient();
-		}
-	}
+    @Override
+    public void setUsername(String username) {
+        if (!username.equals(getUsername())) {
+            super.setUsername(username);
+            reconfigureClient();
+        }
+    }
 }

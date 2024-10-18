@@ -23,24 +23,19 @@ import javax.annotation.Nullable;
 /**
  * @author Aleksey Pivovarov
  */
-@SuppressWarnings({
-		"FieldCanBeLocal",
-		"UnusedDeclaration"
-})
-class GithubAuthorizationRequest
-{
-	@Nonnull
-	private final List<String> scopes;
+@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+class GithubAuthorizationRequest {
+    @Nonnull
+    private final List<String> scopes;
 
-	@Nullable
-	private final String note;
-	@Nullable
-	private final String noteUrl;
+    @Nullable
+    private final String note;
+    @Nullable
+    private final String noteUrl;
 
-	public GithubAuthorizationRequest(@Nonnull List<String> scopes, @Nullable String note, @Nullable String noteUrl)
-	{
-		this.scopes = scopes;
-		this.note = note;
-		this.noteUrl = noteUrl;
-	}
+    public GithubAuthorizationRequest(@Nonnull List<String> scopes, @Nullable String note, @Nullable String noteUrl) {
+        this.scopes = scopes;
+        this.note = note;
+        this.noteUrl = noteUrl;
+    }
 }

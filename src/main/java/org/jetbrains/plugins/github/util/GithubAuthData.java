@@ -17,6 +17,7 @@ package org.jetbrains.plugins.github.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 
 /**
@@ -29,131 +30,115 @@ import org.jetbrains.plugins.github.api.GithubApiUtil;
  *
  * @author Aleksey Pivovarov
  */
-public class GithubAuthData
-{
-	public enum AuthType
-	{
-		BASIC, TOKEN, ANONYMOUS
-	}
+public class GithubAuthData {
+    public enum AuthType {
+        BASIC,
+        TOKEN,
+        ANONYMOUS
+    }
 
-	@Nonnull
-	private final AuthType myAuthType;
-	@Nonnull
-	private final String myHost;
-	@Nullable
-	private final BasicAuth myBasicAuth;
-	@Nullable
-	private final TokenAuth myTokenAuth;
-	private final boolean myUseProxy;
+    @Nonnull
+    private final AuthType myAuthType;
+    @Nonnull
+    private final String myHost;
+    @Nullable
+    private final BasicAuth myBasicAuth;
+    @Nullable
+    private final TokenAuth myTokenAuth;
+    private final boolean myUseProxy;
 
 
-	private GithubAuthData(@Nonnull AuthType authType,
-			@Nonnull String host,
-			@Nullable BasicAuth basicAuth,
-			@Nullable TokenAuth tokenAuth,
-			boolean useProxy)
-	{
-		myAuthType = authType;
-		myHost = host;
-		myBasicAuth = basicAuth;
-		myTokenAuth = tokenAuth;
-		myUseProxy = useProxy;
-	}
+    private GithubAuthData(
+        @Nonnull AuthType authType,
+        @Nonnull String host,
+        @Nullable BasicAuth basicAuth,
+        @Nullable TokenAuth tokenAuth,
+        boolean useProxy
+    ) {
+        myAuthType = authType;
+        myHost = host;
+        myBasicAuth = basicAuth;
+        myTokenAuth = tokenAuth;
+        myUseProxy = useProxy;
+    }
 
-	public static GithubAuthData createAnonymous()
-	{
-		return createAnonymous(GithubApiUtil.DEFAULT_GITHUB_HOST);
-	}
+    public static GithubAuthData createAnonymous() {
+        return createAnonymous(GithubApiUtil.DEFAULT_GITHUB_HOST);
+    }
 
-	public static GithubAuthData createAnonymous(@Nonnull String host)
-	{
-		return new GithubAuthData(AuthType.ANONYMOUS, host, null, null, true);
-	}
+    public static GithubAuthData createAnonymous(@Nonnull String host) {
+        return new GithubAuthData(AuthType.ANONYMOUS, host, null, null, true);
+    }
 
-	public static GithubAuthData createBasicAuth(@Nonnull String host, @Nonnull String login, @Nonnull String password)
-	{
-		return new GithubAuthData(AuthType.BASIC, host, new BasicAuth(login, password), null, true);
-	}
+    public static GithubAuthData createBasicAuth(@Nonnull String host, @Nonnull String login, @Nonnull String password) {
+        return new GithubAuthData(AuthType.BASIC, host, new BasicAuth(login, password), null, true);
+    }
 
-	public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token)
-	{
-		return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), true);
-	}
+    public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token) {
+        return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), true);
+    }
 
-	public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token, boolean useProxy)
-	{
-		return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), useProxy);
-	}
+    public static GithubAuthData createTokenAuth(@Nonnull String host, @Nonnull String token, boolean useProxy) {
+        return new GithubAuthData(AuthType.TOKEN, host, null, new TokenAuth(token), useProxy);
+    }
 
-	@Nonnull
-	public AuthType getAuthType()
-	{
-		return myAuthType;
-	}
+    @Nonnull
+    public AuthType getAuthType() {
+        return myAuthType;
+    }
 
-	@Nonnull
-	public String getHost()
-	{
-		return myHost;
-	}
+    @Nonnull
+    public String getHost() {
+        return myHost;
+    }
 
-	@Nullable
-	public BasicAuth getBasicAuth()
-	{
-		return myBasicAuth;
-	}
+    @Nullable
+    public BasicAuth getBasicAuth() {
+        return myBasicAuth;
+    }
 
-	@Nullable
-	public TokenAuth getTokenAuth()
-	{
-		return myTokenAuth;
-	}
+    @Nullable
+    public TokenAuth getTokenAuth() {
+        return myTokenAuth;
+    }
 
-	public boolean isUseProxy()
-	{
-		return myUseProxy;
-	}
+    public boolean isUseProxy() {
+        return myUseProxy;
+    }
 
-	public static class BasicAuth
-	{
-		@Nonnull
-		private final String myLogin;
-		@Nonnull
-		private final String myPassword;
+    public static class BasicAuth {
+        @Nonnull
+        private final String myLogin;
+        @Nonnull
+        private final String myPassword;
 
-		private BasicAuth(@Nonnull String login, @Nonnull String password)
-		{
-			myLogin = login;
-			myPassword = password;
-		}
+        private BasicAuth(@Nonnull String login, @Nonnull String password) {
+            myLogin = login;
+            myPassword = password;
+        }
 
-		@Nonnull
-		public String getLogin()
-		{
-			return myLogin;
-		}
+        @Nonnull
+        public String getLogin() {
+            return myLogin;
+        }
 
-		@Nonnull
-		public String getPassword()
-		{
-			return myPassword;
-		}
-	}
+        @Nonnull
+        public String getPassword() {
+            return myPassword;
+        }
+    }
 
-	public static class TokenAuth
-	{
-		@Nonnull
-		private final String myToken;
+    public static class TokenAuth {
+        @Nonnull
+        private final String myToken;
 
-		private TokenAuth(@Nonnull String token)
-		{
-			myToken = token;
-		}
+        private TokenAuth(@Nonnull String token) {
+            myToken = token;
+        }
 
-		@Nonnull
-		public String getToken()
-		{
-			return myToken;
-		}
-	}
+        @Nonnull
+        public String getToken() {
+            return myToken;
+        }
+    }
 }

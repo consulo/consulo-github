@@ -16,48 +16,43 @@ import java.util.function.Consumer;
  * @author Dennis.Ushakov
  */
 @ExtensionImpl
-public class GithubRepositoryType extends BaseRepositoryType<GithubRepository>
-{
-	@Nonnull
-	@Override
-	public String getId()
-	{
-		return "github";
-	}
+public class GithubRepositoryType extends BaseRepositoryType<GithubRepository> {
+    @Nonnull
+    @Override
+    public String getId() {
+        return "github";
+    }
 
-	@Nonnull
-	@Override
-	public LocalizeValue getPresentableName()
-	{
-		return LocalizeValue.localizeTODO("GitHub");
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getPresentableName() {
+        return LocalizeValue.localizeTODO("GitHub");
+    }
 
-	@Nonnull
-	@Override
-	public Image getIcon()
-	{
-		return GitHubIconGroup.github_icon();
-	}
+    @Nonnull
+    @Override
+    public Image getIcon() {
+        return GitHubIconGroup.github_icon();
+    }
 
-	@Nonnull
-	@Override
-	public TaskRepository createRepository()
-	{
-		return new GithubRepository(this);
-	}
+    @Nonnull
+    @Override
+    public TaskRepository createRepository() {
+        return new GithubRepository(this);
+    }
 
-	@Override
-	public Class<GithubRepository> getRepositoryClass()
-	{
-		return GithubRepository.class;
-	}
+    @Override
+    public Class<GithubRepository> getRepositoryClass() {
+        return GithubRepository.class;
+    }
 
-	@Nonnull
-	@Override
-	public TaskRepositoryEditor createEditor(GithubRepository repository,
-											 Project project,
-											 Consumer<GithubRepository> changeListener)
-	{
-		return new GithubRepositoryEditor(project, repository, changeListener);
-	}
+    @Nonnull
+    @Override
+    public TaskRepositoryEditor createEditor(
+        GithubRepository repository,
+        Project project,
+        Consumer<GithubRepository> changeListener
+    ) {
+        return new GithubRepositoryEditor(project, repository, changeListener);
+    }
 }

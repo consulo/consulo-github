@@ -24,52 +24,47 @@ import javax.annotation.Nullable;
  * @author Aleksey Pivovarov
  */
 @SuppressWarnings("UnusedDeclaration")
-class GithubIssueRaw implements DataConstructor
-{
-	@Nullable
-	public String url;
-	@Nullable
-	public String htmlUrl;
-	@Nullable
-	public Long number;
-	@Nullable
-	public String state;
-	@Nullable
-	public String title;
-	@Nullable
-	public String body;
+class GithubIssueRaw implements DataConstructor {
+    @Nullable
+    public String url;
+    @Nullable
+    public String htmlUrl;
+    @Nullable
+    public Long number;
+    @Nullable
+    public String state;
+    @Nullable
+    public String title;
+    @Nullable
+    public String body;
 
-	@Nullable
-	public GithubUserRaw user;
-	@Nullable
-	public GithubUserRaw assignee;
+    @Nullable
+    public GithubUserRaw user;
+    @Nullable
+    public GithubUserRaw assignee;
 
-	@Nullable
-	public Date closedAt;
-	@Nullable
-	public Date createdAt;
-	@Nullable
-	public Date updatedAt;
+    @Nullable
+    public Date closedAt;
+    @Nullable
+    public Date createdAt;
+    @Nullable
+    public Date updatedAt;
 
-	@SuppressWarnings("ConstantConditions")
-	@Nonnull
-	public GithubIssue createIssue()
-	{
-		GithubUser assignee = this.assignee == null ? null : this.assignee.createUser();
-		return new GithubIssue(htmlUrl, number, state, title, body, user.createUser(), assignee, closedAt, createdAt,
-				updatedAt);
-	}
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull
+    public GithubIssue createIssue() {
+        GithubUser assignee = this.assignee == null ? null : this.assignee.createUser();
+        return new GithubIssue(htmlUrl, number, state, title, body, user.createUser(), assignee, closedAt, createdAt, updatedAt);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> T create(@Nonnull Class<T> resultClass)
-	{
-		if(resultClass.isAssignableFrom(GithubIssue.class))
-		{
-			return (T) createIssue();
-		}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> T create(@Nonnull Class<T> resultClass) {
+        if (resultClass.isAssignableFrom(GithubIssue.class)) {
+            return (T)createIssue();
+        }
 
-		throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
-	}
+        throw new ClassCastException(this.getClass().getName() + ": bad class type: " + resultClass.getName());
+    }
 }

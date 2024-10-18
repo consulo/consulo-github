@@ -27,72 +27,60 @@ import javax.swing.JTextField;
  * @author oleg
  * @date 9/27/11
  */
-public class GithubCreateGistPanel
-{
-	private JTextArea myDescriptionTextArea;
-	private JCheckBox myPrivateCheckBox;
-	private JPanel myPanel;
-	private JCheckBox myAnonymousCheckBox;
-	private JCheckBox myOpenInBrowserCheckBox;
-	private JTextField myFileNameField;
-	private JLabel myFileNameLabel;
+public class GithubCreateGistPanel {
+    private JTextArea myDescriptionTextArea;
+    private JCheckBox myPrivateCheckBox;
+    private JPanel myPanel;
+    private JCheckBox myAnonymousCheckBox;
+    private JCheckBox myOpenInBrowserCheckBox;
+    private JTextField myFileNameField;
+    private JLabel myFileNameLabel;
 
-	public GithubCreateGistPanel()
-	{
-		myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
-		myFileNameLabel.setVisible(false);
-		myFileNameField.setVisible(false);
-	}
+    public GithubCreateGistPanel() {
+        myDescriptionTextArea.setBorder(BorderFactory.createEtchedBorder());
+        myFileNameLabel.setVisible(false);
+        myFileNameField.setVisible(false);
+    }
 
-	public boolean isPrivate()
-	{
-		return myPrivateCheckBox.isSelected();
-	}
+    public boolean isPrivate() {
+        return myPrivateCheckBox.isSelected();
+    }
 
-	public boolean isAnonymous()
-	{
-		return myAnonymousCheckBox.isSelected();
-	}
+    public boolean isAnonymous() {
+        return myAnonymousCheckBox.isSelected();
+    }
 
-	public boolean isOpenInBrowser()
-	{
-		return myOpenInBrowserCheckBox.isSelected();
-	}
+    public boolean isOpenInBrowser() {
+        return myOpenInBrowserCheckBox.isSelected();
+    }
 
-	public void setPrivate(final boolean isPrivate)
-	{
-		myPrivateCheckBox.setSelected(isPrivate);
-	}
+    public void setPrivate(final boolean isPrivate) {
+        myPrivateCheckBox.setSelected(isPrivate);
+    }
 
-	public void setAnonymous(final boolean anonymous)
-	{
-		myAnonymousCheckBox.setSelected(anonymous);
-	}
+    public void setAnonymous(final boolean anonymous) {
+        myAnonymousCheckBox.setSelected(anonymous);
+    }
 
-	public void setOpenInBrowser(final boolean openInBrowser)
-	{
-		myOpenInBrowserCheckBox.setSelected(openInBrowser);
-	}
+    public void setOpenInBrowser(final boolean openInBrowser) {
+        myOpenInBrowserCheckBox.setSelected(openInBrowser);
+    }
 
-	public void showFileNameField(@Nonnull String filename)
-	{
-		myFileNameLabel.setVisible(true);
-		myFileNameField.setVisible(true);
-		myFileNameField.setText(filename);
-	}
+    public void showFileNameField(@Nonnull String filename) {
+        myFileNameLabel.setVisible(true);
+        myFileNameField.setVisible(true);
+        myFileNameField.setText(filename);
+    }
 
-	public JPanel getPanel()
-	{
-		return myPanel;
-	}
+    public JPanel getPanel() {
+        return myPanel;
+    }
 
-	public JTextArea getDescriptionTextArea()
-	{
-		return myDescriptionTextArea;
-	}
+    public JTextArea getDescriptionTextArea() {
+        return myDescriptionTextArea;
+    }
 
-	public JTextField getFileNameField()
-	{
-		return myFileNameField;
-	}
+    public JTextField getFileNameField() {
+        return myFileNameField;
+    }
 }

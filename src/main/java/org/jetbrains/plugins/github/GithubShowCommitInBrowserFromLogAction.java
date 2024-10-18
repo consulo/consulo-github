@@ -26,36 +26,29 @@ import org.jetbrains.plugins.github.util.GithubUtil;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction
-{
-	@Override
-	public void update(@Nonnull AnActionEvent e)
-	{
-		Project project = e.getData(Project.KEY);
-		VcsLog log = e.getData(VcsLog.KEY);
-		if(project == null || log == null)
-		{
-			e.getPresentation().setEnabledAndVisible(false);
-			return;
-		}
-		List<VcsFullCommitDetails> commits = log.getSelectedDetails();
-		if(commits.size() != 1)
-		{
-			e.getPresentation().setEnabledAndVisible(false);
-			return;
-		}
-		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commits.get(0).getRoot
-				());
-		e.getPresentation().setEnabledAndVisible(repository != null && GithubUtil.isRepositoryOnGitHub(repository));
-	}
+public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction {
+    @Override
+    public void update(@Nonnull AnActionEvent e) {
+        Project project = e.getData(Project.KEY);
+        VcsLog log = e.getData(VcsLog.KEY);
+        if (project == null || log == null) {
+            e.getPresentation().setEnabledAndVisible(false);
+            return;
+        }
+        List<VcsFullCommitDetails> commits = log.getSelectedDetails();
+        if (commits.size() != 1) {
+            e.getPresentation().setEnabledAndVisible(false);
+            return;
+        }
+        GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commits.get(0).getRoot());
+        e.getPresentation().setEnabledAndVisible(repository != null && GithubUtil.isRepositoryOnGitHub(repository));
+    }
 
-	@Override
-	public void actionPerformed(@Nonnull AnActionEvent e)
-	{
-		Project project = e.getRequiredData(Project.KEY);
-		VcsFullCommitDetails commit = e.getRequiredData(VcsLog.KEY).getSelectedDetails().get(0);
-		GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commit.getRoot());
-		openInBrowser(project, repository, commit.getId().asString());
-	}
-
+    @Override
+    public void actionPerformed(@Nonnull AnActionEvent e) {
+        Project project = e.getRequiredData(Project.KEY);
+        VcsFullCommitDetails commit = e.getRequiredData(VcsLog.KEY).getSelectedDetails().get(0);
+        GitRepository repository = GitUtil.getRepositoryManager(project).getRepositoryForRoot(commit.getRoot());
+        openInBrowser(project, repository, commit.getId().asString());
+    }
 }

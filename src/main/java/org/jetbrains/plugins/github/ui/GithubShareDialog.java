@@ -71,7 +71,7 @@ public class GithubShareDialog extends DialogWrapper {
             setOKActionEnabled(false);
             return;
         }
-        setErrorText(null);
+        clearErrorText();
         setOKActionEnabled(true);
     }
 

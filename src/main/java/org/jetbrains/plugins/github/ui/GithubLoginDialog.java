@@ -93,7 +93,7 @@ public class GithubLoginDialog extends DialogWrapper {
     }
 
     public void clearErrors() {
-        setErrorText(null);
+        clearErrorText();
     }
 
     @Nonnull

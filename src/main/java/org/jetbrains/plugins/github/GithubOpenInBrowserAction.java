@@ -15,6 +15,9 @@
  */
 package org.jetbrains.plugins.github;
 
+import consulo.annotation.component.ActionImpl;
+import consulo.annotation.component.ActionParentRef;
+import consulo.annotation.component.ActionRef;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.SelectionModel;
 import consulo.github.icon.GitHubIconGroup;
@@ -24,6 +27,7 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.ex.action.Presentation;
 import consulo.versionControlSystem.change.Change;
 import consulo.versionControlSystem.change.ChangeListManager;
 import consulo.virtualFileSystem.VirtualFile;
@@ -39,17 +43,18 @@ import org.jetbrains.plugins.github.util.GithubUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static org.jetbrains.plugins.github.util.GithubUtil.setVisibleEnabled;
-
 /**
  * @author oleg
  * @since 2010-12-10
  */
+@ActionImpl(id = "Github.Open.In.Browser", parents = {
+    @ActionParentRef(@ActionRef(id = "RevealGroup")),
+})
 public class GithubOpenInBrowserAction extends DumbAwareAction {
     public static final String CANNOT_OPEN_IN_BROWSER = "Cannot open in browser";
 
-    protected GithubOpenInBrowserAction() {
-        super("Open on GitHub", "Open corresponding link in browser", GitHubIconGroup.github_icon());
+    public GithubOpenInBrowserAction() {
+        super("GitHub", "Open corresponding link in browser", GitHubIconGroup.github_icon());
     }
 
     @Override
@@ -57,36 +62,39 @@ public class GithubOpenInBrowserAction extends DumbAwareAction {
     public void update(final AnActionEvent e) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
         VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        Presentation presentation = e.getPresentation();
         if (project == null || project.isDefault() || virtualFile == null) {
-            setVisibleEnabled(e, false, false);
+            presentation.setEnabledAndVisible(false);
             return;
         }
         GitRepositoryManager manager = GitUtil.getRepositoryManager(project);
 
         final GitRepository gitRepository = manager.getRepositoryForFile(virtualFile);
         if (gitRepository == null) {
-            setVisibleEnabled(e, false, false);
+            presentation.setEnabledAndVisible(false);
             return;
         }
 
         if (!GithubUtil.isRepositoryOnGitHub(gitRepository)) {
-            setVisibleEnabled(e, false, false);
+            presentation.setEnabledAndVisible(false);
             return;
         }
 
         ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         if (changeListManager.isUnversioned(virtualFile)) {
-            setVisibleEnabled(e, true, false);
+            presentation.setEnabled(false);
+            presentation.setVisible(true);
             return;
         }
 
         Change change = changeListManager.getChange(virtualFile);
         if (change != null && change.getType() == Change.Type.NEW) {
-            setVisibleEnabled(e, true, false);
+            presentation.setEnabled(false);
+            presentation.setVisible(true);
             return;
         }
 
-        setVisibleEnabled(e, true, true);
+        presentation.setEnabledAndVisible(true);
     }
 
     @Override

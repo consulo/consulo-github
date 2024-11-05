@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.github.util;
 
+import org.jetbrains.plugins.github.api.GithubApiUtil;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.github.api.GithubApiUtil;
 
 /**
  * Container for authentication data:
@@ -32,9 +32,10 @@ import org.jetbrains.plugins.github.api.GithubApiUtil;
  */
 public class GithubAuthData {
     public enum AuthType {
+        @Deprecated
         BASIC,
         TOKEN,
-        ANONYMOUS
+        ANONYMOUS,
     }
 
     @Nonnull

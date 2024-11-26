@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.github;
 
-import consulo.application.AllIcons;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.github.icon.GitHubIconGroup;
@@ -24,6 +23,7 @@ import consulo.ide.impl.idea.openapi.vcs.changes.ui.ChangesBrowser;
 import consulo.ide.impl.idea.ui.TabbedPaneImpl;
 import consulo.language.editor.PlatformDataKeys;
 import consulo.logging.Logger;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
@@ -40,7 +40,10 @@ import consulo.util.lang.ref.Ref;
 import consulo.versionControlSystem.VcsException;
 import consulo.versionControlSystem.change.Change;
 import consulo.virtualFileSystem.VirtualFile;
-import git4idea.*;
+import git4idea.DialogManager;
+import git4idea.GitCommit;
+import git4idea.GitLocalBranch;
+import git4idea.GitRemoteBranch;
 import git4idea.changes.GitChangeUtils;
 import git4idea.commands.Git;
 import git4idea.commands.GitCommandResult;
@@ -481,8 +484,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
             JPanel diffPanel = new GithubCreatePullRequestDiffPanel(myProject, myInfo);
 
             TabbedPaneImpl tabbedPane = new TabbedPaneImpl(SwingConstants.TOP);
-            tabbedPane.addTab("Log", TargetAWT.to(Git4ideaIcons.Branch), myLogPanel);
-            tabbedPane.addTab("Diff", TargetAWT.to(AllIcons.Actions.Diff), diffPanel);
+            tabbedPane.addTab("Log", TargetAWT.to(PlatformIconGroup.vcsBranch()), myLogPanel);
+            tabbedPane.addTab("Diff", TargetAWT.to(PlatformIconGroup.actionsDiff()), diffPanel);
             tabbedPane.setKeyboardNavigation(TabbedPaneWrapper.DEFAULT_PREV_NEXT_SHORTCUTS);
             return tabbedPane;
         }

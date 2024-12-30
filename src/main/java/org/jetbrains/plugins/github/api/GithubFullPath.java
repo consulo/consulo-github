@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.api;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Aleksey Pivovarov

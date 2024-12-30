@@ -17,7 +17,7 @@ package org.jetbrains.plugins.github.api;
 
 import com.google.gson.annotations.SerializedName;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

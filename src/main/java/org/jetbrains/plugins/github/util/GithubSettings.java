@@ -30,8 +30,8 @@ import consulo.util.lang.StringUtil;
 import jakarta.inject.Singleton;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 

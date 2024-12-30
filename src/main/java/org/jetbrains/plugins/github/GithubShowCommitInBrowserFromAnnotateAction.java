@@ -31,8 +31,8 @@ import git4idea.GitUtil;
 import git4idea.repo.GitRepository;
 import org.jetbrains.plugins.github.util.GithubUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Kirill Likhodedov

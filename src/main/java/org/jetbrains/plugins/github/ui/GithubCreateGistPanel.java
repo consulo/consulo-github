@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;

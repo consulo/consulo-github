@@ -13,7 +13,7 @@ import org.jetbrains.plugins.github.tasks.GithubRepositoryType;
 import org.jetbrains.plugins.github.util.GithubUrlUtil;
 import org.jetbrains.plugins.github.util.GithubUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.File;
 
 // TODO: remove ?

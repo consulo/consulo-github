@@ -43,8 +43,8 @@ import org.jetbrains.plugins.github.exceptions.GithubAuthenticationException;
 import org.jetbrains.plugins.github.ui.GithubBasicLoginDialog;
 import org.jetbrains.plugins.github.ui.GithubLoginDialog;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.github.tasks;
 import consulo.application.util.DateFormatUtil;
 import consulo.task.SimpleComment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Date;
 
 /**

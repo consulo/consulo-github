@@ -21,7 +21,7 @@ import consulo.ui.ex.action.AnAction;
 import consulo.versionControlSystem.annotate.FileAnnotation;
 import org.jetbrains.plugins.github.GithubShowCommitInBrowserFromAnnotateAction;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Kirill Likhodedov

@@ -9,7 +9,7 @@ import consulo.task.TaskRepository;
 import consulo.task.ui.TaskRepositoryEditor;
 import consulo.ui.image.Image;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

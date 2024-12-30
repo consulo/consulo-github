@@ -5,7 +5,7 @@ import consulo.ui.annotation.RequiredUIAccess;import consulo.ui.ex.awt.DialogWra
 import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.TestOnly;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.swing.*;
 import java.util.Set;
 import java.util.regex.Pattern;

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.github;
 import com.intellij.openapi.util.Clock;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.util.text.DateFormatUtil;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 import org.jetbrains.plugins.github.api.GithubGist;
 import org.jetbrains.plugins.github.test.GithubTest;

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.github;
 import com.intellij.openapi.util.Pair;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.containers.Convertor;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.github.api.GithubFullPath;
 
 import java.util.ArrayList;

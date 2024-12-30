@@ -23,8 +23,8 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.Messages;
 import consulo.versionControlSystem.VcsNotifier;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.awt.*;
 
 import static org.jetbrains.plugins.github.util.GithubUtil.getErrorTextFromException;

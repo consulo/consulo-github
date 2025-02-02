@@ -185,7 +185,7 @@ public class GithubLoginPanel {
         if (AUTH_TOKEN.equals(selected)) {
             return GithubAuthData.createTokenAuth(getHost(), getPassword());
         }
-        GithubUtil.LOG.error("GithubLoginPanel illegal selection: anonymous AuthData created", selected.toString());
+        GithubUtil.LOG.error("GithubLoginPanel illegal selection: anonymous AuthData created" + selected.toString());
         return GithubAuthData.createAnonymous(getHost());
     }
 

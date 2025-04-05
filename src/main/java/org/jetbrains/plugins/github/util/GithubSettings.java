@@ -23,15 +23,14 @@ import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
 import consulo.credentialStorage.PasswordSafe;
-import consulo.credentialStorage.PasswordSafeException;
 import consulo.ide.ServiceManager;
 import consulo.logging.Logger;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
 import org.jetbrains.plugins.github.api.GithubApiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -139,9 +138,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
     }
 
     public boolean isSavePasswordMakesSense() {
-        //		final PasswordSafe  passwordSafe =  PasswordSafe.getInstance();
-        //		return passwordSafe.getSettings().getProviderType() == PasswordSafeSettings.ProviderType.MASTER_PASSWORD;
-        return true;
+        return PasswordSafe.getInstance().isMemoryOnly();
     }
 
     @Nullable
@@ -186,26 +183,15 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 
     @Nonnull
     private String getPassword() {
-        String password;
-        try {
-            password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY);
-        }
-        catch (PasswordSafeException e) {
-            LOG.info("Couldn't get password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
-            password = "";
-        }
-
+        String password = PasswordSafe.getInstance().getPassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY);
         return StringUtil.notNullize(password);
     }
 
     private void setPassword(@Nonnull String password, boolean rememberPassword) {
-        try {
-            PasswordSafe passwordSafe = PasswordSafe.getInstance();
+        PasswordSafe passwordSafe = PasswordSafe.getInstance();
 
-            passwordSafe.storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password, rememberPassword);
-        }
-        catch (PasswordSafeException e) {
-            LOG.info("Couldn't set password for key [" + GITHUB_SETTINGS_PASSWORD_KEY + "]", e);
+        if (rememberPassword) {
+            passwordSafe.storePassword(null, GithubSettings.class, GITHUB_SETTINGS_PASSWORD_KEY, password);
         }
     }
 

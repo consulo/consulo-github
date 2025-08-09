@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import consulo.ide.impl.idea.util.ui.table.ComponentsListFocusTraversalPolicy;
 import consulo.platform.Platform;
 import consulo.ui.ex.awt.ComboBox;
 import consulo.ui.ex.awt.HyperlinkAdapter;
 import consulo.ui.ex.awt.JBUI;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.ui.ex.awt.table.ComponentsListFocusTraversalPolicy;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.github.util.GithubAuthData;
 import org.jetbrains.plugins.github.util.GithubUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

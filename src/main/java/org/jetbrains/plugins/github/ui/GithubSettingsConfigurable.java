@@ -4,6 +4,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.Configurable;
 import consulo.configurable.ConfigurationException;
 import consulo.configurable.SearchableConfigurable;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.versionControlSystem.VcsConfigurableProvider;
@@ -29,8 +30,8 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
 
     @Nonnull
     @Override
-    public String getDisplayName() {
-        return "GitHub";
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("GitHub");
     }
 
     @Nonnull

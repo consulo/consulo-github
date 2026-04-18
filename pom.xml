@@ -101,5 +101,19 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-collaboration-api</artifactId>
+            <version>3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-graphql-api</artifactId>
+            <version>3-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

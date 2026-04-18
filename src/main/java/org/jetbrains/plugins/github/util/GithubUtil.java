@@ -55,6 +55,9 @@ import java.util.List;
  * @author Aleksey Pivovarov
  */
 public class GithubUtil {
+    public static final String SERVICE_DISPLAY_NAME = "GitHub";
+    public static final String ENTERPRISE_SERVICE_DISPLAY_NAME = "GitHub Enterprise";
+
     public static final Logger LOG = Logger.getInstance("github");
 
     // TODO: these functions ugly inside and out

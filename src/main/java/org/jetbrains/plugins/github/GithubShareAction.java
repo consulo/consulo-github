@@ -22,7 +22,7 @@ import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
 import consulo.dataContext.DataSink;
-import consulo.dataContext.TypeSafeDataProvider;
+import consulo.dataContext.UiDataProvider;
 import consulo.git.localize.GitLocalize;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.localize.LocalizeValue;
@@ -33,7 +33,6 @@ import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Splitter;
 import consulo.util.collection.ContainerUtil;
-import consulo.util.dataholder.Key;
 import consulo.util.lang.ref.SimpleReference;
 import consulo.versionControlSystem.CommitMessage;
 import consulo.versionControlSystem.CommitMessageFactory;
@@ -450,7 +449,7 @@ public class GithubShareAction extends DumbAwareAction {
         return true;
     }
 
-    public static class GithubUntrackedFilesDialog extends DialogWrapper implements TypeSafeDataProvider {
+    public static class GithubUntrackedFilesDialog extends DialogWrapper implements UiDataProvider {
         @Nonnull
         private final Project myProject;
         private CommitMessage myCommitMessagePanel;
@@ -520,10 +519,8 @@ public class GithubShareAction extends DumbAwareAction {
         }
 
         @Override
-        public void calcData(Key<?> key, DataSink sink) {
-            if (key == CommitMessage.KEY) {
-                sink.put(CommitMessage.KEY, myCommitMessagePanel);
-            }
+        public void uiDataSnapshot(DataSink dataSink) {
+            dataSink.set(CommitMessage.KEY, myCommitMessagePanel);
         }
 
         @Override

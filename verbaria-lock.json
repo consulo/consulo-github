@@ -1,0 +1,22 @@
+{
+  "lockVersion" : 1,
+  "server" : "https://i.verbaria.org/",
+  "project" : "consulo-github",
+  "projectVersion" : "master",
+  "generatedAt" : "2026-06-23T19:39:21.830609642Z",
+  "documents" : {
+    "consulo.github.GithubLocalize" : {
+      "source" : {
+        "revision" : 1
+      },
+      "translations" : {
+        "en-US" : {
+          "sig" : "7a09e5b8576d3ce3677cd17faeb46cfd",
+          "state" : "Approved",
+          "total" : 335,
+          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
+        }
+      }
+    }
+  }
+}

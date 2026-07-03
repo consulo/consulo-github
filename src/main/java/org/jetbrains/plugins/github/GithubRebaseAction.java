@@ -25,6 +25,7 @@ import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.versionControlSystem.VcsException;
 import consulo.virtualFileSystem.VirtualFile;
@@ -62,7 +63,7 @@ import static git4idea.commands.GitLocalChangesWouldBeOverwrittenDetector.Operat
  * @since 2010-12-08
  */
 @ActionImpl(id = "Github.Rebase")
-public class GithubRebaseAction extends DumbAwareAction {
+public class GithubRebaseAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     private static final Logger LOG = GithubUtil.LOG;
     private static final LocalizeValue CANNOT_PERFORM_GITHUB_REBASE = LocalizeValue.localizeTODO("Can't perform github rebase");
 
@@ -75,7 +76,6 @@ public class GithubRebaseAction extends DumbAwareAction {
     }
 
     @Override
-    @RequiredUIAccess
     public void update(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         VirtualFile file = e.getData(VirtualFile.KEY);

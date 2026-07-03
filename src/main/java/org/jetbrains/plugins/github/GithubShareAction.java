@@ -76,7 +76,7 @@ import java.util.List;
  * @author oleg
  */
 @ActionImpl(id = "Github.Share", parents = @ActionParentRef(@ActionRef(id = "Vcs.Import")))
-public class GithubShareAction extends DumbAwareAction {
+public class GithubShareAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     private static final Logger LOG = GithubUtil.LOG;
 
     public GithubShareAction() {
@@ -88,7 +88,6 @@ public class GithubShareAction extends DumbAwareAction {
     }
 
     @Override
-    @RequiredUIAccess
     public void update(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         if (project == null || project.isDefault()) {

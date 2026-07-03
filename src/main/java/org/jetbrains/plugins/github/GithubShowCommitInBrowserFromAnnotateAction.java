@@ -20,6 +20,7 @@ import consulo.document.FileDocumentManager;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.versionControlSystem.UpToDateLineNumberProvider;
 import consulo.versionControlSystem.action.LineNumberListener;
 import consulo.versionControlSystem.annotate.FileAnnotation;
@@ -34,7 +35,7 @@ import org.jetbrains.plugins.github.util.GithubUtil;
 /**
  * @author Kirill Likhodedov
  */
-public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommitInBrowserAction implements LineNumberListener {
+public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommitInBrowserAction implements LineNumberListener, AnActionWithSyncUpdate {
     private final FileAnnotation myAnnotation;
     private int myLineNumber = -1;
 
@@ -44,7 +45,6 @@ public class GithubShowCommitInBrowserFromAnnotateAction extends GithubShowCommi
     }
 
     @Override
-    @RequiredUIAccess
     public void update(@Nonnull AnActionEvent e) {
         EventData eventData = calcData(e, myLineNumber);
         if (eventData == null) {

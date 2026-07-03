@@ -33,6 +33,7 @@ import consulo.platform.Platform;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.ref.SimpleReference;
@@ -69,7 +70,7 @@ import static org.jetbrains.plugins.github.api.GithubGist.FileContent;
         @ActionParentRef(@ActionRef(id = "ConsoleEditorPopupMenu"))
     }
 )
-public class GithubCreateGistAction extends DumbAwareAction {
+public class GithubCreateGistAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     private static final Logger LOG = GithubUtil.LOG;
     private static final LocalizeValue FAILED_TO_CREATE_GIST = LocalizeValue.localizeTODO("Can't create Gist");
 
@@ -82,7 +83,6 @@ public class GithubCreateGistAction extends DumbAwareAction {
     }
 
     @Override
-    @RequiredUIAccess
     public void update(@Nonnull AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         if (project == null || project.isDefault()) {

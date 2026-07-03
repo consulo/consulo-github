@@ -27,6 +27,7 @@ import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Splitter;
@@ -73,7 +74,7 @@ import java.util.function.Consumer;
  * @author Aleksey Pivovarov
  */
 @ActionImpl(id = "Github.Create.Pull.Request")
-public class GithubCreatePullRequestAction extends DumbAwareAction {
+public class GithubCreatePullRequestAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     private static final Logger LOG = GithubUtil.LOG;
     private static final LocalizeValue CANNOT_CREATE_PULL_REQUEST = LocalizeValue.localizeTODO("Can't create pull request");
 
@@ -86,7 +87,6 @@ public class GithubCreatePullRequestAction extends DumbAwareAction {
     }
 
     @Override
-    @RequiredUIAccess
     public void update(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         VirtualFile file = e.getData(VirtualFile.KEY);

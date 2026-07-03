@@ -26,6 +26,7 @@ import consulo.platform.Platform;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.ui.ex.action.Presentation;
 import consulo.versionControlSystem.change.Change;
@@ -47,7 +48,7 @@ import org.jetbrains.plugins.github.util.GithubUtil;
  * @since 2010-12-10
  */
 @ActionImpl(id = "Github.Open.In.Browser", parents = @ActionParentRef(@ActionRef(id = "RevealGroup")))
-public class GithubOpenInBrowserAction extends DumbAwareAction {
+public class GithubOpenInBrowserAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     public static final LocalizeValue CANNOT_OPEN_IN_BROWSER = LocalizeValue.localizeTODO("Cannot open in browser");
 
     public GithubOpenInBrowserAction() {
@@ -59,7 +60,6 @@ public class GithubOpenInBrowserAction extends DumbAwareAction {
     }
 
     @Override
-    @RequiredUIAccess
     public void update(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         VirtualFile virtualFile = e.getData(VirtualFile.KEY);

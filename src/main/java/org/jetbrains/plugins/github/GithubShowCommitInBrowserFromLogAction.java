@@ -21,6 +21,7 @@ import consulo.annotation.component.ActionRef;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.versionControlSystem.log.VcsFullCommitDetails;
 import consulo.versionControlSystem.log.VcsLog;
 import git4idea.GitUtil;
@@ -37,9 +38,8 @@ import java.util.List;
         @ActionParentRef(@ActionRef(id = "Git.Log.ContextMenu"))
     }
 )
-public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction {
+public class GithubShowCommitInBrowserFromLogAction extends GithubShowCommitInBrowserAction implements AnActionWithSyncUpdate {
     @Override
-    @RequiredUIAccess
     public void update(@Nonnull AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         VcsLog log = e.getData(VcsLog.KEY);

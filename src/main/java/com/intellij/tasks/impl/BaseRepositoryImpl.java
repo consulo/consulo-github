@@ -79,7 +79,7 @@ public abstract class BaseRepositoryImpl extends BaseRepository {
 
     protected void configureHttpClient(HttpClient client) {
         client.getParams().setConnectionManagerTimeout(3000);
-        client.getParams().setSoTimeout(TaskSettings.getInstance().CONNECTION_TIMEOUT);
+        client.getParams().setSoTimeout(TaskSettings.getInstance().getConnectionTimeout());
         if (isUseProxy()) {
             HttpProxyManager proxy = HttpProxyManager.getInstance();
             client.getHostConfiguration().setProxy(proxy.getProxyHost(), proxy.getProxyPort());

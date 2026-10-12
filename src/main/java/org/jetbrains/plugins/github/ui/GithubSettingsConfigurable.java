@@ -4,9 +4,12 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.Configurable;
 import consulo.configurable.ConfigurationException;
 import consulo.configurable.SearchableConfigurable;
+import consulo.disposer.Disposable;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.Component;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.versionControlSystem.VcsConfigurableProvider;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.github.util.GithubSettings;
@@ -43,11 +46,11 @@ public class GithubSettingsConfigurable implements SearchableConfigurable, VcsCo
     @Nonnull
     @Override
     @RequiredUIAccess
-    public JComponent createComponent() {
+    public Component createUIComponent(Disposable parentDisposable) {
         if (mySettingsPane == null) {
             mySettingsPane = new GithubSettingsPanel(mySettings);
         }
-        return mySettingsPane.getPanel();
+        return TargetAWT.wrap(mySettingsPane.getPanel());
     }
 
     @Override

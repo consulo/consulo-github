@@ -20,14 +20,15 @@ import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.project.ui.notification.event.NotificationListener;
+import consulo.ui.MessageBoxes;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.awt.Messages;
-import consulo.ui.ex.awt.UIUtil;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.versionControlSystem.VcsNotifier;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static org.jetbrains.plugins.github.util.GithubUtil.getErrorTextFromException;
@@ -115,7 +116,7 @@ public class GithubNotifications {
         @Nonnull LocalizeValue message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showInfoMessage(project, message.get(), title.get());
+        MessageBoxes.okInfo(message).title(title).showAsync(project);
     }
 
     @RequiredUIAccess
@@ -125,7 +126,7 @@ public class GithubNotifications {
         @Nonnull String message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showInfoMessage(component, message, title);
+        MessageBoxes.okInfo(LocalizeValue.of(message)).title(LocalizeValue.of(title)).showAsync(windowOf(component));
     }
 
     @RequiredUIAccess
@@ -135,7 +136,7 @@ public class GithubNotifications {
         @Nonnull LocalizeValue message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showWarningDialog(project, message.get(), title.get());
+        MessageBoxes.okWarning(message).title(title).showAsync(project);
     }
 
     @RequiredUIAccess
@@ -145,7 +146,7 @@ public class GithubNotifications {
         @Nonnull LocalizeValue message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showWarningDialog(component, message.get(), title.get());
+        MessageBoxes.okWarning(message).title(title).showAsync(windowOf(component));
     }
 
     @RequiredUIAccess
@@ -155,7 +156,7 @@ public class GithubNotifications {
         @Nonnull LocalizeValue message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showErrorDialog(project, message.get(), title.get());
+        MessageBoxes.okError(message).title(title).showAsync(project);
     }
 
     @RequiredUIAccess
@@ -165,7 +166,7 @@ public class GithubNotifications {
         @Nonnull Exception e
     ) {
         LOG.warn(title.get(), e);
-        Messages.showErrorDialog(project, getErrorTextFromException(e), title.get());
+        MessageBoxes.okError(LocalizeValue.of(getErrorTextFromException(e))).title(title).showAsync(project);
     }
 
     @RequiredUIAccess
@@ -175,7 +176,7 @@ public class GithubNotifications {
         @Nonnull LocalizeValue message
     ) {
         LOG.info(title + "; " + message);
-        Messages.showErrorDialog(component, message.get(), title.get());
+        MessageBoxes.okError(message).title(title).showAsync(windowOf(component));
     }
 
     @RequiredUIAccess
@@ -185,15 +186,11 @@ public class GithubNotifications {
         @Nonnull Exception e
     ) {
         LOG.info(title, e);
-        Messages.showInfoMessage(component, getErrorTextFromException(e), title);
+        MessageBoxes.okInfo(LocalizeValue.of(getErrorTextFromException(e))).title(LocalizeValue.of(title)).showAsync(windowOf(component));
     }
 
-    @RequiredUIAccess
-    public static int showYesNoDialog(
-        @Nullable Project project,
-        @Nonnull String title,
-        @Nonnull String message
-    ) {
-        return Messages.showYesNoDialog(project, message, title, UIUtil.getQuestionIcon());
+    @Nullable
+    private static consulo.ui.Window windowOf(@Nonnull Component component) {
+        return TargetAWT.from(SwingUtilities.getWindowAncestor(component));
     }
 }

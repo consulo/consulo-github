@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.github;
 
 import consulo.annotation.component.ActionImpl;
-import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.Task;
+import consulo.disposer.Disposable;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
@@ -33,14 +33,15 @@ import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Splitter;
 import consulo.ui.ex.awt.TabbedPaneWrapper;
 import consulo.ui.ex.awt.UIUtil;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.ref.SimpleReference;
 import consulo.versionControlSystem.VcsException;
 import consulo.versionControlSystem.change.Change;
-import consulo.versionControlSystem.change.ChangesBrowser;
-import consulo.versionControlSystem.change.ChangesBrowserFactory;
+import consulo.versionControlSystem.ui.VcsChangesBrowser;
+import consulo.versionControlSystem.ui.VcsChangesDialogFactory;
 import consulo.virtualFileSystem.VirtualFile;
 import git4idea.DialogManager;
 import git4idea.GitCommit;
@@ -500,8 +501,8 @@ public class GithubCreatePullRequestAction extends DumbAwareAction implements An
         @Override
         @RequiredUIAccess
         protected JComponent createCenterPanel() {
-            myLogPanel = new GithubCreatePullRequestLogPanel(myProject, myInfo);
-            JPanel diffPanel = new GithubCreatePullRequestDiffPanel(myProject, myInfo);
+            myLogPanel = new GithubCreatePullRequestLogPanel(myProject, myInfo, getDisposable());
+            JPanel diffPanel = new GithubCreatePullRequestDiffPanel(myProject, myInfo, getDisposable());
 
             TabbedPaneWrapper wrapper = new TabbedPaneWrapper(getDisposable());
             wrapper.addTab("Log", PlatformIconGroup.vcsBranch(), myLogPanel, null);
@@ -525,31 +526,23 @@ public class GithubCreatePullRequestAction extends DumbAwareAction implements An
         private final Project myProject;
         private final DiffInfo myInfo;
 
-        public GithubCreatePullRequestDiffPanel(@Nonnull Project project, @Nonnull DiffInfo info) {
+        @RequiredUIAccess
+        public GithubCreatePullRequestDiffPanel(@Nonnull Project project, @Nonnull DiffInfo info, @Nonnull Disposable parentDisposable) {
             super(new BorderLayout(UIUtil.DEFAULT_VGAP, UIUtil.DEFAULT_HGAP));
             myProject = project;
             myInfo = info;
 
-            add(createCenterPanel());
+            add(createCenterPanel(parentDisposable));
         }
 
-        private JComponent createCenterPanel() {
+        @RequiredUIAccess
+        private JComponent createCenterPanel(Disposable parentDisposable) {
             List<Change> diff = new ArrayList<>(myInfo.getDiff());
-            ChangesBrowserFactory browserFactory = Application.get().getInstance(ChangesBrowserFactory.class);
-
-            ChangesBrowser changesBrowser = browserFactory.createChangeBrowser(
-                myProject,
-                null,
-                diff,
-                null,
-                false,
-                true,
-                null,
-                ChangesBrowser.MyUseCase.COMMITTED_CHANGES,
-                null
-            );
-            changesBrowser.setChangesToDisplay(diff);
-            return changesBrowser.getComponent();
+            VcsChangesBrowser changesBrowser = myProject.getApplication().getInstance(VcsChangesDialogFactory.class)
+                .changesBrowser(myProject)
+                .build(parentDisposable);
+            changesBrowser.setChanges(diff);
+            return (JComponent) TargetAWT.to(changesBrowser.getComponent());
         }
     }
 
@@ -559,27 +552,20 @@ public class GithubCreatePullRequestAction extends DumbAwareAction implements An
 
         private GitCommitListPanel myCommitPanel;
 
-        GithubCreatePullRequestLogPanel(@Nonnull Project project, @Nonnull DiffInfo info) {
+        @RequiredUIAccess
+        GithubCreatePullRequestLogPanel(@Nonnull Project project, @Nonnull DiffInfo info, @Nonnull Disposable parentDisposable) {
             super(new BorderLayout(UIUtil.DEFAULT_HGAP, UIUtil.DEFAULT_VGAP));
             myProject = project;
             myInfo = info;
 
-            add(createCenterPanel());
+            add(createCenterPanel(parentDisposable));
         }
 
-        private JComponent createCenterPanel() {
-            ChangesBrowserFactory browserFactory = Application.get().getInstance(ChangesBrowserFactory.class);
-            ChangesBrowser<Change> changesBrowser = browserFactory.createChangeBrowser(
-                myProject,
-                null,
-                Collections.emptyList(),
-                null,
-                false,
-                true,
-                null,
-                ChangesBrowser.MyUseCase.COMMITTED_CHANGES,
-                null
-            );
+        @RequiredUIAccess
+        private JComponent createCenterPanel(Disposable parentDisposable) {
+            VcsChangesBrowser changesBrowser = myProject.getApplication().getInstance(VcsChangesDialogFactory.class)
+                .changesBrowser(myProject)
+                .build(parentDisposable);
 
             myCommitPanel = new GitCommitListPanel(
                 myInfo.getCommits(),
@@ -590,7 +576,7 @@ public class GithubCreatePullRequestAction extends DumbAwareAction implements An
             myCommitPanel.registerDiffAction(changesBrowser.getDiffAction());
 
             Splitter rootPanel = new Splitter(false, 0.7f);
-            rootPanel.setSecondComponent(changesBrowser.getComponent());
+            rootPanel.setSecondComponent((JComponent) TargetAWT.to(changesBrowser.getComponent()));
             rootPanel.setFirstComponent(myCommitPanel);
 
             return rootPanel;
@@ -598,9 +584,9 @@ public class GithubCreatePullRequestAction extends DumbAwareAction implements An
 
         private static void addSelectionListener(
             @Nonnull GitCommitListPanel sourcePanel,
-            @Nonnull ChangesBrowser<Change> changesBrowser
+            @Nonnull VcsChangesBrowser changesBrowser
         ) {
-            sourcePanel.addListSelectionListener(commit -> changesBrowser.setChangesToDisplay(new ArrayList<>(commit.getChanges())));
+            sourcePanel.addListSelectionListener(commit -> changesBrowser.setChanges(new ArrayList<>(commit.getChanges())));
         }
     }
 

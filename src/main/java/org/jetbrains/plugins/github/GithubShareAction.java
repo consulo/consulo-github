@@ -32,14 +32,16 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Splitter;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.ref.SimpleReference;
 import consulo.versionControlSystem.CommitMessage;
+import consulo.versionControlSystem.CommitMessageComponent;
 import consulo.versionControlSystem.CommitMessageFactory;
 import consulo.versionControlSystem.VcsException;
 import consulo.versionControlSystem.change.ChangeListManager;
-import consulo.versionControlSystem.ui.awt.ChangesBrowserTree;
-import consulo.versionControlSystem.ui.awt.LegacyComponentFactory;
+import consulo.versionControlSystem.ui.VcsChangesDialogFactory;
+import consulo.versionControlSystem.ui.VcsFileList;
 import consulo.versionControlSystem.util.VcsFileUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import git4idea.DialogManager;
@@ -357,7 +359,7 @@ public class GithubShareAction extends DumbAwareAction implements AnActionWithSy
                 () -> {
                     GithubUntrackedFilesDialog dialog = new GithubUntrackedFilesDialog(project, allFiles);
                     if (!trackedFiles.isEmpty()) {
-                        dialog.myFileList.setIncludedChanges(trackedFiles);
+                        dialog.myFileList.setIncluded(trackedFiles);
                     }
                     DialogManager.show(dialog);
                     dialogRef.set(dialog);
@@ -451,52 +453,39 @@ public class GithubShareAction extends DumbAwareAction implements AnActionWithSy
     public static class GithubUntrackedFilesDialog extends DialogWrapper implements UiDataProvider {
         @Nonnull
         private final Project myProject;
-        private CommitMessage myCommitMessagePanel;
+        private CommitMessageComponent myCommitMessagePanel;
 
         @Nonnull
-        private final ChangesBrowserTree<VirtualFile> myFileList;
+        private final VcsFileList<VirtualFile> myFileList;
 
+        @RequiredUIAccess
         public GithubUntrackedFilesDialog(@Nonnull Project project, @Nonnull List<VirtualFile> untrackedFiles) {
             super(project);
             myProject = project;
-            myFileList = Application.get().getInstance(LegacyComponentFactory.class).createVirtualFileList(
-                project,
-                untrackedFiles,
-                true,
-                false
-            );
-            myFileList.setChangesToDisplay(untrackedFiles);
+            myFileList = project.getApplication().getInstance(VcsChangesDialogFactory.class)
+                .fileList(project, untrackedFiles)
+                .selectable()
+                .toolbar()
+                .build(getDisposable());
 
             setTitle(LocalizeValue.localizeTODO("Add Files For Initial Commit"));
             init();
         }
 
         public Collection<VirtualFile> getSelectedFiles() {
-            return myFileList.getIncludedChanges();
+            return myFileList.getIncluded();
         }
 
         @Override
         @RequiredUIAccess
         public JComponent getPreferredFocusedComponent() {
-            return myFileList.getComponent();
-        }
-
-        private JComponent createToolbar() {
-            ActionGroup group = createToolbarActions();
-            ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, group, true);
-            return toolbar.getComponent();
-        }
-
-        @Nonnull
-        private ActionGroup createToolbarActions() {
-            return ActionGroup.of(myFileList.getTreeActions());
+            return (JComponent) TargetAWT.to(myFileList.getComponent());
         }
 
         @Override
+        @RequiredUIAccess
         protected JComponent createCenterPanel() {
-            JPanel treePanel = new JPanel(new BorderLayout());
-            treePanel.add(createToolbar(), BorderLayout.NORTH);
-            treePanel.add(myFileList.getComponent(), BorderLayout.CENTER);
+            JComponent treePanel = (JComponent) TargetAWT.to(myFileList.getComponent());
 
             CommitMessageFactory messageFactory = myProject.getInstance(CommitMessageFactory.class);
 
@@ -506,7 +495,7 @@ public class GithubShareAction extends DumbAwareAction implements AnActionWithSy
             Splitter splitter = new Splitter(true);
             splitter.setHonorComponentsMinimumSize(true);
             splitter.setFirstComponent(treePanel);
-            splitter.setSecondComponent(myCommitMessagePanel.getComponent());
+            splitter.setSecondComponent((JComponent) TargetAWT.to(myCommitMessagePanel.getComponent()));
             splitter.setProportion(0.7f);
 
             return splitter;

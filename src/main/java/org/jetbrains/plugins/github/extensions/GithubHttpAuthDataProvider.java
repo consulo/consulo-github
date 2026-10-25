@@ -17,6 +17,7 @@ package org.jetbrains.plugins.github.extensions;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.credentialStorage.AuthData;
+import consulo.project.Project;
 import consulo.util.lang.StringUtil;
 import git4idea.remote.GitHttpAuthDataProvider;
 import org.jetbrains.plugins.github.util.GithubAuthData;
@@ -33,7 +34,7 @@ import jakarta.annotation.Nullable;
 public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider {
     @Nullable
     @Override
-    public AuthData getAuthData(@Nonnull String url) {
+    public AuthData getAuthData(@Nonnull Project project, @Nonnull String url) {
         if (!GithubUrlUtil.isGithubUrl(url)) {
             return null;
         }
@@ -65,7 +66,12 @@ public class GithubHttpAuthDataProvider implements GitHttpAuthDataProvider {
     }
 
     @Override
-    public void forgetPassword(@Nonnull String s) {
+    public void forgetPassword(@Nonnull Project project, @Nonnull String url, @Nonnull AuthData authData) {
         GithubSettings.getInstance().setValidGitAuth(false);
+    }
+
+    @Override
+    public boolean isSilent() {
+        return true;
     }
 }

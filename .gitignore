@@ -5,3 +5,7 @@
 /plugin/sandbox
 /target
 /sandbox/
+/core/target
+/git/target
+/tracker/target
+/plugin/target

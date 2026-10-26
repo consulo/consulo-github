@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.github.share;
+package com.intellij.vcs.github.git.share;
 
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
+import consulo.annotation.component.ActionRefAnchor;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.project.Project;
@@ -28,7 +29,13 @@ import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DumbAwareAction;
 import consulo.virtualFileSystem.VirtualFile;
 
-@ActionImpl(id = "Github.Share", parents = @ActionParentRef(@ActionRef(id = "Vcs.Import")))
+@ActionImpl(
+    id = "Github.Share",
+    parents = {
+        @ActionParentRef(value = @ActionRef(id = "GitHub.MainMenu"), anchor = ActionRefAnchor.BEFORE, relatedToAction = @ActionRef(id = "Github.Clone")),
+        @ActionParentRef(@ActionRef(id = "Vcs.Import"))
+    }
+)
 public class GithubShareAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     public GithubShareAction() {
         super(GithubLocalize.actionGithubShareText(), GithubLocalize.actionGithubShareDescription(), GitHubIconGroup.github());

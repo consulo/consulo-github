@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.github.share;
+package com.intellij.vcs.github.git.share;
 
 import consulo.accountManagement.Account;
 import consulo.accountManagement.AccountManager;

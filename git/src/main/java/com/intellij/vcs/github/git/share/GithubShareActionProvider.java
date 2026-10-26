@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.github.share;
+package com.intellij.vcs.github.git.share;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.github.localize.GithubLocalize;
@@ -24,7 +24,7 @@ import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.action.AnAction;
 import consulo.versionControlSystem.ui.ShareProjectActionProvider;
 import consulo.virtualFileSystem.VirtualFile;
-import git4idea.repo.GitRepositoryManager;
+import git4idea.GitUtil;
 
 @ExtensionImpl(order = "first")
 public class GithubShareActionProvider implements ShareProjectActionProvider {
@@ -40,6 +40,6 @@ public class GithubShareActionProvider implements ShareProjectActionProvider {
 
     @Override
     public boolean isApplicableForRoot(Project project, VirtualFile root) {
-        return GitRepositoryManager.getInstance(project).getRepositoryForRootQuick(root) != null;
+        return GitUtil.getRepositoryManager(project).getRepositoryForRootQuick(root) != null;
     }
 }

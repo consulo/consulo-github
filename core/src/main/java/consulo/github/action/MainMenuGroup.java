@@ -29,7 +29,6 @@ import org.jetbrains.plugins.github.GithubCreateGistAction;
 import org.jetbrains.plugins.github.GithubSyncForkAction;
 import org.jetbrains.plugins.github.GithubViewPullRequestsAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestAction;
-import org.jetbrains.plugins.github.share.GithubShareAction;
 import org.jetbrains.plugins.github.ui.GHOpenSettingsAction;
 import org.jetbrains.plugins.github.ui.cloneDialog.GHCloneRepositoryAction;
 
@@ -42,7 +41,6 @@ import org.jetbrains.plugins.github.ui.cloneDialog.GHCloneRepositoryAction;
         @ActionRef(type = GithubCreateGistAction.class),
         @ActionRef(type = GHOpenInBrowserActionGroup.class),
         @ActionRef(type = AnSeparator.class),
-        @ActionRef(type = GithubShareAction.class),
         @ActionRef(type = GHCloneRepositoryAction.class),
         @ActionRef(type = AnSeparator.class),
         @ActionRef(type = GHOpenSettingsAction.class)

@@ -28,6 +28,7 @@ import consulo.http.client.HttpClientUtil;
 import consulo.http.client.HttpRequestConfigurer;
 import consulo.http.client.HttpStatusErrorException;
 import consulo.http.client.RequestTimeoutConfigurer;
+import consulo.review.util.FutureUtil;
 import consulo.util.lang.Pair;
 import org.jetbrains.plugins.github.api.data.graphql.GHGQLRateLimit;
 import org.jetbrains.plugins.github.exceptions.GithubConfusingException;
@@ -49,7 +50,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
@@ -105,56 +105,140 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
 
     @Override
     public <T> CompletableFuture<T> execute(GithubApiRequest<T> request) {
-        return CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<T> result = new CompletableFuture<>();
+        AppExecutorUtil.getAppExecutorService().execute(() -> {
+            if (result.isDone()) {
+                return;
+            }
             try {
                 myRequestsSemaphore.acquire();
             }
             catch (InterruptedException e) {
-                throw new CancellationException();
+                result.cancel(false);
+                return;
             }
+            CompletableFuture<T> execution;
             try {
-                return doExecute(null, request);
+                execution = doExecuteAsync(request);
+            }
+            catch (Throwable e) {
+                execution = CompletableFuture.failedFuture(e);
+            }
+            execution.whenComplete((value, error) -> {
+                myRequestsSemaphore.release();
+                if (error == null) {
+                    result.complete(value);
+                }
+                else {
+                    result.completeExceptionally(FutureUtil.unwrap(error));
+                }
+            });
+            HttpClientUtil.cancelWith(result, execution);
+        });
+        return result;
+    }
+
+    private <T> CompletableFuture<T> doExecuteAsync(GithubApiRequest<T> request) {
+        checkBreaker();
+
+        CompletableFuture<T> result = new CompletableFuture<>();
+        CompletableFuture<HttpRequest> httpRequestFuture = createHttpRequest(request);
+        HttpClientUtil.cancelWith(result, httpRequestFuture);
+        httpRequestFuture.whenComplete((builtRequest, buildError) -> {
+            if (buildError != null) {
+                result.completeExceptionally(FutureUtil.unwrap(buildError));
+                return;
+            }
+            if (result.isDone()) {
+                return;
+            }
+            HttpRequest httpRequest = HttpClientUtil.forceAcceptGzipEncoding(builtRequest);
+            String requestName = HttpApiHelper.logName(httpRequest);
+            try {
+                logRequestBody(request, requestName);
             }
             catch (IOException e) {
-                throw new CompletionException(e);
+                result.completeExceptionally(e);
+                return;
             }
-            finally {
-                myRequestsSemaphore.release();
-            }
-        }, AppExecutorUtil.getAppExecutorService());
+
+            CompletableFuture<HttpResponse<InputStream>> sent =
+                myHelper.sendAndAwait(httpRequest, requestName, HttpResponse.BodyHandlers.ofInputStream());
+            HttpClientUtil.cancelWith(result, sent);
+            sent.whenCompleteAsync((response, sendError) -> {
+                if (sendError != null) {
+                    Throwable cause = FutureUtil.unwrap(sendError);
+                    result.completeExceptionally(cause instanceof IOException ioException ? mapSendError(requestName, ioException) : cause);
+                    return;
+                }
+                result.whenComplete((value, error) -> {
+                    if (result.isCancelled()) {
+                        closeQuietly(response.body());
+                    }
+                });
+                if (result.isDone()) {
+                    return;
+                }
+                try {
+                    result.complete(handleResponse(null, request, requestName, response));
+                }
+                catch (Throwable e) {
+                    result.completeExceptionally(e);
+                }
+            }, AppExecutorUtil.getAppExecutorService());
+        });
+        return result;
     }
 
     private <T> T doExecute(@Nullable ProgressIndicator indicator, GithubApiRequest<T> request) throws IOException {
-        if (GHRequestExecutorBreaker.getInstance().isRequestsShouldFail()) {
-            throw new IllegalStateException(
-                "Request failure was triggered by user action. This a pretty long description of this failure that should resemble some long error which can go out of bounds.");
-        }
+        checkBreaker();
 
         HttpRequest httpRequest = HttpClientUtil.forceAcceptGzipEncoding(await(createHttpRequest(request)));
         String requestName = HttpApiHelper.logName(httpRequest);
-
-        if (LOG.isTraceEnabled() && request instanceof GithubApiRequest.WithBody<?> withBody) {
-            LOG.trace(requestName + " : Request body: " + withBody.getBody());
-        }
+        logRequestBody(request, requestName);
 
         HttpResponse<InputStream> response;
         try {
             response = await(myHelper.sendAndAwait(httpRequest, requestName, HttpResponse.BodyHandlers.ofInputStream()));
         }
         catch (IOException e) {
-            /*
-             * GitHub server is not up to spec - it does not send WWW-Authenticate header with a 401 status code like it should.
-             * If this header is missing, the JDK11 HTTP client throws an `IOException` from jdk.internal.net.http.AuthenticationFilter.response
-             *
-             * Generally this should be very rare - only for unauthorized requests which do need authorization. We don't expect such requests.
-             */
-            String message = e.getMessage();
-            if (message != null && message.contains("response code 401") && isAuthenticationFilterError(e)) {
-                throw createApiException(requestName, HttpURLConnection.HTTP_UNAUTHORIZED, GithubLocalize.authorizationFailed().get(), null);
-            }
-            throw e;
+            throw mapSendError(requestName, e);
         }
 
+        return handleResponse(indicator, request, requestName, response);
+    }
+
+    private static void checkBreaker() {
+        if (GHRequestExecutorBreaker.getInstance().isRequestsShouldFail()) {
+            throw new IllegalStateException(
+                "Request failure was triggered by user action. This a pretty long description of this failure that should resemble some long error which can go out of bounds.");
+        }
+    }
+
+    private static void logRequestBody(GithubApiRequest<?> request, String requestName) throws IOException {
+        if (LOG.isTraceEnabled() && request instanceof GithubApiRequest.WithBody<?> withBody) {
+            LOG.trace(requestName + " : Request body: " + withBody.getBody());
+        }
+    }
+
+    private static IOException mapSendError(String requestName, IOException e) {
+        /*
+         * GitHub server is not up to spec - it does not send WWW-Authenticate header with a 401 status code like it should.
+         * If this header is missing, the JDK11 HTTP client throws an `IOException` from jdk.internal.net.http.AuthenticationFilter.response
+         *
+         * Generally this should be very rare - only for unauthorized requests which do need authorization. We don't expect such requests.
+         */
+        String message = e.getMessage();
+        if (message != null && message.contains("response code 401") && isAuthenticationFilterError(e)) {
+            return createApiException(requestName, HttpURLConnection.HTTP_UNAUTHORIZED, GithubLocalize.authorizationFailed().get(), null);
+        }
+        return e;
+    }
+
+    private static <T> T handleResponse(@Nullable ProgressIndicator indicator,
+                                        GithubApiRequest<T> request,
+                                        String requestName,
+                                        HttpResponse<InputStream> response) throws IOException {
         try {
             HttpClientUtil.checkStatusCodeWithLoggingBlocking(response, LOG, requestName);
             if (indicator != null) {
@@ -187,6 +271,14 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
                 LOG.debug(errorText, e);
             }
             throw e;
+        }
+    }
+
+    private static void closeQuietly(InputStream stream) {
+        try {
+            stream.close();
+        }
+        catch (IOException ignored) {
         }
     }
 

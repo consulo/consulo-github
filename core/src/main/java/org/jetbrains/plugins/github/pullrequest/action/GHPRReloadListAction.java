@@ -21,6 +21,7 @@ import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.ActionPlaces;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.RefreshAction;
 import org.jetbrains.plugins.github.pullrequest.ui.list.GHPRListController;
@@ -35,6 +36,9 @@ public class GHPRReloadListAction extends RefreshAction {
     public void update(AnActionEvent e) {
         GHPRListController controller = e.getData(GHPRActionKeys.PULL_REQUESTS_LIST_CONTROLLER);
         e.getPresentation().setEnabled(controller != null);
+        if (ActionPlaces.ACTION_SEARCH.equals(e.getPlace())) {
+            e.getPresentation().setText(GithubLocalize.actionGithubPullrequestListReloadGotoactionText());
+        }
     }
 
     @RequiredUIAccess

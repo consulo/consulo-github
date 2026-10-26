@@ -17,6 +17,8 @@
 package org.jetbrains.plugins.github.pullrequest.ui.review;
 
 import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
+import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.review.util.FutureUtil;
 import consulo.review.util.SingleCoroutineLauncher;
@@ -31,6 +33,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class GHPRSubmitReviewViewModelImpl implements GHPRSubmitReviewViewModel {
+    private static final Logger LOG = Logger.getInstance(GHPRSubmitReviewViewModelImpl.class);
+
     private final Project myProject;
     private final GHPRReviewDataProvider myDataProvider;
     private final boolean myViewerIsAuthor;
@@ -63,6 +67,7 @@ public class GHPRSubmitReviewViewModelImpl implements GHPRSubmitReviewViewModel 
         myCanDeleteWorktree = GitWorkingTreesService.getInstance(project).isCurrentProjectLinkedWorktree();
         myDeleteWorktreeAfterSubmit = MutableObservableValue.of(myWorktreeSessionState.getDeleteWorktreeAfterSubmit());
         myDraftCommentsCount = MutableObservableValue.of(pendingReview == null ? 0 : pendingReview.commentsCount());
+        Disposer.register(parentCs, myTaskLauncher::cancel);
     }
 
     @Override
@@ -139,7 +144,14 @@ public class GHPRSubmitReviewViewModelImpl implements GHPRSubmitReviewViewModel 
     @Override
     public void discard() {
         if (myPendingReview != null) {
-            myTaskLauncher.launch(() -> myDataProvider.deleteReview(myPendingReview.id()).whenComplete((r, e) -> myOnDone.run()));
+            myTaskLauncher.launch(() -> myDataProvider.deleteReview(myPendingReview.id()).whenComplete((r, e) -> {
+                if (e == null) {
+                    myOnDone.run();
+                }
+                else if (!FutureUtil.isCancellation(e)) {
+                    LOG.error(FutureUtil.unwrap(e));
+                }
+            }));
         }
     }
 

@@ -41,13 +41,14 @@ public class GHPullRequestCommitShort extends GHNode implements GHPRTimelineItem
         if (!(other instanceof GHPullRequestCommitShort that)) {
             return false;
         }
-        return Objects.equals(commit, that.commit)
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(commit, that.commit)
             && Objects.equals(url, that.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(commit, url);
+        return Objects.hash(getId(), commit, url);
     }
 
     @Override

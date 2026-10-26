@@ -18,7 +18,6 @@ package org.jetbrains.plugins.github.pullrequest.data.provider;
 
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.proxy.EventDispatcher;
 import consulo.review.async.ListPartSequenceWithMutableCache;
 import consulo.review.util.SequenceComputer;
 import consulo.review.util.SequenceItem;
@@ -39,7 +38,7 @@ public class GHPRTimelineDataProviderImpl implements GHPRTimelineDataProvider {
 
     public GHPRTimelineDataProviderImpl(Disposable parentDisposable,
                                         GHPRTimelineService timelineService,
-                                        EventDispatcher<GHPRDataOperationsListener> messageBus,
+                                        GHPRDataOperationsMessageBus messageBus,
                                         GHPRIdentifier id) {
         myLoader = new ListPartSequenceWithMutableCache<>(parentDisposable, timelineService.getTimelineItems(id));
 

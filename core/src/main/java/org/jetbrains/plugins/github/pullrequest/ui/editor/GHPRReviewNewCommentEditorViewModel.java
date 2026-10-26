@@ -16,18 +16,22 @@
  */
 package org.jetbrains.plugins.github.pullrequest.ui.editor;
 
+import consulo.codeEditor.Editor;
 import consulo.review.comment.CodeReviewNewCommentViewModel;
 import consulo.review.icon.IconsProvider;
+import consulo.review.list.UserPresentation;
 import consulo.review.timeline.thread.CodeReviewTrackableItemViewModel;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.versionControlSystem.review.diff.DiffLineLocation;
 import org.jetbrains.plugins.github.api.data.GHActor;
+import org.jetbrains.plugins.github.pullrequest.GHPRTimelineUIUtil;
 import org.jetbrains.plugins.github.pullrequest.ui.comment.GHPRReviewCommentPosition;
 import org.jetbrains.plugins.github.pullrequest.ui.comment.GHViewModelWithTextCompletion;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface GHPRReviewNewCommentEditorViewModel extends CodeReviewNewCommentViewModel, CodeReviewTrackableItemViewModel, GHViewModelWithTextCompletion {
     ObservableValue<GHPRReviewCommentPosition> getPosition();
@@ -43,6 +47,16 @@ public interface GHPRReviewNewCommentEditorViewModel extends CodeReviewNewCommen
     void cancel();
 
     void updateLineRange(@Nullable DiffLineLocation newStartLocation, @Nullable DiffLineLocation newEndLocation);
+
+    @Override
+    default Consumer<Editor> getEditorSetup() {
+        return GHViewModelWithTextCompletion.editorSetup(this);
+    }
+
+    @Override
+    default UserPresentation getCurrentUserPresentation() {
+        return GHPRTimelineUIUtil.createUserPresentation(getCurrentUser(), getAvatarIconsProvider());
+    }
 
     sealed interface SubmitAction extends Runnable permits SubmitAction.CreateSingleComment, SubmitAction.CreateReview, SubmitAction.CreateReviewComment {
         @FunctionalInterface

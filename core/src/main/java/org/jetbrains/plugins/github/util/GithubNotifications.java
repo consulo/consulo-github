@@ -112,6 +112,6 @@ public final class GithubNotifications {
 
     public static AnAction getConfigureAction(Project project) {
         return DumbAwareAction.create(GithubLocalize.actionNotificationactionGithubnotificationsTextConfigure(),
-            e -> ShowSettingsUtil.getInstance().showSettingsDialog(project, StandardConfigurableIds.ACCOUNTS_AND_PASSWORDS_GROUP, ""));
+            e -> ShowSettingsUtil.getInstance().showSettingsDialog(project, StandardConfigurableIds.ACCOUNTS, ""));
     }
 }

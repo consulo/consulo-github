@@ -16,10 +16,13 @@
  */
 package org.jetbrains.plugins.github.ui.util;
 
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.localize.LocalizeValue;
+import consulo.review.icon.ReviewIconGroup;
 import consulo.review.icon.IconsProvider;
 import consulo.review.util.popup.PopupItemPresentation;
 import consulo.ui.color.RGBColor;
+import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
 import consulo.review.localize.ReviewLocalize;
 import org.jetbrains.plugins.github.api.GHRepositoryCoordinates;
@@ -53,6 +56,17 @@ public final class GHUIUtil {
         public static Function<GHLabel, PopupItemPresentation> Labels() {
             return it -> new PopupItemPresentation.Simple(it.getName(), ImageEffects.colorFilled(16, 16, RGBColor.decode("#" + it.getColor())), null);
         }
+    }
+
+    public static Image getPullRequestStateIcon(GHPullRequestState state, boolean isDraft) {
+        if (isDraft) {
+            return ImageEffects.grayed(ReviewIconGroup.pullrequestopen());
+        }
+        return switch (state) {
+            case CLOSED -> ReviewIconGroup.pullrequestclosed();
+            case MERGED -> PlatformIconGroup.vcsMerge();
+            case OPEN -> ReviewIconGroup.pullrequestopen();
+        };
     }
 
     public static LocalizeValue getPullRequestStateText(GHPullRequestState state, boolean isDraft) {

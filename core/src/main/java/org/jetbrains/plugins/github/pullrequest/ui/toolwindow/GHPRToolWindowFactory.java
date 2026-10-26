@@ -21,6 +21,7 @@ import consulo.application.dumb.DumbAware;
 import consulo.disposer.Disposer;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.project.ui.wm.ToolWindowFactory;
 import consulo.review.icon.ReviewIconGroup;
@@ -28,16 +29,25 @@ import consulo.review.toolwindow.ReviewToolwindowTabsManager;
 import consulo.review.toolwindow.ToolwindowUtils;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.ActionManager;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.CommonShortcuts;
+import consulo.ui.ex.action.EmptyAction;
 import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.toolWindow.ToolWindow;
 import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.image.Image;
+import consulo.ui.image.ImageEffects;
+import consulo.util.concurrent.coroutine.ObservableValue;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRActionKeys;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRSwitchRemoteAction;
+import org.jetbrains.plugins.github.pullrequest.ui.GHPRConnectedProjectViewModel;
 import org.jetbrains.plugins.github.pullrequest.ui.GHPRProjectViewModel;
 import org.jetbrains.plugins.github.pullrequest.ui.toolwindow.model.GHPRToolWindowViewModel;
+
+import java.util.function.Consumer;
 
 @ExtensionImpl
 public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
@@ -62,12 +72,52 @@ public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
         Runnable unsubscribe = vm.isAvailable().addListener(available -> project.getUIAccess().give(() -> toolWindow.setAvailable(available)));
         Disposer.register(toolWindow.getContentManager(), unsubscribe::run);
         vm.addActivationRequestListener(toolWindow.getContentManager(), () -> project.getUIAccess().give(() -> toolWindow.activate(null)));
+        manageIconInToolbar(project, toolWindow, vm);
+    }
+
+    private static void manageIconInToolbar(Project project, ToolWindow toolWindow, GHPRProjectViewModel vm) {
+        Runnable[] hasUpdatesSubscription = new Runnable[1];
+        Consumer<@Nullable GHPRConnectedProjectViewModel> connectedListener = connectedVm -> {
+            Runnable previous = hasUpdatesSubscription[0];
+            if (previous != null) {
+                previous.run();
+            }
+            hasUpdatesSubscription[0] = null;
+            if (connectedVm == null) {
+                updateIcon(project, toolWindow, null);
+                return;
+            }
+            ObservableValue<@Nullable Boolean> hasUpdates = connectedVm.getListVm().getHasUpdates();
+            hasUpdatesSubscription[0] = hasUpdates.addListener(it -> updateIcon(project, toolWindow, it));
+            updateIcon(project, toolWindow, hasUpdates.get());
+        };
+        Runnable unsubscribe = vm.getConnectedProjectVm().addListener(connectedListener);
+        connectedListener.accept(vm.getConnectedProjectVm().get());
+        Disposer.register(toolWindow.getContentManager(), () -> {
+            unsubscribe.run();
+            Runnable subscription = hasUpdatesSubscription[0];
+            if (subscription != null) {
+                subscription.run();
+            }
+        });
+    }
+
+    private static void updateIcon(Project project, ToolWindow toolWindow, @Nullable Boolean hasUpdates) {
+        project.getUIAccess().give(() -> {
+            if (project.isDisposed()) {
+                return;
+            }
+            Image icon = ReviewIconGroup.pullrequestopen();
+            toolWindow.setIcon(hasUpdates == null || !hasUpdates ? icon : ImageEffects.layered(icon, PlatformIconGroup.greenbadge()));
+        });
     }
 
     @RequiredUIAccess
     @Override
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
-        toolWindow.setTitleActions(ActionManager.getInstance().getAction(GHPRCreatePullRequestAction.class));
+        AnAction wrapper = EmptyAction.wrap(ActionManager.getInstance().getAction(GHPRCreatePullRequestAction.class));
+        wrapper.registerCustomShortcutSet(CommonShortcuts.getNew(), toolWindow.getUIComponent(), toolWindow.getContentManager());
+        toolWindow.setTitleActions(wrapper);
         toolWindow.setAdditionalGearActions(new DefaultActionGroup(new GHPRSwitchRemoteAction()));
 
         GHPRProjectViewModel vm = GHPRProjectViewModel.getInstance(project);
@@ -83,6 +133,11 @@ public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
         GHPRToolWindowTabComponentFactory componentFactory = new GHPRToolWindowTabComponentFactory(project, vm);
         myTabsManager.manageReviewToolwindowTabs(toolWindow.getContentManager(), project, toolWindow, reviewTwVm, componentFactory,
             GithubLocalize.toolwindowStripePull_requests());
+    }
+
+    @Override
+    public boolean canCloseContents() {
+        return true;
     }
 
     @Override

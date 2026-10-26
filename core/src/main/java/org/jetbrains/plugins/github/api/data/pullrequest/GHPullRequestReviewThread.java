@@ -157,7 +157,8 @@ public class GHPullRequestReviewThread extends GHNode {
         if (!(other instanceof GHPullRequestReviewThread that)) {
             return false;
         }
-        return isResolved == that.isResolved
+        return Objects.equals(getId(), that.getId())
+            && isResolved == that.isResolved
             && isOutdated == that.isOutdated
             && Objects.equals(path, that.path)
             && Objects.equals(subjectType, that.subjectType)
@@ -167,6 +168,7 @@ public class GHPullRequestReviewThread extends GHNode {
             && Objects.equals(startSide, that.startSide)
             && Objects.equals(startLine, that.startLine)
             && Objects.equals(originalStartLine, that.originalStartLine)
+            && Objects.equals(commentsNodes, that.commentsNodes)
             && viewerCanReply == that.viewerCanReply
             && viewerCanResolve == that.viewerCanResolve
             && viewerCanUnresolve == that.viewerCanUnresolve;
@@ -174,7 +176,8 @@ public class GHPullRequestReviewThread extends GHNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(isResolved, isOutdated, path, subjectType, side, line, originalLine, startSide, startLine, originalStartLine, viewerCanReply, viewerCanResolve, viewerCanUnresolve);
+        return Objects.hash(getId(), isResolved, isOutdated, path, subjectType, side, line, originalLine, startSide, startLine, originalStartLine,
+            commentsNodes, viewerCanReply, viewerCanResolve, viewerCanUnresolve);
     }
 
     public List<GHPullRequestReviewComment> getComments() {

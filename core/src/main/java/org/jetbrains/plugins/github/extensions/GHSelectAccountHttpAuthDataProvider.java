@@ -20,7 +20,6 @@ import consulo.accountManagement.Account;
 import consulo.accountManagement.AccountBasicCredentials;
 import consulo.accountManagement.AccountConnection;
 import consulo.accountManagement.AccountManager;
-import consulo.accountManagement.AccountType;
 import consulo.credentialStorage.AuthData;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
@@ -31,7 +30,7 @@ import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.dialog.DialogService;
 import git4idea.remote.InteractiveGitHttpAuthDataProvider;
-import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
+import org.jetbrains.plugins.github.authentication.GHAccountsUtil;
 import org.jetbrains.plugins.github.authentication.ui.GithubChooseAccountDialog;
 import org.jetbrains.plugins.github.util.GithubUtil;
 import org.jspecify.annotations.Nullable;
@@ -51,11 +50,11 @@ public class GHSelectAccountHttpAuthDataProvider implements InteractiveGitHttpAu
     @RequiredUIAccess
     @Override
     public @Nullable AuthData getAuthData(@Nullable Component parentComponent) {
-        getAuthDataAsync(parentComponent);
         return null;
     }
 
     @RequiredUIAccess
+    @Override
     public CompletableFuture<@Nullable AuthData> getAuthDataAsync(@Nullable Component parentComponent) {
         UIAccess uiAccess = UIAccess.current();
         GithubChooseAccountDialog dialog = new GithubChooseAccountDialog(
@@ -66,7 +65,7 @@ public class GHSelectAccountHttpAuthDataProvider implements InteractiveGitHttpAu
         return (parentComponent == null ? dialogService.build(dialog) : dialogService.build(parentComponent, dialog))
             .showAsync()
             .thenComposeAsync(value -> {
-                Account account = dialog.getAccount();
+                Account account = value == null ? null : dialog.getAccount();
                 if (account == null) {
                     return CompletableFuture.<@Nullable AuthData>completedFuture(null);
                 }
@@ -75,8 +74,7 @@ public class GHSelectAccountHttpAuthDataProvider implements InteractiveGitHttpAu
                         return null;
                     }
                     if (dialog.isSetDefault()) {
-                        AccountManager accountManager = accountManager();
-                        accountManager.setActiveAccount(accountType(accountManager), account, myProject);
+                        GHAccountsUtil.setDefaultAccount(myProject, account);
                     }
                     return new AuthData(GithubUtil.GIT_AUTH_PASSWORD_SUBSTITUTE, token);
                 });
@@ -107,9 +105,5 @@ public class GHSelectAccountHttpAuthDataProvider implements InteractiveGitHttpAu
 
     private AccountManager accountManager() {
         return myProject.getApplication().getInstance(AccountManager.class);
-    }
-
-    private static AccountType<?> accountType(AccountManager accountManager) {
-        return accountManager.findAccountType(GithubAccountType.ID);
     }
 }

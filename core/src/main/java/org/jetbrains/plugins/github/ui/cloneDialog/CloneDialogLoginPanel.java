@@ -20,7 +20,6 @@ import consulo.accountManagement.Account;
 import consulo.accountManagement.AccountAuthorizeConfig;
 import consulo.accountManagement.AccountManager;
 import consulo.accountManagement.AccountType;
-import consulo.accountManagement.authorize.TokenAuthorizeConfig;
 import consulo.disposer.Disposable;
 import consulo.localize.LocalizeValue;
 import consulo.platform.base.localize.CommonLocalize;
@@ -37,6 +36,7 @@ import consulo.ui.ex.action.Presentation;
 import consulo.ui.layout.HorizontalLayout;
 import consulo.ui.layout.VerticalLayout;
 import consulo.ui.style.StandardColors;
+import org.jetbrains.plugins.github.authentication.AuthorizationType;
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
 import org.jetbrains.plugins.github.util.GithubUtil;
 import org.jspecify.annotations.Nullable;
@@ -109,13 +109,13 @@ public class CloneDialogLoginPanel implements PseudoComponent, Disposable {
     @RequiredUIAccess
     public void setTokenUi() {
         setupNewUi(false);
-        myAuthorizeConfig = findTokenConfig();
+        myAuthorizeConfig = findConfig(AuthorizationType.TOKEN);
     }
 
     @RequiredUIAccess
     public void setOAuthUi() {
         setupNewUi(true);
-        myAuthorizeConfig = null;
+        myAuthorizeConfig = findConfig(AuthorizationType.OAUTH);
 
         login();
     }
@@ -171,17 +171,12 @@ public class CloneDialogLoginPanel implements PseudoComponent, Disposable {
         }, myUiAccess);
     }
 
-    private @Nullable AccountAuthorizeConfig findTokenConfig() {
+    private @Nullable AccountAuthorizeConfig findConfig(AuthorizationType authType) {
         AccountType<?> type = myAccountManager.findAccountType(GithubAccountType.ID);
         if (type == null) {
             return null;
         }
-        for (AccountAuthorizeConfig config : myAccountManager.getAuthorizeConfigs(type)) {
-            if (config instanceof TokenAuthorizeConfig) {
-                return config;
-            }
-        }
-        return null;
+        return GithubAccountType.findAuthorizeConfig(myAccountManager.getAuthorizeConfigs(type), authType);
     }
 
     @RequiredUIAccess

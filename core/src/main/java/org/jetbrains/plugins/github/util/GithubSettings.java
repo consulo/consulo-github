@@ -8,6 +8,8 @@ import consulo.application.Application;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
+import consulo.util.concurrent.coroutine.MutableObservableValue;
+import consulo.util.concurrent.coroutine.ObservableValue;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -15,7 +17,10 @@ import jakarta.inject.Singleton;
 @ServiceAPI(ComponentScope.APPLICATION)
 @ServiceImpl
 public class GithubSettings implements PersistentStateComponent<GithubSettings.State> {
+    public static final String DEFAULT_HOST_ALIASES = "github.com";
+
     private State myState = new State();
+    private final MutableObservableValue<String> myHostAliasesState = MutableObservableValue.of(DEFAULT_HOST_ALIASES);
 
     @Override
     public State getState() {
@@ -25,6 +30,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
     @Override
     public void loadState(State state) {
         myState = state;
+        myHostAliasesState.set(getHostAliases());
     }
 
     public static class State {
@@ -36,6 +42,7 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
         public boolean CLONE_GIT_USING_SSH = false;
         public boolean AUTOMATICALLY_MARK_AS_VIEWED = false;
         public boolean IS_UNREAD_MARKERS_ENABLED = true;
+        public String HOST_ALIASES = DEFAULT_HOST_ALIASES;
     }
 
     public static GithubSettings getInstance() {
@@ -96,5 +103,23 @@ public class GithubSettings implements PersistentStateComponent<GithubSettings.S
 
     public void setIsSeenMarkersEnabled(boolean isUnreadMarkersEnabled) {
         myState.IS_UNREAD_MARKERS_ENABLED = isUnreadMarkersEnabled;
+    }
+
+    /**
+     * Comma-separated list of host aliases. An "alias=server" entry maps the alias to a GitHub server URL or host.
+     * An "alias" entry maps the alias to github.com.
+     */
+    public String getHostAliases() {
+        String aliases = myState.HOST_ALIASES;
+        return aliases == null ? DEFAULT_HOST_ALIASES : aliases;
+    }
+
+    public void setHostAliases(String aliases) {
+        myState.HOST_ALIASES = aliases;
+        myHostAliasesState.set(aliases);
+    }
+
+    public ObservableValue<String> getHostAliasesState() {
+        return myHostAliasesState;
     }
 }

@@ -18,9 +18,9 @@ package org.jetbrains.plugins.github.pullrequest.data.provider;
 
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.proxy.EventDispatcher;
 import consulo.review.async.LoaderWithMutableCache;
 import consulo.review.util.CollectionDelta;
+import consulo.review.util.FutureUtil;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.util.lang.Pair;
@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 public class GHPRDetailsDataProviderImpl implements GHPRDetailsDataProvider {
     private final GHPRDetailsService myDetailsService;
     private final GHPRIdentifier myPullRequestId;
-    private final EventDispatcher<GHPRDataOperationsListener> myMessageBus;
+    private final GHPRDataOperationsMessageBus myMessageBus;
 
     private final MutableObservableValue<@Nullable GHPullRequest> myLoadedDetailsState = MutableObservableValue.of(null);
     private final List<Runnable> myStateChangeListeners = new CopyOnWriteArrayList<>();
@@ -50,7 +50,7 @@ public class GHPRDetailsDataProviderImpl implements GHPRDetailsDataProvider {
     public GHPRDetailsDataProviderImpl(Disposable parentDisposable,
                                        GHPRDetailsService detailsService,
                                        GHPRIdentifier pullRequestId,
-                                       EventDispatcher<GHPRDataOperationsListener> messageBus) {
+                                       GHPRDataOperationsMessageBus messageBus) {
         myDetailsService = detailsService;
         myPullRequestId = pullRequestId;
         myMessageBus = messageBus;
@@ -99,12 +99,10 @@ public class GHPRDetailsDataProviderImpl implements GHPRDetailsDataProvider {
 
     @Override
     public CompletableFuture<GHPullRequest> updateDetails(@Nullable String title, @Nullable String description) {
-        return myDetailsService.updateDetails(myPullRequestId, title, description).whenComplete((details, error) -> {
-            if (error == null) {
-                myDetailsLoader.overrideResult(details);
-                myMessageBus.getMulticaster().onMetadataChanged();
-            }
-        });
+        return myDetailsService.updateDetails(myPullRequestId, title, description).thenCompose(details -> {
+            myDetailsLoader.overrideResult(details);
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onMetadataChanged).thenApply(ignored -> details);
+        }).copy();
     }
 
     @Override
@@ -155,16 +153,21 @@ public class GHPRDetailsDataProviderImpl implements GHPRDetailsDataProvider {
         catch (Throwable e) {
             result = CompletableFuture.failedFuture(e);
         }
-        return result.whenComplete((value, error) -> notifyNeedsReload(state));
+        return result.handle((value, error) -> error)
+            .thenCompose(error -> notifyNeedsReload(state).thenCompose(ignored -> error == null
+                ? CompletableFuture.<@Nullable Object>completedFuture(null)
+                : CompletableFuture.<@Nullable Object>failedFuture(FutureUtil.unwrap(error))))
+            .copy();
     }
 
-    private void notifyNeedsReload(boolean state) {
+    private CompletableFuture<?> notifyNeedsReload(boolean state) {
         signalDetailsNeedReload();
         signalMergeabilityNeedsReload();
-        myMessageBus.getMulticaster().onMetadataChanged();
-        if (state) {
-            myStateChangeListeners.forEach(Runnable::run);
-        }
+        return myMessageBus.syncPublisher(GHPRDataOperationsListener::onMetadataChanged).thenRun(() -> {
+            if (state) {
+                myStateChangeListeners.forEach(Runnable::run);
+            }
+        });
     }
 
     @Override

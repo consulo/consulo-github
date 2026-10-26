@@ -28,6 +28,7 @@ import consulo.http.graphql.dto.GraphQLErrorDTO;
 import consulo.http.graphql.dto.GraphQLNodesDTO;
 import consulo.http.graphql.dto.GraphQLRequestDTO;
 import consulo.http.graphql.dto.GraphQLResponseDTO;
+import consulo.ui.image.Image;
 import org.jetbrains.plugins.github.exceptions.GithubJsonException;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JacksonException;
@@ -41,7 +42,9 @@ import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -156,6 +159,58 @@ public final class GithubApiContentHelper {
         catch (JacksonException e) {
             throw new GithubJsonException("Can't serialize GitHub request body", e);
         }
+    }
+
+    public static Image loadImage(byte[] bytes) throws IOException {
+        return Image.fromBytes(detectImageType(bytes), bytes);
+    }
+
+    private static Image.ImageType detectImageType(byte[] bytes) {
+        if (startsWith(bytes, 0, 0x89, 'P', 'N', 'G')) {
+            return Image.ImageType.PNG;
+        }
+        if (startsWith(bytes, 0, 0xFF, 0xD8, 0xFF)) {
+            return Image.ImageType.JPEG;
+        }
+        if (startsWith(bytes, 0, 'G', 'I', 'F', '8')) {
+            return Image.ImageType.GIF;
+        }
+        if (startsWith(bytes, 0, 'R', 'I', 'F', 'F') && startsWith(bytes, 8, 'W', 'E', 'B', 'P')) {
+            return Image.ImageType.WEBP;
+        }
+        if (startsWith(bytes, 0, 'B', 'M')) {
+            return Image.ImageType.BMP;
+        }
+        if (startsWith(bytes, 0, 0, 0, 1, 0)) {
+            return Image.ImageType.ICO;
+        }
+        if (startsWith(bytes, 0, 'I', 'I', '*', 0) || startsWith(bytes, 0, 'M', 'M', 0, '*')) {
+            return Image.ImageType.TIFF;
+        }
+        if (isSvg(bytes)) {
+            return Image.ImageType.SVG;
+        }
+        return Image.ImageType.PNG;
+    }
+
+    private static boolean startsWith(byte[] bytes, int offset, int... prefix) {
+        if (bytes.length < offset + prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if ((bytes[offset + i] & 0xFF) != prefix[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isSvg(byte[] bytes) {
+        String head = new String(bytes, 0, Math.min(bytes.length, 4096), StandardCharsets.UTF_8).stripLeading();
+        if (head.startsWith("\uFEFF")) {
+            head = head.substring(1).stripLeading();
+        }
+        return head.startsWith("<") && head.contains("<svg");
     }
 
     static ObjectMapper getObjectMapper(boolean gqlNaming) {

@@ -16,16 +16,17 @@
  */
 package org.jetbrains.plugins.github.pullrequest.ui.review;
 
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
-import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.review.util.ComputedResult;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 import git4idea.branch.GitBranchSyncStatus;
 import git4idea.branch.GitBranchUtil;
 import git4idea.repo.GitRepository;
+import git4idea.ui.branch.GitBranchPopupActions;
 import git4idea.ui.branch.GitCurrentBranchPresenter;
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +40,8 @@ public class GHPROnCurrentBranchPresenter implements GitCurrentBranchPresenter {
         if (vm == null) {
             return null;
         }
-        String currentBranchName = Objects.requireNonNull(StringUtil.escapeMnemonics(GitBranchUtil.getDisplayableBranchText(repository)));
+        String currentBranchName = Objects.requireNonNull(StringUtil.escapeMnemonics(GitBranchUtil.getDisplayableBranchText(repository,
+            branchName -> GitBranchPopupActions.truncateBranchName(branchName, repository.getProject()))));
 
         String fullBranchName = GitBranchUtil.getDisplayableBranchText(repository);
 

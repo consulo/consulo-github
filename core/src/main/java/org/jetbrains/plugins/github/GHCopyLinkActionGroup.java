@@ -24,6 +24,8 @@ import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.ex.CopyPasteManager;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.lang.Range;
 import git4idea.remote.hosting.HostedGitRepositoriesManager;
 import git4idea.remote.hosting.action.GlobalHostedGitRepositoryReferenceActionGroup;
@@ -64,5 +66,13 @@ public class GHCopyLinkActionGroup extends GlobalHostedGitRepositoryReferenceAct
             return;
         }
         CopyPasteManager.getInstance().setText(uri.toString());
+    }
+
+    @Override
+    public void update(AnActionEvent e) {
+        super.update(e);
+        if (ActionPlaces.COPY_REFERENCE_POPUP.equals(e.getPlace())) {
+            e.getPresentation().setText(GithubLocalize.groupGithubCopyLinkCopyreferencepopupText());
+        }
     }
 }

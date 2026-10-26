@@ -42,6 +42,8 @@ accounts.default.missing:
     text: Missing default GitHub account
 accounts.relogin:
     text: Re-Login
+action.Github.PullRequest.List.Reload.GoToAction.text:
+    text: Refresh Pull Requests List
 action.GitHub.Timeline.DeleteMergedBranch.description:
     text: Delete the merged branch on GitHub
 action.GitHub.Timeline.DeleteMergedBranch.text:
@@ -121,9 +123,21 @@ action.create.pull.request.description:
 action.create.pull.request.text:
     text: Create Pull Request…
 action.sync.fork.description:
-    text: Rebase your GitHub forked repository relative to the origin
+    text: Sync your GitHub fork with its upstream repository
+action.sync.fork.merge.description:
+    text: Merge the default branch of the upstream repository into the current branch of your GitHub fork
+action.sync.fork.merge.text:
+    text: Merge Upstream into Current Branch
+action.sync.fork.rebase.description:
+    text: Rebase the current branch of your GitHub fork onto the default branch of the upstream repository
+action.sync.fork.rebase.text:
+    text: Rebase onto Upstream
 action.sync.fork.text:
     text: Sync Fork
+advanced.setting.github.aliases:
+    text: GitHub host aliases
+advanced.setting.github.aliases.description:
+    text: 'Comma-separated list of host aliases. An "alias=server" entry maps the alias to a GitHub server URL or host. An "alias" entry maps the alias to github.com. Example: work=github.example.com, legacy=https://git.example.com:8443/github, old-alias'
 authorization.failed:
     text: User authorization failed
 button.use.token:
@@ -212,6 +226,8 @@ group.GitHub.Copy.Link.CopyReferencePopup.text:
     text: GitHub Repository URL
 group.GitHub.Copy.Link.text:
     text: Copy Link to GitHub Repository
+group.GitHub.MainMenu.GoToAction.text:
+    text: GitHub Actions
 group.GitHub.MainMenu.text:
     text: GitHub
 group.Github.Open.In.Browser.EditorTabPopup.text:
@@ -234,6 +250,8 @@ link.label.use.token:
     text: Use token…
 login.account.already.added:
     text: Account ''{0}'' already added
+login.oauth.github.com.only:
+    text: 'Log in via GitHub is available for github.com only, use a token for GitHub Enterprise'
 login.to.github:
     text: Log In to GitHub
 login.to.github.enterprise:
@@ -638,6 +656,10 @@ rebase.error.repo.not.found:
     text: Repository {0} was not found
 rebase.error.upstream.not.found:
     text: Remote {0} was not added
+merge.process:
+    text: Merging upstream into GitHub fork…
+merge.process.merging.upstream:
+    text: Merging ''{0}''…
 rebase.process:
     text: Rebasing GitHub fork…
 rebase.process.adding.github.parent.as.remote.host:

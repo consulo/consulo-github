@@ -21,38 +21,24 @@ import consulo.diff.DiffEditorTabFilesManager;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.fileEditor.FileEditorManager;
-import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import consulo.review.timeline.CodeReviewTimelineComponentFactory;
-import consulo.review.util.FutureUtil;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.lang.lazy.LazyValue;
 import consulo.versionControlSystem.review.util.CodeReviewFilesUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.github.api.GHRepositoryCoordinates;
-import org.jetbrains.plugins.github.pullrequest.GHPRTimelineUIUtil;
 import org.jetbrains.plugins.github.pullrequest.GHPRVirtualFile;
 import org.jetbrains.plugins.github.pullrequest.GHPRVirtualFileSystem;
-import org.jetbrains.plugins.github.pullrequest.ui.GHPRConnectedProjectViewModel;
-import org.jetbrains.plugins.github.pullrequest.ui.GHPRProjectViewModel;
-import org.jetbrains.plugins.github.pullrequest.ui.details.model.impl.GHPRDetailsViewModel;
-import org.jetbrains.plugins.github.pullrequest.ui.timeline.GHPRTimelineTabViewModel;
-import org.jetbrains.plugins.github.pullrequest.ui.timeline.GHPRTimelineViewModel;
-import org.jetbrains.plugins.github.pullrequest.ui.toolwindow.model.GHPRInfoViewModel;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 public class GHPRFilesManagerImpl implements GHPRFilesManager {
     private final Project myProject;
     private final GHRepositoryCoordinates myRepository;
     private final Disposable myCs;
-    private final Set<GHPRTimelineViewModel> myOpenedTimelines = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     // current time should be enough to distinguish the manager between launches
     private final String myId = String.valueOf(System.currentTimeMillis());
@@ -74,25 +60,12 @@ public class GHPRFilesManagerImpl implements GHPRFilesManager {
     @RequiredUIAccess
     @Override
     public void createAndOpenTimelineFile(GHPRIdentifier prId, boolean requestFocus) {
-        GHPRConnectedProjectViewModel projectVm = GHPRProjectViewModel.getInstance(myProject).getConnectedProjectVm().get();
-        if (projectVm == null || !projectVm.getRepository().equals(myRepository)) {
-            return;
+        GHPRVirtualFileSystem fs = myFs.get();
+        String path = fs.getPath(myId, myProject, myRepository, prId, false);
+        VirtualFile file = fs.refreshAndFindFileByPath(path);
+        if (file != null) {
+            FileEditorManager.getInstance(myProject).openFile(file, requestFocus);
         }
-        Disposable owner = Disposable.newDisposable("GitHub Pull Request Timeline UI");
-        Disposer.register(myCs, owner);
-        GHPRInfoViewModel infoVm = projectVm.acquireInfoViewModel(prId, owner);
-        GHPRTimelineViewModel timelineVm = projectVm.acquireTimelineViewModel(prId, owner);
-        FutureUtil.first(owner, infoVm.getDetailsVm(), it -> !it.isInProgress()).whenCompleteAsync((result, error) -> {
-            GHPRDetailsViewModel detailsVm = result == null ? null : result.getOrNull();
-            if (error != null || detailsVm == null) {
-                Disposer.dispose(owner);
-                return;
-            }
-            LocalizeValue name = LocalizeValue.of(GHPRTimelineUIUtil.getPresentableName(myProject, myRepository, prId));
-            myOpenedTimelines.add(timelineVm);
-            myProject.getApplication().getInstance(CodeReviewTimelineComponentFactory.class)
-                .openTimeline(myProject, new GHPRTimelineTabViewModel(name, detailsVm, timelineVm), timelineVm, owner);
-        }, myProject.getUIAccess());
     }
 
     @RequiredUIAccess
@@ -109,6 +82,12 @@ public class GHPRFilesManagerImpl implements GHPRFilesManager {
     @RequiredUIAccess
     @Override
     public void updateTimelineFilePresentation(GHPRIdentifier prId) {
+        GHPRVirtualFileSystem fs = myFs.get();
+        String path = fs.getPath(myId, myProject, myRepository, prId, false);
+        VirtualFile file = fs.refreshAndFindFileByPath(path);
+        if (file != null) {
+            FileEditorManager.getInstance(myProject).updateFilePresentation(file);
+        }
     }
 
     @RequiredUIAccess
@@ -137,15 +116,6 @@ public class GHPRFilesManagerImpl implements GHPRFilesManager {
             }
         }
         CodeReviewFilesUtil.closeFilesSafely(fileManager, files);
-
-        CodeReviewTimelineComponentFactory timelineFactory = myProject.getApplication().getInstance(CodeReviewTimelineComponentFactory.class);
-        List<GHPRTimelineViewModel> timelines;
-        synchronized (myOpenedTimelines) {
-            timelines = List.copyOf(myOpenedTimelines);
-        }
-        for (GHPRTimelineViewModel timelineVm : timelines) {
-            timelineFactory.closeTimeline(myProject, timelineVm);
-        }
     }
 
     private boolean canCloseFiles() {

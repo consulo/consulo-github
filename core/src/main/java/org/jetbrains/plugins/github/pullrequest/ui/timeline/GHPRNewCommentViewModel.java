@@ -16,6 +16,7 @@
  */
 package org.jetbrains.plugins.github.pullrequest.ui.timeline;
 
+import consulo.codeEditor.Editor;
 import consulo.disposer.Disposable;
 import consulo.project.Project;
 import consulo.review.comment.CodeReviewNewCommentViewModel;
@@ -43,6 +44,11 @@ public class GHPRNewCommentViewModel extends CodeReviewSubmittableTextViewModelB
     @Override
     public void withMentionCompletionModel(Consumer<GHViewModelMentionCompletion> consumer) {
         myViewModelWithTextCompletion.withMentionCompletionModel(consumer);
+    }
+
+    @Override
+    public Consumer<Editor> getEditorSetup() {
+        return GHViewModelWithTextCompletion.editorSetup(this);
     }
 
     @Override

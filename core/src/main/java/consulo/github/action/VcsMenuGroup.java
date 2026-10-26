@@ -6,7 +6,7 @@ import consulo.annotation.component.ActionRef;
 import consulo.application.dumb.DumbAware;
 import consulo.localize.LocalizeValue;
 import consulo.ui.ex.action.DefaultActionGroup;
-import org.jetbrains.plugins.github.GithubSyncForkAction;
+import org.jetbrains.plugins.github.GithubSyncForkGroup;
 import org.jetbrains.plugins.github.GithubViewPullRequestsAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestAction;
 
@@ -17,7 +17,7 @@ import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestActi
 @ActionImpl(
     id = "Git.Menu.Github",
     children = {
-        @ActionRef(type = GithubSyncForkAction.class),
+        @ActionRef(type = GithubSyncForkGroup.class),
         @ActionRef(type = GHPRCreatePullRequestAction.class),
         @ActionRef(type = GithubViewPullRequestsAction.class)
     },

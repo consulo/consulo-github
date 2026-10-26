@@ -31,6 +31,7 @@ import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestShort;
 import org.jetbrains.plugins.github.pullrequest.data.GHPRIdentifier;
 import org.jetbrains.plugins.github.pullrequest.ui.GHPRConnectedProjectViewModel;
 import org.jetbrains.plugins.github.pullrequest.ui.GHPRProjectViewModel;
+import org.jetbrains.plugins.github.ui.util.GHUIUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.LinkedHashSet;
@@ -55,6 +56,11 @@ public final class GHPRTimelineUIUtil {
     public static String getPresentablePath(Project project, GHRepositoryCoordinates repository, GHPRIdentifier pullRequest) {
         GHPullRequestShort details = findDetails(project, repository, pullRequest);
         return details != null ? details.getUrl() : repository.toUrl() + "/pulls/" + pullRequest.number();
+    }
+
+    public static @Nullable Image getIcon(Project project, GHRepositoryCoordinates repository, GHPRIdentifier pullRequest) {
+        GHPullRequestShort details = findDetails(project, repository, pullRequest);
+        return details != null ? GHUIUtil.getPullRequestStateIcon(details.getState(), details.isDraft()) : null;
     }
 
     public static GHActorPresentation createUserPresentation(GHActor actor, IconsProvider<String> avatarIconsProvider) {

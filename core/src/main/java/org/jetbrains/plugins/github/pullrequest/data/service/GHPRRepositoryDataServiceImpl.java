@@ -63,6 +63,7 @@ public class GHPRRepositoryDataServiceImpl implements GHPRRepositoryDataService 
     private final GHRepositoryPath myRepoPath;
 
     private final List<Runnable> myDataReloadListeners = new CopyOnWriteArrayList<>();
+    private volatile boolean myDataReloadSignalled;
 
     private final LazyValue<BatchesLoader<GithubUserWithPermissions>> myCollaboratorsLoader;
     private final LazyValue<BatchesLoader<GHUser>> myContributorsLoader;
@@ -155,6 +156,9 @@ public class GHPRRepositoryDataServiceImpl implements GHPRRepositoryDataService 
     public void addDataReloadListener(Disposable parentDisposable, Runnable listener) {
         myDataReloadListeners.add(listener);
         Disposer.register(parentDisposable, () -> myDataReloadListeners.remove(listener));
+        if (myDataReloadSignalled) {
+            listener.run();
+        }
     }
 
     @Override
@@ -216,6 +220,7 @@ public class GHPRRepositoryDataServiceImpl implements GHPRRepositoryDataService 
         myAssigneesLoader.get().cancel();
         myLabelsLoader.get().cancel();
         myTeamsLoader.get().cancel();
+        myDataReloadSignalled = true;
         myDataReloadListeners.forEach(Runnable::run);
     }
 

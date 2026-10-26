@@ -16,11 +16,16 @@
  */
 package org.jetbrains.plugins.github.pullrequest.ui.timeline;
 
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.github.localize.GithubLocalize;
+import consulo.platform.Platform;
 import consulo.project.Project;
 import consulo.review.async.MappingScopedItemsContainer;
 import consulo.review.comment.CodeReviewCommentBodyBlock;
+import consulo.review.comment.CodeReviewComponentCommentBodyBlock;
+import consulo.review.comment.CodeReviewMarkdownCommentBodyBlock;
 import consulo.review.comment.CodeReviewNewCommentViewModel;
 import consulo.review.comment.CodeReviewTextEditingViewModel;
 import consulo.review.icon.IconsProvider;
@@ -31,6 +36,8 @@ import consulo.review.timeline.CodeReviewTimelineViewModel;
 import consulo.review.util.AsyncIncrementalListComputer;
 import consulo.review.util.ComputedResult;
 import consulo.review.util.IncrementallyComputedValue;
+import consulo.ui.Hyperlink;
+import consulo.ui.image.Image;
 import consulo.ui.messageList.AsyncHtmlImageLoader;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.concurrent.coroutine.ObservableValue;
@@ -42,8 +49,8 @@ import org.jetbrains.plugins.github.api.data.GHRepositoryPermissionLevel;
 import org.jetbrains.plugins.github.api.data.GHUser;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestCommitShort;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReview;
+import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestState;
 import org.jetbrains.plugins.github.api.data.pullrequest.timeline.GHPRTimelineEvent;
-import consulo.github.localize.GithubLocalize;
 import org.jetbrains.plugins.github.pullrequest.GHPRTimelineUIUtil;
 import org.jetbrains.plugins.github.pullrequest.data.GHPRDataContext;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRCommentsDataProvider;
@@ -94,6 +101,7 @@ public class GHPRTimelineViewModelImpl implements GHPRTimelineViewModel {
     private final GHUser myGhostUser;
     private final GHUser myCurrentUser;
 
+    private volatile @Nullable MergedItem myMergedItem;
     private final GHPRDetailsTimelineViewModel myDetailsVm;
 
     private boolean myLoadedCompletely;
@@ -359,6 +367,15 @@ public class GHPRTimelineViewModelImpl implements GHPRTimelineViewModel {
         }
         myItemsCache = cache;
 
+        if (details != null && details.state() == GHPullRequestState.MERGED) {
+            MergedItem mergedItem = myMergedItem;
+            if (mergedItem == null) {
+                mergedItem = new MergedItem(details);
+                myMergedItem = mergedItem;
+            }
+            result.add(mergedItem);
+        }
+
         IncrementallyComputedValue<?> state = myTimelineLoaderState.get();
         if (state.isValueAvailable() || myLoadedCompletely) {
             myItems.set(ComputedResult.success(List.copyOf(result)));
@@ -571,6 +588,88 @@ public class GHPRTimelineViewModelImpl implements GHPRTimelineViewModel {
         @Override
         public void editBody() {
             myDetailsVm.editDescription();
+        }
+    }
+
+    private Date findMergedDate(GHPRDetailsFull details) {
+        Date result = null;
+        for (GHPRTimelineItem item : myTimelineItems.get()) {
+            if (item instanceof GHPRTimelineItem.Event event
+                && event.event() instanceof GHPRTimelineEvent.State stateEvent
+                && stateEvent.getNewState() == GHPullRequestState.MERGED) {
+                result = stateEvent.getCreatedAt();
+            }
+        }
+        return result != null ? result : details.createdAt();
+    }
+
+    private final class MergedItem implements CodeReviewCommentViewModel {
+        private final GHPRDetailsFull myDetails;
+        private final ObservableValue<String> myBody;
+        private final ObservableValue<List<CodeReviewCommentBodyBlock>> myBodyBlocks;
+
+        private MergedItem(GHPRDetailsFull details) {
+            myDetails = details;
+            myBody = ObservableValue.combine(myDetailsVm.getCanDeleteMergedBranch(), myDetailsVm.getHeadRefName(), MergedItem::createText);
+            myBodyBlocks = ObservableValue.combine(myBody, myDetailsVm.getCanDeleteMergedBranch(), this::createBlocks);
+        }
+
+        private static String createText(Boolean canDeleteMergedBranch, @Nullable String headRefName) {
+            String branchHtml = headRefName != null ? GHPRTimelineEventComponentFactoryImpl.branchHTML(headRefName) : "branch";
+            if (canDeleteMergedBranch) {
+                return GithubLocalize.pullrequestTimelineMergedBodyWithdelete(GithubLocalize.pullrequestTimelineMergedBodyDelete().get(), branchHtml).get();
+            }
+            return GithubLocalize.pullrequestTimelineMergedBodyWithoutdelete(branchHtml, "").get().trim();
+        }
+
+        private List<CodeReviewCommentBodyBlock> createBlocks(String text, Boolean canDeleteMergedBranch) {
+            CodeReviewComponentCommentBodyBlock actionBlock = parentDisposable -> {
+                if (canDeleteMergedBranch) {
+                    return Hyperlink.create(GithubLocalize.actionGithubTimelineDeletemergedbranchText(), event -> myDetailsVm.deleteMergedBranch());
+                }
+                return Hyperlink.create(GithubLocalize.pullrequestTimelineMergedBodyRestore(), event -> Platform.current().openInBrowser(myDetails.url()));
+            };
+            return List.of(new CodeReviewMarkdownCommentBodyBlock(text), actionBlock);
+        }
+
+        @Override
+        public String getId() {
+            return "merged:" + myDetails.id().id();
+        }
+
+        @Override
+        public UserPresentation getAuthor() {
+            return new UserPresentation() {
+                @Override
+                public String getUsername() {
+                    return GithubLocalize.pullrequestTimelineMergedTitle().get();
+                }
+
+                @Override
+                public @Nullable String getFullName() {
+                    return null;
+                }
+
+                @Override
+                public Image getAvatarIcon() {
+                    return PlatformIconGroup.vcsMerge();
+                }
+            };
+        }
+
+        @Override
+        public Date getCreatedAt() {
+            return findMergedDate(myDetails);
+        }
+
+        @Override
+        public ObservableValue<String> getBody() {
+            return myBody;
+        }
+
+        @Override
+        public ObservableValue<List<CodeReviewCommentBodyBlock>> getBodyBlocks() {
+            return myBodyBlocks;
         }
     }
 }

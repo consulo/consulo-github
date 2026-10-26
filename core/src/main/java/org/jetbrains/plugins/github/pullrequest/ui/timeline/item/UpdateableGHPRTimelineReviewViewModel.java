@@ -18,16 +18,25 @@ package org.jetbrains.plugins.github.pullrequest.ui.timeline.item;
 
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.review.async.ComputationState;
 import consulo.review.async.MappingScopedItemsContainer;
+import consulo.review.comment.CodeReviewCommentBodyBlock;
+import consulo.review.comment.CodeReviewComponentCommentBodyBlock;
+import consulo.review.comment.CodeReviewMarkdownCommentBodyBlock;
 import consulo.review.comment.CodeReviewSubmittableTextViewModelBase;
 import consulo.review.comment.CodeReviewTextEditingViewModel;
 import consulo.review.list.UserPresentation;
 import consulo.review.timeline.CodeReviewCommentViewModel;
 import consulo.review.util.ComputedResult;
 import consulo.review.util.SingleCoroutineLauncher;
+import consulo.ui.Component;
+import consulo.ui.Label;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.layout.HorizontalLayout;
+import consulo.ui.style.ComponentColors;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.versionControlSystem.review.util.ChangesSelection;
@@ -36,7 +45,6 @@ import org.jetbrains.plugins.github.api.data.GHActor;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReview;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReviewState;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReviewThread;
-import consulo.github.localize.GithubLocalize;
 import org.jetbrains.plugins.github.pullrequest.GHPRTimelineUIUtil;
 import org.jetbrains.plugins.github.pullrequest.comment.GHMarkdownToHtmlConverter;
 import org.jetbrains.plugins.github.pullrequest.data.GHPRDataContext;
@@ -77,6 +85,7 @@ public class UpdateableGHPRTimelineReviewViewModel implements GHPRTimelineReview
 
     private final MutableObservableValue<String> myBodyHtml = MutableObservableValue.of("");
     private final MutableObservableValue<String> myBody = MutableObservableValue.of("");
+    private final MutableObservableValue<List<CodeReviewCommentBodyBlock>> myBodyBlocks = MutableObservableValue.of(List.of());
 
     // GH fails to edit reviews that are initialized with an empty body.
     // bodyHtml will contain <body></body>, so it's less easy to check for emptiness.
@@ -161,6 +170,24 @@ public class UpdateableGHPRTimelineReviewViewModel implements GHPRTimelineReview
         myBodyHtml.set(bodyHtml);
         String stateText = "_" + getStateText(myState).get() + "_";
         myBody.set(bodyHtml.isBlank() ? stateText : stateText + "\n\n" + bodyHtml);
+
+        List<CodeReviewCommentBodyBlock> blocks = new ArrayList<>();
+        blocks.add((CodeReviewComponentCommentBodyBlock) parentDisposable -> createReviewStatus(myState));
+        if (!bodyHtml.isBlank()) {
+            blocks.add(new CodeReviewMarkdownCommentBodyBlock(bodyHtml));
+        }
+        myBodyBlocks.set(List.copyOf(blocks));
+    }
+
+    @RequiredUIAccess
+    private static Component createReviewStatus(GHPullRequestReviewState state) {
+        HorizontalLayout layout = HorizontalLayout.create();
+        Label label = Label.create(getStateText(state));
+        if (state == GHPullRequestReviewState.PENDING) {
+            label.setForegroundColor(ComponentColors.DISABLED_TEXT);
+        }
+        layout.add(label);
+        return layout;
     }
 
     private static LocalizeValue getStateText(GHPullRequestReviewState state) {
@@ -210,6 +237,11 @@ public class UpdateableGHPRTimelineReviewViewModel implements GHPRTimelineReview
     @Override
     public ObservableValue<String> getBody() {
         return myBody;
+    }
+
+    @Override
+    public ObservableValue<List<CodeReviewCommentBodyBlock>> getBodyBlocks() {
+        return myBodyBlocks;
     }
 
     @Override

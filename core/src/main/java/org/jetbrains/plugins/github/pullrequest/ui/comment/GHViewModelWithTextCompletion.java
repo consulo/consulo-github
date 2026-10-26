@@ -16,6 +16,7 @@
  */
 package org.jetbrains.plugins.github.pullrequest.ui.comment;
 
+import consulo.codeEditor.Editor;
 import consulo.util.dataholder.Key;
 
 import java.util.function.Consumer;
@@ -24,4 +25,11 @@ public interface GHViewModelWithTextCompletion {
     Key<GHViewModelWithTextCompletion> MENTIONS_COMPLETION_KEY = Key.create("GitHub.Chat.MentionsContextViewModel");
 
     void withMentionCompletionModel(Consumer<GHViewModelMentionCompletion> consumer);
+
+    /**
+     * Marks the editor a comment is written in, so mentions are completed from {@code vm}.
+     */
+    static Consumer<Editor> editorSetup(GHViewModelWithTextCompletion vm) {
+        return editor -> editor.putUserData(MENTIONS_COMPLETION_KEY, vm);
+    }
 }

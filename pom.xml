@@ -45,6 +45,7 @@
         <module>core</module>
         <module>git</module>
         <module>tracker</module>
+        <module>workflow</module>
         <module>plugin</module>
     </modules>
 </project>

@@ -37,6 +37,6 @@ public class GHOpenSettingsAction extends DumbAwareAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, StandardConfigurableIds.ACCOUNTS_AND_PASSWORDS_GROUP, "");
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, StandardConfigurableIds.ACCOUNTS, "");
     }
 }

@@ -5,8 +5,18 @@
     <description>GitHub integration</description>
 
     <depends>com.intellij.git</depends>
+    <depends optional="true">org.jetbrains.plugins.yaml</depends>
+    <depends optional="true">consulo.json</depends>
 
     <tags>
         <tag>vcs</tag>
     </tags>
+
+    <actions>
+        <action id="Github.PullRequest.Changed.MarkViewed.Toggle" class="org.jetbrains.plugins.github.pullrequest.action.GHPRViewedStateToggleAction">
+            <keyboard-shortcut first-keystroke="control shift S" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="control shift S" keymap="NetBeans 6.5" remove="true"/>
+            <keyboard-shortcut first-keystroke="control shift S" keymap="Visual Studio" remove="true"/>
+        </action>
+    </actions>
 </consulo-plugin>

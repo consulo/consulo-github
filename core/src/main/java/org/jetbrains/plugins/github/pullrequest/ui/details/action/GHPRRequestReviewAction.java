@@ -22,12 +22,12 @@ import consulo.review.localize.ReviewLocalize;
 import consulo.review.util.ReviewUIUtil;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.DumbAwareAction;
+import consulo.review.util.ReviewAction;
 import consulo.ui.RelativePoint2D;
 import consulo.ui.event.ComponentEvent;
 import org.jetbrains.plugins.github.pullrequest.ui.details.model.GHPRReviewFlowViewModel;
 
-public class GHPRRequestReviewAction extends DumbAwareAction {
+public class GHPRRequestReviewAction extends ReviewAction {
     private final GHPRReviewFlowViewModel myReviewFlowVm;
 
     @RequiredUIAccess
@@ -35,7 +35,7 @@ public class GHPRRequestReviewAction extends DumbAwareAction {
         super(ReviewLocalize.reviewDetailsActionRequest());
         myReviewFlowVm = reviewFlowVm;
         ReviewUIUtil.bind(scope, reviewFlowVm.isBusy(), isBusy ->
-            getTemplatePresentation().setEnabled(!isBusy && reviewFlowVm.getUserCanManageReview()));
+            setEnabled(!isBusy && reviewFlowVm.getUserCanManageReview()));
     }
 
     @RequiredUIAccess

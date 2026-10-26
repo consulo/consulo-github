@@ -20,7 +20,9 @@ import consulo.accountManagement.AccountConnection;
 import consulo.accountManagement.AccountDetails;
 import consulo.accountManagement.AccountScope;
 import consulo.accountManagement.AccountType;
+import consulo.accountManagement.authorize.OAuthAuthorizeConfig;
 import consulo.accountManagement.authorize.TokenAuthorizeConfig;
+import consulo.accountManagement.oauth.OAuthCredentials;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
@@ -33,6 +35,8 @@ import org.jetbrains.plugins.github.api.GithubApiRequests;
 import org.jetbrains.plugins.github.api.GithubApiResponse;
 import org.jetbrains.plugins.github.api.GithubServerPath;
 import org.jetbrains.plugins.github.api.data.GithubAuthenticatedUser;
+import org.jetbrains.plugins.github.authentication.AuthorizationType;
+import org.jetbrains.plugins.github.authentication.GHOAuthService;
 import org.jetbrains.plugins.github.authentication.util.GHSecurityUtil;
 import org.jetbrains.plugins.github.exceptions.GithubParseException;
 import org.jspecify.annotations.Nullable;
@@ -89,7 +93,8 @@ public class GithubAccountType implements AccountType<GithubScope> {
 
     @Override
     public List<? extends AccountAuthorizeConfig> getAuthorizeConfigs() {
-        return List.of(new TokenAuthorizeConfig() {
+        List<AccountAuthorizeConfig> configs = new ArrayList<>();
+        configs.add(new TokenAuthorizeConfig() {
             @Override
             public boolean isDefault() {
                 return true;
@@ -104,6 +109,31 @@ public class GithubAccountType implements AccountType<GithubScope> {
                 return GHSecurityUtil.buildNewTokenUrl(toServerPath(serverUrl), ids.isEmpty() ? GHSecurityUtil.MASTER_SCOPES : ids);
             }
         });
+        if (GHOAuthService.isAvailable()) {
+            configs.add(new OAuthAuthorizeConfig() {
+                @Override
+                public CompletableFuture<? extends OAuthCredentials> authorize(@Nullable String serverUrl, Set<? extends AccountScope> scopes) {
+                    if (!toServerPath(serverUrl).isGithubDotCom()) {
+                        return CompletableFuture.failedFuture(
+                            new IllegalArgumentException(GithubLocalize.loginOauthGithubComOnly().get()));
+                    }
+                    return GHOAuthService.getInstance().authorize();
+                }
+            });
+        }
+        return configs;
+    }
+
+    public static @Nullable AccountAuthorizeConfig findAuthorizeConfig(List<? extends AccountAuthorizeConfig> configs, AuthorizationType authType) {
+        for (AccountAuthorizeConfig config : configs) {
+            if (authType == AuthorizationType.OAUTH && config instanceof OAuthAuthorizeConfig) {
+                return config;
+            }
+            if (authType == AuthorizationType.TOKEN && config instanceof TokenAuthorizeConfig) {
+                return config;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -57,13 +57,18 @@ public class GHIssueComment extends GHComment implements GHPRTimelineItem {
         if (!(other instanceof GHIssueComment that)) {
             return false;
         }
-        return viewerCanDelete == that.viewerCanDelete
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(getAuthor(), that.getAuthor())
+            && Objects.equals(getBody(), that.getBody())
+            && Objects.equals(getCreatedAt(), that.getCreatedAt())
+            && Objects.equals(getReactions(), that.getReactions())
+            && viewerCanDelete == that.viewerCanDelete
             && viewerCanUpdate == that.viewerCanUpdate
             && viewerCanReact == that.viewerCanReact;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(viewerCanDelete, viewerCanUpdate, viewerCanReact);
+        return Objects.hash(getId(), getAuthor(), getBody(), getCreatedAt(), getReactions(), viewerCanDelete, viewerCanUpdate, viewerCanReact);
     }
 }

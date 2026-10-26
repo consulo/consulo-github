@@ -20,9 +20,9 @@ import consulo.diff.util.Side;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.logging.Logger;
-import consulo.proxy.EventDispatcher;
 import consulo.review.async.BatchesLoader;
 import consulo.review.async.LoaderWithMutableCache;
+import consulo.review.util.FutureUtil;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.lang.Pair;
 import consulo.versionControlSystem.change.patch.PatchHunkUtil;
@@ -53,7 +53,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
     private final GHPRReviewService myReviewService;
     private final GHPRChangesDataProvider myChangesProvider;
     private final GHPRIdentifier myPullRequestId;
-    private final EventDispatcher<GHPRDataOperationsListener> myMessageBus;
+    private final GHPRDataOperationsMessageBus myMessageBus;
 
     private final MutableObservableValue<String> myPendingReviewComment = MutableObservableValue.of("");
 
@@ -66,7 +66,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
                                       GHPRReviewService reviewService,
                                       GHPRChangesDataProvider changesProvider,
                                       GHPRIdentifier pullRequestId,
-                                      EventDispatcher<GHPRDataOperationsListener> messageBus) {
+                                      GHPRDataOperationsMessageBus messageBus) {
         myReviewService = reviewService;
         myChangesProvider = changesProvider;
         myPullRequestId = pullRequestId;
@@ -141,7 +141,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
                                                                       @Nullable String body,
                                                                       @Nullable String commitSha,
                                                                       @Nullable List<GHPullRequestDraftReviewThread> threads) {
-        return myReviewService.createReview(myPullRequestId, event, body, commitSha, threads).thenApply(dto -> {
+        return myReviewService.createReview(myPullRequestId, event, body, commitSha, threads).thenCompose(dto -> {
             GHPullRequestPendingReview review = toModel(dto);
             if (event == null) {
                 myReviewLoader.overrideResult(review);
@@ -149,48 +149,43 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
             if (threads != null && !threads.isEmpty()) {
                 signalThreadsNeedReload();
             }
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return review;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(ignored -> review);
+        }).copy();
     }
 
     @Override
     public CompletableFuture<GHPullRequestPendingReview> createReview(GHPullRequestReviewEvent event, @Nullable String body) {
-        return myReviewService.createReview(myPullRequestId, event, body, null, null).thenApply(dto -> {
+        return myReviewService.createReview(myPullRequestId, event, body, null, null).thenCompose(dto -> {
             GHPullRequestPendingReview review = toModel(dto);
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return review;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(ignored -> review);
+        }).copy();
     }
 
     // TODO: change loaded threads statuses
     @Override
     public CompletableFuture<?> submitReview(String reviewId, GHPullRequestReviewEvent event, @Nullable String body) {
-        return myReviewService.submitReview(myPullRequestId, reviewId, event, body).thenApply(ignored -> {
+        return myReviewService.submitReview(myPullRequestId, reviewId, event, body).thenCompose(ignored -> {
             signalPendingReviewNeedsReload();
             signalThreadsNeedReload();
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return null;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(it -> null);
+        }).copy();
     }
 
     // TODO: remove loaded threads
     @Override
     public CompletableFuture<?> deleteReview(String reviewId) {
-        return myReviewService.deleteReview(myPullRequestId, reviewId).thenApply(ignored -> {
+        return myReviewService.deleteReview(myPullRequestId, reviewId).thenCompose(ignored -> {
             updateReview(reviewId, it -> null);
             signalThreadsNeedReload();
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return null;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(it -> null);
+        }).copy();
     }
 
     @Override
     public CompletableFuture<String> updateReviewBody(String reviewId, String newText) {
-        return myReviewService.updateReviewBody(reviewId, newText).thenApply(review -> {
-            myMessageBus.getMulticaster().onReviewUpdated(reviewId, newText);
-            return review.getBody();
-        });
+        return myReviewService.updateReviewBody(reviewId, newText)
+            .thenCompose(review -> myMessageBus.syncPublisher(it -> it.onReviewUpdated(reviewId, newText)).thenApply(ignored -> review.getBody()))
+            .copy();
     }
 
     @Override
@@ -219,12 +214,11 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
                 throw new IllegalStateException("Can't map file line to diff");
             }
             return myReviewService.addComment(reviewId, body, commitSha, fileName, position);
-        }).thenApply(comment -> {
+        }).thenCompose(comment -> {
             updateReview(reviewId, it -> new GHPullRequestPendingReview(it.id(), it.state(), it.commentsCount() + 1));
             signalThreadsNeedReload();
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return comment;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(ignored -> comment);
+        }).copy();
     }
 
     // TODO: add comment to a loaded thread
@@ -243,11 +237,10 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
                 updateReview(reviewId, it -> new GHPullRequestPendingReview(it.id(), it.state(), it.commentsCount() + 1));
                 return comment;
             });
-        }).thenApply(comment -> {
+        }).thenCompose(comment -> {
             signalThreadsNeedReload();
-            myMessageBus.getMulticaster().onReviewsChanged();
-            return comment;
-        });
+            return myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged).thenApply(ignored -> comment);
+        }).copy();
     }
 
     @Override
@@ -258,7 +251,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
             updateThreads(it -> removeComment(it, commentId));
             signalPendingReviewNeedsReload();
             return null;
-        });
+        }).copy();
     }
 
     @Override
@@ -266,7 +259,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
         return myReviewService.updateComment(myPullRequestId, commentId, newText).thenApply(comment -> {
             updateThreads(it -> updateCommentBody(it, commentId, comment.getBody()));
             return comment;
-        });
+        }).copy();
     }
 
     @Override
@@ -285,7 +278,12 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
             });
             updateReview(reviewId, it -> new GHPullRequestPendingReview(it.id(), it.state(), it.commentsCount() + 1));
             return thread;
-        }).whenComplete((thread, error) -> myMessageBus.getMulticaster().onReviewsChanged());
+        }).handle((thread, error) -> myMessageBus.syncPublisher(GHPRDataOperationsListener::onReviewsChanged)
+                .thenCompose(ignored -> error == null
+                    ? CompletableFuture.completedFuture(thread)
+                    : CompletableFuture.<GHPullRequestReviewThread>failedFuture(FutureUtil.unwrap(error))))
+            .thenCompose(it -> it)
+            .copy();
     }
 
     @Override
@@ -293,7 +291,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
         return myReviewService.resolveThread(myPullRequestId, id).thenApply(thread -> {
             updateThreads(list -> list.stream().map(it -> it.getId().equals(thread.getId()) ? thread : it).toList());
             return thread;
-        });
+        }).copy();
     }
 
     @Override
@@ -301,7 +299,7 @@ public class GHPRReviewDataProviderImpl implements GHPRReviewDataProvider {
         return myReviewService.unresolveThread(myPullRequestId, id).thenApply(thread -> {
             updateThreads(list -> list.stream().map(it -> it.getId().equals(thread.getId()) ? thread : it).toList());
             return thread;
-        });
+        }).copy();
     }
 
     private void updateReview(UnaryOperator<@Nullable GHPullRequestPendingReview> updater) {

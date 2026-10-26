@@ -26,7 +26,10 @@ import consulo.review.async.MappingScopedItemsContainer;
 import consulo.review.editor.CodeReviewEditorGutterControlsState;
 import consulo.review.editor.CodeReviewInlayAdjustmentDisabledReason;
 import consulo.review.editor.CodeReviewLineRange;
+import consulo.review.localize.ReviewLocalize;
 import consulo.review.util.Hideable;
+import consulo.ui.MessageBoxes;
+import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.concurrent.coroutine.ObservableValue;
@@ -485,9 +488,24 @@ class DiffEditorModel implements GHPRReviewDiffEditorModel {
             }
         }
 
+        @RequiredUIAccess
         @Override
         public void cancel() {
-            getVm().cancel();
+            GHPRReviewNewCommentEditorViewModel vm = getVm();
+            if (vm.getText().get().isBlank()) {
+                vm.cancel();
+                return;
+            }
+            UIAccess uiAccess = UIAccess.current();
+            MessageBoxes.yesNo()
+                .title(ReviewLocalize.reviewCommentsDiscardNewConfirmationTitle())
+                .text(ReviewLocalize.reviewCommentsDiscardNewConfirmation())
+                .showAsync()
+                .whenCompleteAsync((yes, error) -> {
+                    if (Boolean.TRUE.equals(yes)) {
+                        vm.cancel();
+                    }
+                }, uiAccess);
         }
     }
 

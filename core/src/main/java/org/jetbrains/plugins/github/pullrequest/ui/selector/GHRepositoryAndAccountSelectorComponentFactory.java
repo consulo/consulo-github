@@ -17,23 +17,26 @@
 package org.jetbrains.plugins.github.pullrequest.ui.selector;
 
 import consulo.accountManagement.Account;
-import consulo.accountManagement.AccountAuthorizeConfig;
 import consulo.accountManagement.AccountManager;
-import consulo.accountManagement.AccountType;
-import consulo.accountManagement.authorize.TokenAuthorizeConfig;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.review.localize.ReviewLocalize;
 import consulo.ui.Button;
 import consulo.ui.Component;
 import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.DumbAwareAction;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import git4idea.remote.hosting.ui.RepositoryAndAccountSelectorComponentFactory;
 import org.jetbrains.plugins.github.api.GHRepositoryCoordinates;
-import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
+import org.jetbrains.plugins.github.api.GithubServerPath;
+import org.jetbrains.plugins.github.authentication.AuthorizationType;
+import org.jetbrains.plugins.github.authentication.GHAccountsUtil;
+import org.jetbrains.plugins.github.authentication.accounts.GithubProjectDefaultAccountHolder;
 import org.jetbrains.plugins.github.ui.util.GHUIUtil;
 import org.jetbrains.plugins.github.util.GHGitRepositoryMapping;
 import org.jspecify.annotations.Nullable;
@@ -54,14 +57,17 @@ public class GHRepositoryAndAccountSelectorComponentFactory {
 
     @RequiredUIAccess
     public Component create(Disposable scope) {
+        GithubProjectDefaultAccountHolder defaultAccountHolder = GithubProjectDefaultAccountHolder.getInstance(myProject);
         GHSelectorErrorStatusPresenter errorPresenter = new GHSelectorErrorStatusPresenter(myProject, myVm::submitSelection);
 
         return new RepositoryAndAccountSelectorComponentFactory<>(myVm).create(
             scope,
+            defaultAccountHolder::getAccount,
             mapping -> {
                 List<GHRepositoryCoordinates> allRepositories = myVm.getRepositoriesState().get().stream().map(GHGitRepositoryMapping::getRepository).toList();
                 return LocalizeValue.of(GHUIUtil.getRepositoryDisplayName(allRepositories, mapping.getRepository(), true));
             },
+            this::createPopupLoginActions,
             GithubLocalize.pullRequestViewList(),
             createLoginButtons(scope),
             errorPresenter
@@ -70,11 +76,11 @@ public class GHRepositoryAndAccountSelectorComponentFactory {
 
     @RequiredUIAccess
     private List<Button> createLoginButtons(Disposable scope) {
-        Button githubLogin = Button.create(GithubLocalize.actionGithubAccountsAddghaccountText(), e -> loginToGithub(false, null));
+        Button githubLogin = Button.create(GithubLocalize.actionGithubAccountsAddghaccountText(), e -> loginToGithub(false, AuthorizationType.OAUTH));
         bindVisibility(scope, githubLogin, myVm.getGithubLoginAvailableState());
         bindDisabled(scope, githubLogin, myVm.getBusyState());
 
-        Button tokenLogin = Button.create(GithubLocalize.actionGithubAccountsAddghaccountwithtokenText(), e -> loginToGithub(false, findTokenConfig()));
+        Button tokenLogin = Button.create(ReviewLocalize.accountsActionAddAccountWithToken(), e -> loginToGithub(false, AuthorizationType.TOKEN));
         bindVisibility(scope, tokenLogin, myVm.getGithubLoginAvailableState());
         bindDisabled(scope, tokenLogin, myVm.getBusyState());
 
@@ -90,38 +96,40 @@ public class GHRepositoryAndAccountSelectorComponentFactory {
         return List.of(githubLogin, tokenLogin, gheLogin);
     }
 
-    private @Nullable AccountAuthorizeConfig findTokenConfig() {
-        for (AccountAuthorizeConfig config : myAccountManager.getAuthorizeConfigs(accountType())) {
-            if (config instanceof TokenAuthorizeConfig) {
-                return config;
-            }
+    private List<AnAction> createPopupLoginActions(@Nullable GHGitRepositoryMapping repo) {
+        boolean isDotComServer = repo != null && repo.getRepository().getServerPath().isGithubDotCom();
+        if (isDotComServer) {
+            return List.of(
+                DumbAwareAction.create(GithubLocalize.actionGithubAccountsAddghaccountText(), e -> loginToGithub(true, AuthorizationType.OAUTH)),
+                DumbAwareAction.create(ReviewLocalize.accountsActionAddAccountWithToken(), e -> loginToGithub(true, AuthorizationType.TOKEN))
+            );
         }
-        return null;
-    }
-
-    private AccountType<?> accountType() {
-        return myAccountManager.findAccountType(GithubAccountType.ID);
+        else if (repo != null) {
+            return List.of(DumbAwareAction.create(GithubLocalize.actionGithubAccountsAddgheaccountText(), e -> loginToGhe(true, repo)));
+        }
+        return List.of();
     }
 
     @RequiredUIAccess
-    private void loginToGithub(boolean forceNew, @Nullable AccountAuthorizeConfig config) {
+    private void loginToGithub(boolean forceNew, AuthorizationType authType) {
         Account account = myVm.getAccountSelectionState().get();
         if (account == null || forceNew) {
-            myAccountManager.requestLogin(accountType(), config, myProject, null).whenComplete((it, e) -> afterLogin(it, true));
+            GHAccountsUtil.logIn(GithubServerPath.DEFAULT_SERVER, myProject, null, authType).whenComplete((it, e) -> afterLogin(it, true));
         }
         else if (Boolean.TRUE.equals(myVm.getMissingCredentialsState().get())) {
-            myAccountManager.requestAuthorization(account, null, myProject, null).whenComplete((it, e) -> afterLogin(it, false));
+            GHAccountsUtil.reLogIn(account, myProject, null).whenComplete((it, e) -> afterLogin(it, false));
         }
     }
 
     @RequiredUIAccess
     private void loginToGhe(boolean forceNew, GHGitRepositoryMapping repo) {
+        GithubServerPath server = repo.getRepository().getServerPath();
         Account account = myVm.getAccountSelectionState().get();
         if (account == null || forceNew) {
-            myAccountManager.requestLogin(accountType(), findTokenConfig(), myProject, null).whenComplete((it, e) -> afterLogin(it, true));
+            GHAccountsUtil.logIn(server, myProject, null, AuthorizationType.TOKEN).whenComplete((it, e) -> afterLogin(it, true));
         }
         else if (Boolean.TRUE.equals(myVm.getMissingCredentialsState().get())) {
-            myAccountManager.requestAuthorization(account, null, myProject, null).whenComplete((it, e) -> afterLogin(it, false));
+            GHAccountsUtil.reLogIn(account, myProject, null).whenComplete((it, e) -> afterLogin(it, false));
         }
     }
 

@@ -35,11 +35,13 @@ import org.jspecify.annotations.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class GHPRNewCommentDiffViewModelImpl implements GHPRNewCommentDiffViewModel {
     private final GHPRReviewNewCommentEditorViewModel mySharedVm;
     private final List<Runnable> myFocusRequestListeners = new CopyOnWriteArrayList<>();
+    private final AtomicBoolean myFocusRequested = new AtomicBoolean();
     private final MutableObservableValue<GHPRReviewCommentLocation> myLocation;
 
     public GHPRNewCommentDiffViewModelImpl(Disposable cs,
@@ -60,10 +62,17 @@ public class GHPRNewCommentDiffViewModelImpl implements GHPRNewCommentDiffViewMo
     public void addFocusRequestListener(Disposable parentDisposable, Runnable listener) {
         myFocusRequestListeners.add(listener);
         Disposer.register(parentDisposable, () -> myFocusRequestListeners.remove(listener));
+        if (myFocusRequested.compareAndSet(true, false)) {
+            listener.run();
+        }
     }
 
     @Override
     public void requestFocus() {
+        if (myFocusRequestListeners.isEmpty()) {
+            myFocusRequested.set(true);
+            return;
+        }
         for (Runnable listener : myFocusRequestListeners) {
             listener.run();
         }

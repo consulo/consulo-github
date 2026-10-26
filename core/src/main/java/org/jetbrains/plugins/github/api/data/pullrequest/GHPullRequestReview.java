@@ -82,7 +82,8 @@ public class GHPullRequestReview extends GHNode implements GHPRTimelineItem {
         if (!(other instanceof GHPullRequestReview that)) {
             return false;
         }
-        return Objects.equals(url, that.url)
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(url, that.url)
             && Objects.equals(author, that.author)
             && Objects.equals(body, that.body)
             && Objects.equals(state, that.state)
@@ -92,6 +93,6 @@ public class GHPullRequestReview extends GHNode implements GHPRTimelineItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, author, body, state, createdAt, viewerCanUpdate);
+        return Objects.hash(getId(), url, author, body, state, createdAt, viewerCanUpdate);
     }
 }

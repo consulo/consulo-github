@@ -37,6 +37,7 @@ import org.jetbrains.plugins.github.api.data.GithubRepo;
 import org.jetbrains.plugins.github.api.data.GithubRepoDetailed;
 import org.jetbrains.plugins.github.api.data.GithubResponsePage;
 import org.jetbrains.plugins.github.api.data.GithubSearchedIssue;
+import org.jetbrains.plugins.github.api.data.GithubTagInfo;
 import org.jetbrains.plugins.github.api.data.GithubUser;
 import org.jetbrains.plugins.github.api.data.GithubUserWithPermissions;
 import org.jetbrains.plugins.github.api.data.commit.GHCommitFile;
@@ -355,6 +356,34 @@ public final class GithubApiRequests {
                 return Get.jsonPage(url, GithubBranch.class)
                     .withOperation(GithubApiRequestOperation.RestGetBranches)
                     .withOperationName("get branches");
+            }
+        }
+
+        public static final class Tags {
+            static final String URL_SUFFIX = "/tags";
+
+            private Tags() {
+            }
+
+            public static GithubApiPagesLoader.Request<GithubTagInfo> pages(GithubServerPath server, String username, String repoName) {
+                return new GithubApiPagesLoader.Request<>(get(server, username, repoName), Tags::get);
+            }
+
+            public static GithubApiRequest<GithubResponsePage<GithubTagInfo>> get(GithubServerPath server, String username, String repoName) {
+                return get(server, username, repoName, null);
+            }
+
+            public static GithubApiRequest<GithubResponsePage<GithubTagInfo>> get(GithubServerPath server,
+                                                                                  String username,
+                                                                                  String repoName,
+                                                                                  @Nullable GithubRequestPagination pagination) {
+                return get(getUrl(server, Repos.URL_SUFFIX, "/" + username + "/" + repoName, URL_SUFFIX, paginationQuery(pagination)));
+            }
+
+            public static GithubApiRequest<GithubResponsePage<GithubTagInfo>> get(String url) {
+                return Get.jsonPage(url, GithubTagInfo.class)
+                    .withOperation(GithubApiRequestOperation.RestGetTags)
+                    .withOperationName("get tags");
             }
         }
 

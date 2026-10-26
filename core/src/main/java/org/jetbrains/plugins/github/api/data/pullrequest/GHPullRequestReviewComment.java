@@ -110,7 +110,12 @@ public class GHPullRequestReviewComment extends GHComment {
         if (!(other instanceof GHPullRequestReviewComment that)) {
             return false;
         }
-        return Objects.equals(url, that.url)
+        return Objects.equals(getId(), that.getId())
+            && Objects.equals(url, that.url)
+            && Objects.equals(getAuthor(), that.getAuthor())
+            && Objects.equals(getBody(), that.getBody())
+            && Objects.equals(getCreatedAt(), that.getCreatedAt())
+            && Objects.equals(getReactions(), that.getReactions())
             && Objects.equals(state, that.state)
             && Objects.equals(commit, that.commit)
             && Objects.equals(originalCommit, that.originalCommit)
@@ -123,7 +128,7 @@ public class GHPullRequestReviewComment extends GHComment {
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, state, commit, originalCommit, diffHunk, pullRequestReview, viewerCanDelete, viewerCanUpdate, viewerCanReact);
+        return Objects.hash(getId(), url, getAuthor(), getBody(), getCreatedAt(), getReactions(), state, commit, originalCommit, diffHunk, pullRequestReview, viewerCanDelete, viewerCanUpdate, viewerCanReact);
     }
 
     public @Nullable String getReviewId() {

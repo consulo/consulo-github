@@ -19,6 +19,7 @@ package org.jetbrains.plugins.github.pullrequest.ui.details;
 import consulo.dataContext.UiDataProvider;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.github.action.PullRequestChangesPopupGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
@@ -184,7 +185,7 @@ public final class GHPRDetailsComponentFactory {
     private static Component createChangesPanel(Disposable cs, Project project, GHPRChangeListViewModelBase changeListVm) {
         CodeReviewProgressTreeModelFromDetails progressModel = new CodeReviewProgressTreeModelFromDetails(cs, changeListVm);
         Component tree = project.getApplication().getInstance(CodeReviewChangeListComponentFactory.class)
-            .createIn(cs, changeListVm, progressModel, GithubLocalize.pullRequestDoesNotContainChanges());
+            .createIn(cs, changeListVm, progressModel, GithubLocalize.pullRequestDoesNotContainChanges(), changesPopupGroup());
 
         ScrollableLayout scrollPane = ScrollableLayout.create(tree);
         scrollPane.putUserData(UiDataProvider.KEY, sink -> {
@@ -192,6 +193,10 @@ public final class GHPRDetailsComponentFactory {
             sink.set(CodeReviewChangeListViewModel.DATA_KEY, changeListVm);
         });
         return scrollPane;
+    }
+
+    static @Nullable ActionGroup changesPopupGroup() {
+        return ActionManager.getInstance().getAction(PullRequestChangesPopupGroup.ID) instanceof ActionGroup group ? group : null;
     }
 
     @RequiredUIAccess

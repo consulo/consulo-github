@@ -24,6 +24,7 @@ import consulo.annotation.component.ServiceImpl;
 import consulo.application.util.concurrent.AppExecutorUtil;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.http.client.HttpStatusErrorException;
 import consulo.logging.Logger;
 import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
@@ -41,6 +42,7 @@ import jakarta.inject.Singleton;
 import org.jetbrains.plugins.github.api.GHGQLRequests;
 import org.jetbrains.plugins.github.api.GHRepositoryCoordinates;
 import org.jetbrains.plugins.github.api.GHRepositoryPath;
+import org.jetbrains.plugins.github.api.GithubApiContentHelper;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor;
 import org.jetbrains.plugins.github.api.GithubApiRequestOperation;
 import org.jetbrains.plugins.github.api.GithubApiRequests;
@@ -51,7 +53,6 @@ import org.jetbrains.plugins.github.api.data.GHUser;
 import org.jetbrains.plugins.github.api.data.GithubAuthenticatedUser;
 import org.jetbrains.plugins.github.authentication.accounts.GHCachingAccountInformationProvider;
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
-import org.jetbrains.plugins.github.exceptions.GithubStatusCodeException;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRMentionableUsersProviderImpl;
 import org.jetbrains.plugins.github.pullrequest.data.service.GHPRChangesServiceImpl;
 import org.jetbrains.plugins.github.pullrequest.data.service.GHPRCommentServiceImpl;
@@ -154,10 +155,13 @@ public class GHPRDataContextRepository implements Disposable {
             .thenApply(Objects::requireNonNull)
             .exceptionally(e -> {
                 Throwable cause = FutureUtil.unwrap(e);
-                if (cause instanceof GithubStatusCodeException) {
+                if (cause instanceof CancellationException cancellation) {
+                    throw cancellation;
+                }
+                if (cause instanceof HttpStatusErrorException) {
                     // github.com is always expected to have a ghost user, but any enterprise server may not
                     if (server.isGithubDotCom()) {
-                        throw new IllegalStateException("Couldn't load ghost user details", cause);
+                        throw new IllegalStateException("Couldn't load ghost user details");
                     }
                 }
                 return GHUser.FAKE_GHOST;
@@ -187,7 +191,7 @@ public class GHPRDataContextRepository implements Disposable {
                     .withOperationName("get image")))
                 .thenApply(bytes -> {
                     try {
-                        return Image.fromBytes(Image.ImageType.PNG, bytes);
+                        return GithubApiContentHelper.loadImage(bytes);
                     }
                     catch (Exception e) {
                         throw new CompletionException(e);
@@ -218,7 +222,7 @@ public class GHPRDataContextRepository implements Disposable {
             GHPRFilesServiceImpl filesService = new GHPRFilesServiceImpl(requestExecutor, apiRepositoryCoordinates);
             GHReactionsServiceImpl reactionsService = new GHReactionsServiceImpl(requestExecutor, apiRepositoryCoordinates);
 
-            GHPRDataProviderRepositoryImpl dataProviderRepository = new GHPRDataProviderRepositoryImpl(cs,
+            GHPRDataProviderRepositoryImpl dataProviderRepository = new GHPRDataProviderRepositoryImpl(myProject, cs,
                 repoDataService,
                 detailsService,
                 timelineService,

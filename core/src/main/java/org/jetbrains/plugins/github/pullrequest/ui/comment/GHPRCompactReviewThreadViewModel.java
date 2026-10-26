@@ -19,8 +19,10 @@ package org.jetbrains.plugins.github.pullrequest.ui.comment;
 import consulo.disposer.Disposable;
 import consulo.review.timeline.thread.CodeReviewResolvableItemViewModel;
 import consulo.review.timeline.thread.CodeReviewThreadViewModel;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import org.jetbrains.plugins.github.pullrequest.comment.ui.GHPRNewThreadCommentViewModel;
+import org.jetbrains.plugins.github.ui.util.GHHtmlPaneUtil;
 
 import java.util.List;
 
@@ -59,6 +61,19 @@ public interface GHPRCompactReviewThreadViewModel extends GHPRReviewThreadViewMo
     void addFocusRequestListener(Disposable parentDisposable, Runnable listener);
 
     void requestFocus();
+
+    @RequiredUIAccess
+    @Override
+    default boolean openLink(String href) {
+        return GHHtmlPaneUtil.handleGithubHyperlink(href, number -> {
+            for (CommentItem item : getCommentItems().get()) {
+                if (item instanceof CommentItem.Comment comment) {
+                    comment.vm().getBodyVm().openPullRequestInfoAndTimeline(number);
+                    return;
+                }
+            }
+        });
+    }
 
     sealed interface CommentItem permits CommentItem.Comment, CommentItem.Expander {
         record Comment(GHPRReviewThreadCommentViewModel vm) implements CommentItem {

@@ -4,8 +4,10 @@
 /out
 /plugin/sandbox
 /target
-/sandbox/
 /core/target
 /git/target
 /tracker/target
 /plugin/target
+/workflow/target
+/plugin/sandbox/
+/core/sandbox/

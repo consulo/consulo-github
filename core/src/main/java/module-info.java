@@ -55,6 +55,7 @@ open module org.jetbrains.plugins.github.core {
     exports org.jetbrains.plugins.github.api.data;
     exports org.jetbrains.plugins.github.api.data.request;
     exports org.jetbrains.plugins.github.api.util;
+    exports org.jetbrains.plugins.github.authentication;
     exports org.jetbrains.plugins.github.authentication.accounts;
     exports org.jetbrains.plugins.github.exceptions;
     exports org.jetbrains.plugins.github.issue;

@@ -20,11 +20,14 @@ import consulo.annotation.component.ActionImpl;
 import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.versionControlSystem.checkout.CheckoutProvider;
 import consulo.versionControlSystem.checkout.VcsCloneWithExtensionAction;
 
 @ActionImpl(id = "Github.Clone")
-public class GHCloneRepositoryAction extends VcsCloneWithExtensionAction {
+public class GHCloneRepositoryAction extends VcsCloneWithExtensionAction implements AnActionWithSyncUpdate {
     public GHCloneRepositoryAction() {
         super(GithubLocalize.actionGithubCloneText(), LocalizeValue.empty(), GitHubIconGroup.github());
     }
@@ -32,5 +35,16 @@ public class GHCloneRepositoryAction extends VcsCloneWithExtensionAction {
     @Override
     public Class<? extends CheckoutProvider> getExtension() {
         return GHCloneDialogExtension.class;
+    }
+
+    @Override
+    public void update(AnActionEvent e) {
+        String place = e.getPlace();
+        if (ActionPlaces.MAIN_MENU.equals(place)) {
+            e.getPresentation().setText(GithubLocalize.actionGithubCloneMainmenuText());
+        }
+        else if (ActionPlaces.ACTION_SEARCH.equals(place)) {
+            e.getPresentation().setText(GithubLocalize.actionGithubClonePopupGotoactionText());
+        }
     }
 }

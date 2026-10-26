@@ -22,13 +22,17 @@ import consulo.review.timeline.CollapsibleTimelineItemViewModel;
 import consulo.review.timeline.thread.CodeReviewFoldableThreadViewModel;
 import consulo.review.timeline.thread.CodeReviewResolvableItemViewModel;
 import consulo.review.timeline.thread.CodeReviewThreadViewModel;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.messageList.AsyncHtmlImageLoader;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.util.lang.Pair;
 import consulo.versionControlSystem.change.patch.PatchHunk;
 import org.jetbrains.plugins.github.api.data.GHActor;
+import org.jetbrains.plugins.github.pullrequest.ui.GHPRConnectedProjectViewModel;
+import org.jetbrains.plugins.github.pullrequest.ui.GHPRProjectViewModel;
 import org.jetbrains.plugins.github.pullrequest.ui.comment.GHPRReviewThreadCommentViewModel;
 import org.jetbrains.plugins.github.pullrequest.ui.comment.GHPRReviewThreadViewModel;
+import org.jetbrains.plugins.github.ui.util.GHHtmlPaneUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Date;
@@ -67,4 +71,15 @@ public interface GHPRTimelineThreadViewModel extends GHPRReviewThreadViewModel,
      * Show diff for a file this thread belongs to
      */
     void showDiff();
+
+    @RequiredUIAccess
+    @Override
+    default boolean openLink(String href) {
+        return GHHtmlPaneUtil.handleGithubHyperlink(href, number -> {
+            GHPRConnectedProjectViewModel vm = GHPRProjectViewModel.getInstance(getProject()).getConnectedProjectVm().get();
+            if (vm != null) {
+                vm.openPullRequestInfoAndTimeline(number);
+            }
+        });
+    }
 }

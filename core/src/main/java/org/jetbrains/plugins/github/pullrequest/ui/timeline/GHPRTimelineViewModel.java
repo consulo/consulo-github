@@ -18,12 +18,14 @@ package org.jetbrains.plugins.github.pullrequest.ui.timeline;
 
 import consulo.review.icon.IconsProvider;
 import consulo.review.timeline.CodeReviewTimelineViewModel;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.messageList.AsyncHtmlImageLoader;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.github.api.data.GHUser;
 import org.jetbrains.plugins.github.pullrequest.ui.GHLoadingErrorHandler;
 import org.jetbrains.plugins.github.pullrequest.ui.timeline.item.GHPRTimelineItem;
+import org.jetbrains.plugins.github.ui.util.GHHtmlPaneUtil;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -61,4 +63,10 @@ public interface GHPRTimelineViewModel extends CodeReviewTimelineViewModel {
     void showCommit(String oid);
 
     void openPullRequestInfoAndTimeline(long number);
+
+    @RequiredUIAccess
+    @Override
+    default boolean openLink(String href) {
+        return GHHtmlPaneUtil.handleGithubHyperlink(href, this::openPullRequestInfoAndTimeline);
+    }
 }

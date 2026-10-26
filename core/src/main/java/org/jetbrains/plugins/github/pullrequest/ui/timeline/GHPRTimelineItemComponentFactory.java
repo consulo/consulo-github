@@ -111,7 +111,7 @@ public class GHPRTimelineItemComponentFactory {
         if (date == null) {
             date = pullRequestCommit.getCreatedAt();
         }
-        return new CommitPresentation(htmlMessage, "", actor.getPresentableName(), date != null ? date : new Date(0));
+        return new CommitPresentation(htmlMessage, "", actor.getPresentableName(), date);
     }
 
     private final class CommitsItem implements CodeReviewCommitsTimelineItem {

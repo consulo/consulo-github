@@ -44,8 +44,13 @@ import consulo.ui.TextBox;
 import consulo.ui.TextBoxStyle;
 import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnSeparator;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.ex.action.IdeActions;
+import consulo.ui.ex.action.ShortcutSet;
+import consulo.ui.ex.keymap.util.KeymapUtil;
 import consulo.ui.ex.popup.JBPopupFactory;
 import consulo.ui.ex.popup.ListPopup;
 import consulo.ui.image.Image;
@@ -210,6 +215,7 @@ public abstract class GHCloneDialogExtensionComponentBase implements CheckoutPag
         myRepositoriesPanel.top(searchPanel);
         myRepositoriesPanel.center(ScrollableLayout.create(myRepositoryList));
         myRepositoriesPanel.bottom(bottomPanel.build());
+        createFocusFilterFieldAction(mySearchField, parentDisposable);
 
         myWrapper = DockLayout.create();
     }
@@ -389,8 +395,39 @@ public abstract class GHCloneDialogExtensionComponentBase implements CheckoutPag
         for (Account account : myAccounts) {
             Avatar avatar = accountComponentFactory.createAvatar(account, AvatarStyle.SMALL, panelDisposable);
             avatar.setToolTipText(LocalizeValue.of(GHCloneDialogExtensionBase.getNameWithServer(account)));
+            avatar.addClickListener(event -> showAccountsPopup(avatar));
             myAccountsPanel.add(avatar);
         }
+    }
+
+    @RequiredUIAccess
+    private void showAccountsPopup(Component parentComponent) {
+        DefaultActionGroup group = new DefaultActionGroup();
+        for (Account account : myAccounts) {
+            String name = account.getName();
+            String serverUrl = myAccountManager.getServerUrl(account);
+            String server = serverUrl == null ? "" : StringUtil.trimStart(StringUtil.trimStart(serverUrl, "https://"), "http://");
+            group.add(AnSeparator.create(LocalizeValue.of(name == null || name.isEmpty() ? account.getLogin() + " " + server : name + " " + server)));
+            if (account.isAuthFailed()) {
+                group.add(DumbAwareAction.create(GithubLocalize.accountsRelogin(), e -> switchToLogin(account)));
+            }
+        }
+        group.add(AnSeparator.create());
+        group.addAll(createAccountMenuLoginActions(null));
+        ListPopup popup = JBPopupFactory.getInstance().createActionGroupPopup(
+            null,
+            group,
+            DataManager.getInstance().getDataContext(parentComponent),
+            JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+            true
+        );
+        popup.showBy(parentComponent, null, PopupPosition.BOTTOM);
+    }
+
+    private void createFocusFilterFieldAction(TextBox searchField, Disposable parentDisposable) {
+        DumbAwareAction action = DumbAwareAction.create(e -> searchField.focus());
+        ShortcutSet shortcuts = KeymapUtil.getActiveKeymapShortcuts(IdeActions.ACTION_FIND);
+        action.registerCustomShortcutSet(shortcuts, myRepositoriesPanel, parentDisposable);
     }
 
     private static Set<String> collectIds(Collection<Account> accounts) {

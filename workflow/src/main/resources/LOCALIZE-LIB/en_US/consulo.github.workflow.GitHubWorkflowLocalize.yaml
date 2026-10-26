@@ -1,0 +1,868 @@
+action.GitHubWorkflow.ClearActionCache.description:
+    text: Clear cached GitHub Actions and reusable workflow metadata
+action.GitHubWorkflow.ClearActionCache.text:
+    text: Clear Action Cache
+action.GitHubWorkflow.RefreshActionCache.description:
+    text: Refresh resolved remote GitHub Actions and reusable workflow metadata
+action.GitHubWorkflow.RefreshActionCache.text:
+    text: Refresh Action Cache
+action.GitHubWorkflow.RestoreActionWarnings.description:
+    text: Restore suppressed action, input, and output validation warnings
+action.GitHubWorkflow.RestoreActionWarnings.text:
+    text: Restore Action Warnings
+completion.context.env:
+    text: Environment variables from jobs and steps.
+completion.context.github:
+    text: Workflow run and event information from the GitHub context.
+completion.context.inputs:
+    text: Workflow inputs, such as workflow_dispatch or workflow_call.
+completion.context.job:
+    text: Information about the currently running job.
+completion.context.jobs:
+    text: Workflow jobs.
+completion.context.matrix:
+    text: Matrix properties defined for the current matrix job.
+completion.context.needs:
+    text: Jobs that must complete before this job can run, plus their outputs and results.
+completion.context.runner:
+    text: Information about the runner executing the current job.
+completion.context.secrets:
+    text: Workflow secrets.
+completion.context.steps:
+    text: Steps with an id in the current job.
+completion.context.strategy:
+    text: Matrix execution strategy information for the current job.
+completion.context.vars:
+    text: Custom configuration variables from organization, repository, and environment scopes.
+completion.expressionFunction:
+    text: Expression function. Tiny logic spell.
+completion.job.checkRunId:
+    text: The check run ID of the current job.
+completion.job.container:
+    text: Information about the job''s container.
+completion.job.containerField:
+    text: Job container field
+completion.job.mappedServicePort:
+    text: Mapped service port
+completion.job.service:
+    text: Job service
+completion.job.serviceField:
+    text: Job service field
+completion.job.services:
+    text: The service containers created for a job.
+completion.job.status:
+    text: The current status of the job.
+completion.job.workflowFilePath:
+    text: The workflow file path, relative to the repository root.
+completion.job.workflowRef:
+    text: The full ref of the workflow file that defines the current job.
+completion.job.workflowRepository:
+    text: The owner/repo of the repository containing the workflow file that defines the current job.
+completion.job.workflowSha:
+    text: The commit SHA of the workflow file that defines the current job.
+completion.jobs.outputs:
+    text: The set of outputs defined for the job.
+completion.jobs.result:
+    text: The result of the job.
+completion.remote.repository:
+    text: Remote repository
+completion.runner.arch:
+    text: The architecture of the runner executing the job. Possible values are X86, X64, ARM, or ARM64.
+completion.runner.debug:
+    text: This is set only if debug logging is enabled, and always has the value of 1.
+completion.runner.environment:
+    text: The environment of the runner executing the job. Possible values are github-hosted or self-hosted.
+completion.runner.name:
+    text: The name of the runner executing the job.
+completion.runner.os:
+    text: The operating system of the runner executing the job. Possible values are Linux, Windows, or macOS.
+completion.runner.temp:
+    text: The path to a temporary directory on the runner. This directory is emptied at the beginning and end of each job. Note that files will not be removed if the runner''s user account does not have permission to delete them.
+completion.runner.toolCache:
+    text: The path to the directory containing preinstalled tools for GitHub-hosted runners.
+completion.secret.githubToken:
+    text: Automatically created token for each workflow run.
+completion.shell.bash:
+    text: Bash shell. Uses bash on Linux and macOS runners, and Git for Windows bash on Windows runners.
+completion.shell.cmd:
+    text: Windows command prompt.
+completion.shell.powershell:
+    text: Windows PowerShell.
+completion.shell.pwsh:
+    text: PowerShell Core.
+completion.shell.python:
+    text: Python command runner.
+completion.shell.sh:
+    text: POSIX shell fallback.
+completion.steps.conclusion:
+    text: The result of a completed step after continue-on-error is applied.
+completion.steps.outcome:
+    text: The result of a completed step before continue-on-error is applied.
+completion.steps.outputs:
+    text: The set of outputs defined for the step.
+completion.strategy.failFast:
+    text: Whether all in-progress jobs are canceled if any matrix job fails.
+completion.strategy.jobIndex:
+    text: The zero-based index of the current job in the matrix.
+completion.strategy.jobTotal:
+    text: The total number of jobs in the matrix.
+completion.strategy.maxParallel:
+    text: The maximum number of matrix jobs that can run simultaneously.
+completion.uses.local.action:
+    text: Local action
+completion.uses.local.workflow:
+    text: Local reusable workflow
+completion.uses.ref.known:
+    text: Known workflow reference
+completion.uses.ref.remote:
+    text: Remote workflow reference
+completion.uses.remote.known:
+    text: Known remote action or reusable workflow
+completion.workflow.boolean.false:
+    text: No. Keep it dark.
+completion.workflow.boolean.true:
+    text: Yes. Flip it on.
+completion.workflow.concurrency.cancel_in_progress:
+    text: Cancel older matching runs
+completion.workflow.concurrency.group:
+    text: Lock name for queued runs
+completion.workflow.container.credentials:
+    text: Registry credentials
+completion.workflow.container.env:
+    text: Container environment variables
+completion.workflow.container.image:
+    text: Container image
+completion.workflow.container.options:
+    text: Docker create options
+completion.workflow.container.ports:
+    text: Ports to expose
+completion.workflow.container.volumes:
+    text: Volumes to mount
+completion.workflow.credentials.password:
+    text: Registry password or token
+completion.workflow.credentials.username:
+    text: Registry username
+completion.workflow.defaultsRun.shell:
+    text: Default shell for run steps
+completion.workflow.defaultsRun.working_directory:
+    text: Default working directory
+completion.workflow.environment.name:
+    text: Environment name
+completion.workflow.environment.url:
+    text: Environment URL
+completion.workflow.event.branch_protection_rule:
+    text: Branch protection changed
+completion.workflow.event.check_run:
+    text: Single check run changed
+completion.workflow.event.check_suite:
+    text: Check suite changed
+completion.workflow.event.create:
+    text: Branch or tag created
+completion.workflow.event.delete:
+    text: Branch or tag deleted
+completion.workflow.event.deployment:
+    text: Deployment created
+completion.workflow.event.deployment_status:
+    text: Deployment status changed
+completion.workflow.event.discussion:
+    text: Discussion changed
+completion.workflow.event.discussion_comment:
+    text: Discussion comment changed
+completion.workflow.event.fork:
+    text: Repository forked
+completion.workflow.event.gollum:
+    text: Wiki page changed
+completion.workflow.event.image_version:
+    text: Package image version changed
+completion.workflow.event.issue_comment:
+    text: Issue or PR comment changed
+completion.workflow.event.issues:
+    text: Issue changed
+completion.workflow.event.label:
+    text: Label changed
+completion.workflow.event.merge_group:
+    text: Merge queue check requested
+completion.workflow.event.milestone:
+    text: Milestone changed
+completion.workflow.event.page_build:
+    text: Pages build ran
+completion.workflow.event.project:
+    text: Classic project changed
+completion.workflow.event.project_card:
+    text: Classic project card changed
+completion.workflow.event.project_column:
+    text: Classic project column changed
+completion.workflow.event.public:
+    text: Repository became public
+completion.workflow.event.pull_request:
+    text: Pull request changed
+completion.workflow.event.pull_request_review:
+    text: PR review changed
+completion.workflow.event.pull_request_review_comment:
+    text: PR review comment changed
+completion.workflow.event.pull_request_target:
+    text: PR target context. Sharp knives.
+completion.workflow.event.push:
+    text: Commit or tag pushed
+completion.workflow.event.registry_package:
+    text: Package published or updated
+completion.workflow.event.release:
+    text: Release changed
+completion.workflow.event.repository_dispatch:
+    text: Custom API event
+completion.workflow.event.schedule:
+    text: Cron tick. Clockwork.
+completion.workflow.event.status:
+    text: Commit status changed
+completion.workflow.event.watch:
+    text: Repository starred
+completion.workflow.event.workflow_call:
+    text: Reusable workflow call
+completion.workflow.event.workflow_dispatch:
+    text: Manual run button
+completion.workflow.event.workflow_run:
+    text: Workflow run changed
+completion.workflow.eventFilter.branches:
+    text: Only these branches
+completion.workflow.eventFilter.branches_ignore:
+    text: Skip these branches
+completion.workflow.eventFilter.cron:
+    text: Cron schedule. Tiny clockwork.
+completion.workflow.eventFilter.paths:
+    text: Only these paths
+completion.workflow.eventFilter.paths_ignore:
+    text: Skip these paths
+completion.workflow.eventFilter.tags:
+    text: Only these tags
+completion.workflow.eventFilter.tags_ignore:
+    text: Skip these tags
+completion.workflow.eventFilter.types:
+    text: Limit activity types
+completion.workflow.eventFilter.workflows:
+    text: Workflow names to watch
+completion.workflow.inputType.boolean:
+    text: True or false input
+completion.workflow.inputType.choice:
+    text: Dropdown choice input
+completion.workflow.inputType.environment:
+    text: Environment picker input
+completion.workflow.inputType.number:
+    text: Number input
+completion.workflow.inputType.string:
+    text: Text input
+completion.workflow.job.concurrency:
+    text: Job concurrency lock
+completion.workflow.job.container:
+    text: Container for this job
+completion.workflow.job.continue_on_error:
+    text: Let this job fail softly
+completion.workflow.job.defaults:
+    text: Job default settings
+completion.workflow.job.env:
+    text: Job environment variables
+completion.workflow.job.environment:
+    text: Deployment environment
+completion.workflow.job.if:
+    text: Job condition
+completion.workflow.job.name:
+    text: Job display name
+completion.workflow.job.needs:
+    text: Jobs to wait for
+completion.workflow.job.outputs:
+    text: Outputs other jobs can read
+completion.workflow.job.permissions:
+    text: Job token permissions
+completion.workflow.job.runs_on:
+    text: Runner label or group
+completion.workflow.job.secrets:
+    text: Secrets for called workflow
+completion.workflow.job.services:
+    text: Sidecar service containers
+completion.workflow.job.snapshot:
+    text: Runner snapshot
+completion.workflow.job.steps:
+    text: Step list. The actual work.
+completion.workflow.job.strategy:
+    text: Matrix and scheduling strategy
+completion.workflow.job.timeout_minutes:
+    text: Job timeout in minutes
+completion.workflow.job.uses:
+    text: Reusable workflow to call
+completion.workflow.job.with:
+    text: Inputs for called workflow
+completion.workflow.matrix.exclude:
+    text: Remove matrix combinations
+completion.workflow.matrix.include:
+    text: Add matrix combinations
+completion.workflow.permission.actions:
+    text: Workflow runs and action artifacts
+completion.workflow.permission.artifact_metadata:
+    text: Artifact metadata records
+completion.workflow.permission.attestations:
+    text: Artifact attestations
+completion.workflow.permission.checks:
+    text: Check runs and suites
+completion.workflow.permission.code_quality:
+    text: Code quality reports
+completion.workflow.permission.contents:
+    text: Repository contents
+completion.workflow.permission.deployments:
+    text: Deployments
+completion.workflow.permission.discussions:
+    text: Discussions
+completion.workflow.permission.id_token:
+    text: OpenID Connect tokens
+completion.workflow.permission.issues:
+    text: Issues
+completion.workflow.permission.models:
+    text: GitHub Models
+completion.workflow.permission.packages:
+    text: GitHub Packages
+completion.workflow.permission.pages:
+    text: GitHub Pages
+completion.workflow.permission.pull_requests:
+    text: Pull requests
+completion.workflow.permission.security_events:
+    text: Code scanning and security events
+completion.workflow.permission.shorthand.empty:
+    text: Disable token permissions
+completion.workflow.permission.shorthand.read_all:
+    text: All permissions read. Big blanket.
+completion.workflow.permission.shorthand.write_all:
+    text: All permissions write. Big hammer.
+completion.workflow.permission.statuses:
+    text: Commit statuses
+completion.workflow.permission.value.none:
+    text: No access
+completion.workflow.permission.value.read:
+    text: Read access
+completion.workflow.permission.value.write:
+    text: Write access, read included
+completion.workflow.permission.vulnerability_alerts:
+    text: Dependabot alerts
+completion.workflow.runner.macos_14:
+    text: macOS 14 runner
+completion.workflow.runner.macos_15:
+    text: macOS 15 runner
+completion.workflow.runner.macos_latest:
+    text: Latest macOS runner
+completion.workflow.runner.self_hosted:
+    text: Your own runner. Your circus.
+completion.workflow.runner.ubuntu_22.04:
+    text: Ubuntu 22.04 runner
+completion.workflow.runner.ubuntu_24.04:
+    text: Ubuntu 24.04 runner
+completion.workflow.runner.ubuntu_latest:
+    text: Latest Ubuntu runner
+completion.workflow.runner.windows_2022:
+    text: Windows Server 2022 runner
+completion.workflow.runner.windows_2025:
+    text: Windows Server 2025 runner
+completion.workflow.runner.windows_latest:
+    text: Latest Windows runner
+completion.workflow.service.credentials:
+    text: Registry credentials
+completion.workflow.service.env:
+    text: Service environment variables
+completion.workflow.service.image:
+    text: Service container image
+completion.workflow.service.options:
+    text: Docker create options
+completion.workflow.service.ports:
+    text: Service ports
+completion.workflow.service.volumes:
+    text: Service volumes
+completion.workflow.step.continue_on_error:
+    text: Let this step fail softly
+completion.workflow.step.env:
+    text: Step environment variables
+completion.workflow.step.id:
+    text: Step id for references
+completion.workflow.step.if:
+    text: Step condition
+completion.workflow.step.name:
+    text: Step display name
+completion.workflow.step.run:
+    text: Shell script to run
+completion.workflow.step.shell:
+    text: Shell for this run step
+completion.workflow.step.timeout_minutes:
+    text: Step timeout in minutes
+completion.workflow.step.uses:
+    text: Action to run
+completion.workflow.step.with:
+    text: Action inputs
+completion.workflow.step.working_directory:
+    text: Step working directory
+completion.workflow.strategy.fail_fast:
+    text: Cancel matrix siblings on failure
+completion.workflow.strategy.matrix:
+    text: Matrix axes and variants
+completion.workflow.strategy.max_parallel:
+    text: Matrix parallelism cap
+completion.workflow.top.concurrency:
+    text: Concurrency group and cancellation
+completion.workflow.top.defaults:
+    text: Default job and step settings
+completion.workflow.top.env:
+    text: Workflow-wide environment variables
+completion.workflow.top.jobs:
+    text: Jobs that run in this workflow
+completion.workflow.top.name:
+    text: Workflow display name
+completion.workflow.top.on:
+    text: Events that start the workflow
+completion.workflow.top.permissions:
+    text: Default GITHUB_TOKEN permissions
+completion.workflow.top.run_name:
+    text: Dynamic run name
+documentation.action.label:
+    text: Action
+documentation.container.label:
+    text: Job container
+documentation.context.conclusion:
+    text: conclusion
+documentation.context.conclusion.description:
+    text: Step result after continue-on-error is applied.
+documentation.context.env:
+    text: env context
+documentation.context.env.description:
+    text: Environment variables visible at this location.
+documentation.context.github:
+    text: github context
+documentation.context.github.description:
+    text: Information about the current workflow run and event.
+documentation.context.inputs:
+    text: inputs context
+documentation.context.inputs.description:
+    text: Workflow, dispatch, or action inputs available here.
+documentation.context.jobs:
+    text: jobs context
+documentation.context.jobs.description:
+    text: Reusable workflow jobs and outputs.
+documentation.context.matrix:
+    text: matrix context
+documentation.context.matrix.description:
+    text: Matrix values for the current job.
+documentation.context.needs:
+    text: needs context
+documentation.context.needs.description:
+    text: Direct job dependencies and their outputs/results.
+documentation.context.outcome:
+    text: outcome
+documentation.context.outcome.description:
+    text: Step result before continue-on-error is applied.
+documentation.context.outputs:
+    text: outputs
+documentation.context.outputs.description:
+    text: Output values exposed by this step or job.
+documentation.context.result:
+    text: result
+documentation.context.result.description:
+    text: 'Job result: success, failure, cancelled, or skipped.'
+documentation.context.secrets:
+    text: secrets context
+documentation.context.secrets.description:
+    text: Secret values available to this workflow or reusable workflow call.
+documentation.context.steps:
+    text: steps context
+documentation.context.steps.description:
+    text: Previous steps in the current job, including outputs and status.
+documentation.default:
+    text: 'Default: {0}'
+documentation.deprecated:
+    text: 'Deprecated: {0}'
+documentation.description:
+    text: 'Description: {0}'
+documentation.description.label:
+    text: Description
+documentation.env.label:
+    text: Environment variable
+documentation.externalAction.label:
+    text: External action
+documentation.input.label:
+    text: Input
+documentation.inputs.title:
+    text: Inputs
+documentation.jobOutput.label:
+    text: Job output
+documentation.manualInput:
+    text: Manually added input
+documentation.manualOutput:
+    text: Manually added output
+documentation.matrix.label:
+    text: Matrix property
+documentation.name.label:
+    text: Name
+documentation.need.description:
+    text: Direct job dependency.
+documentation.need.label:
+    text: Needed job
+documentation.needOutput.label:
+    text: Needed job output
+documentation.notResolved:
+    text: not resolved yet
+documentation.open.declaration:
+    text: 'Open declaration ({0})'
+documentation.outputs.title:
+    text: Outputs
+documentation.provider:
+    text: GitHub workflow documentation
+documentation.required:
+    text: 'Required: {0}'
+documentation.resolvedFrom:
+    text: 'resolved from {0}'
+documentation.reusableJob.description:
+    text: Job declared in this reusable workflow.
+documentation.reusableJob.label:
+    text: Reusable workflow job
+documentation.reusableJobOutput.label:
+    text: Reusable workflow job output
+documentation.reusableWorkflow.label:
+    text: Reusable workflow
+documentation.run.label:
+    text: Run
+documentation.secret.label:
+    text: Secret
+documentation.secrets.title:
+    text: Secrets
+documentation.service.label:
+    text: Service container
+documentation.servicePort.label:
+    text: Service port
+documentation.source.label:
+    text: Source
+documentation.step.label:
+    text: Step
+documentation.step.title:
+    text: 'Step {0}'
+documentation.stepOutput.label:
+    text: Step output
+documentation.symbol.description:
+    text: Resolved workflow expression.
+documentation.symbol.label:
+    text: Workflow symbol
+documentation.type:
+    text: 'Type: {0}'
+documentation.uses.label:
+    text: Uses
+documentation.value.label:
+    text: Value
+documentation.workflowOutput.label:
+    text: Workflow output
+documentation.workflowSyntax.label:
+    text: Workflow key
+group.GitHubWorkflow.Tools.description:
+    text: GitHub Workflow plugin tools
+group.GitHubWorkflow.Tools.text:
+    text: GitHub Workflow
+inspection.action.delete.invalid:
+    text: 'Delete invalid {0} [{1}]'
+inspection.action.jump:
+    text: 'Jump to file [{0}]'
+inspection.action.login:
+    text: 'Sign in to GitHub to resolve [{0}]'
+inspection.action.reload:
+    text: 'Reload [{0}]'
+inspection.action.unresolved:
+    text: 'Unresolved [{0}] - check GitHub account access, private repository permissions, rate limits, missing refs, or missing action/workflow metadata'
+inspection.action.update.major:
+    text: 'Update action [{0}] to [{1}]'
+inspection.invalid.remove:
+    text: 'Remove invalid [{0}]'
+inspection.invalid.suffix.remove:
+    text: 'Remove invalid suffix [{0}]'
+inspection.needs.invalid.job:
+    text: 'Remove invalid jobId [{0}] - this jobId doesn''''t match any previous job'
+inspection.output.unused:
+    text: 'Unused [{0}]'
+inspection.parameter.input:
+    text: input
+inspection.parameter.secret:
+    text: secret
+inspection.replace.with:
+    text: 'Replace with [{0}]'
+inspection.secret.invalid.if:
+    text: 'Remove [{0}] - Secrets are not valid in `if` statements'
+inspection.secret.replace.runtime:
+    text: 'Replace [{0}] with [{1}] - if it is not provided at runtime'
+inspection.statement.incomplete:
+    text: 'Incomplete statement [{0}]'
+inspection.warning.off:
+    text: 'off'
+inspection.warning.on:
+    text: 'on'
+inspection.warning.toggle:
+    text: 'Toggle warnings [{0}] for [{1}]'
+inspection.workflow.syntax.unknownEventKey:
+    text: 'Unknown workflow event [{0}]'
+inspection.workflow.syntax.unknownJobKey:
+    text: 'Unknown job key [{0}]'
+inspection.workflow.syntax.unknownPermission:
+    text: 'Unknown permission [{0}]'
+inspection.workflow.syntax.unknownPermissionValue:
+    text: 'Unknown permission value [{0}]'
+inspection.workflow.syntax.unknownStepKey:
+    text: 'Unknown step key [{0}]'
+inspection.workflow.syntax.unknownTopLevelKey:
+    text: 'Unknown workflow key [{0}]'
+inspection.workflow.syntax.unknownTriggerFilter:
+    text: 'Unknown trigger filter [{0}]'
+inspection.workflow.syntax.unknownTriggerKey:
+    text: 'Unknown trigger key [{0}]'
+inspection.workflow.syntax.unknownTriggerValue:
+    text: 'Unknown trigger value [{0}]'
+notification.cache.cleared:
+    text: 'Cleared {0} cached GitHub Workflow entries.'
+notification.cache.refresh.started:
+    text: 'Refreshing {0} cached remote GitHub Workflow entries.'
+notification.warnings.restored:
+    text: 'Restored warnings for {0} GitHub Workflow entries.'
+schema.auto:
+    text: '{0} [Auto]'
+settings.cache.column.expires:
+    text: Expires
+settings.cache.column.key:
+    text: Cache key
+settings.cache.column.kind:
+    text: Kind
+settings.cache.column.name:
+    text: Name
+settings.cache.column.state:
+    text: State
+settings.cache.deleteAll:
+    text: Delete all
+settings.cache.deleteAll.confirm:
+    text: Delete all GitHub Workflow cache entries?
+settings.cache.deleteAll.done:
+    text: Deleted all cache entries. The cache is now suspiciously quiet.
+settings.cache.deleteSelected:
+    text: Delete selected
+settings.cache.deleteSelected.done:
+    text: 'Deleted {0} cache entries. Tiny dust cloud contained.'
+settings.cache.export:
+    text: Export
+settings.cache.export.done:
+    text: 'Exported {0} cache entries. Small archive beast caged.'
+settings.cache.import:
+    text: Import
+settings.cache.import.brokenKey:
+    text: Broken GitHub Workflow cache key.
+settings.cache.import.brokenLine:
+    text: Broken GitHub Workflow cache line.
+settings.cache.import.done:
+    text: Imported cache entries. The archive beast behaved.
+settings.cache.import.unsupported:
+    text: Unsupported GitHub Workflow cache file.
+settings.cache.kind.local:
+    text: local
+settings.cache.kind.remote:
+    text: remote
+settings.cache.noneSelected:
+    text: Select cache rows first. The broom refuses guesswork.
+settings.cache.refresh:
+    text: Refresh table
+settings.cache.state.expired:
+    text: stale
+settings.cache.state.pending:
+    text: pending
+settings.cache.state.resolved:
+    text: resolved
+settings.cache.state.suppressed:
+    text: suppressed
+settings.cache.summary:
+    text: 'Cache: {0} entries, {1} resolved, {2} remote, {3} stale, {4} muted. Cache: {5} KB.'
+settings.cache.title:
+    text: Action cache
+settings.displayName:
+    text: GitHub Workflow
+workflow.cache.kind.action:
+    text: action
+workflow.cache.kind.workflow:
+    text: workflow
+workflow.cache.progress.text:
+    text: 'Resolving {0} {1}'
+workflow.cache.progress.title:
+    text: Resolving GitHub actions
+workflow.log.command:
+    text: 'run:'
+workflow.log.error:
+    text: 'error:'
+workflow.log.warning:
+    text: 'warning:'
+workflow.run.auth.missing:
+    text: 'No GitHub account for {0}. Log in to GitHub to dispatch {1}.'
+workflow.run.browse.tooltip:
+    text: Open run in browser
+workflow.run.cancel.done:
+    text: 'Cancel accepted: {0}.'
+workflow.run.cancel.failed:
+    text: 'Cancel fizzled: {0}'
+workflow.run.cancel.requested:
+    text: 'Cancel requested: {0}.'
+workflow.run.configuration.description:
+    text: Dispatch and follow GitHub Actions workflow runs
+workflow.run.configuration.display:
+    text: GitHub Workflow
+workflow.run.configuration.name:
+    text: 'GitHub Workflow: {0}'
+workflow.run.delete.done:
+    text: 'Run {0} deleted.'
+workflow.run.delete.failed:
+    text: 'Delete fizzled: {0}'
+workflow.run.delete.noRun:
+    text: No run id yet.
+workflow.run.delete.requested:
+    text: 'Deleting run {0}.'
+workflow.run.delete.tooltip:
+    text: Delete run
+workflow.run.discovery:
+    text: Run accepted. Hunting run id.
+workflow.run.discovery.none:
+    text: No run id yet. Actions tab knows more.
+workflow.run.dispatch:
+    text: '{0} {1} {2}{3} for {4} on {5}.'
+workflow.run.dispatch.objects:
+    text: workflow|automation|pipeline|run
+workflow.run.dispatch.verbs:
+    text: Priming|Queuing|Summoning|Launching|Booting
+workflow.run.download.artifact.done:
+    text: 'Artifact saved: {0} -> {1}.'
+workflow.run.download.artifact.expired:
+    text: 'Artifact expired: {0}.'
+workflow.run.download.artifacts.empty:
+    text: No artifacts. Tiny void.
+workflow.run.download.artifacts.requested:
+    text: Fetching artifacts.
+workflow.run.download.artifacts.tooltip:
+    text: Download artifacts
+workflow.run.download.failed:
+    text: 'Download fizzled: {0}'
+workflow.run.download.log.done:
+    text: 'Log saved: {0}.'
+workflow.run.download.log.requested:
+    text: 'Fetching log for {0}.'
+workflow.run.download.log.tooltip:
+    text: Save job log
+workflow.run.download.noRun:
+    text: No run id yet.
+workflow.run.error.inputs:
+    text: GitHub workflow_dispatch supports at most 25 inputs.
+workflow.run.error.ref:
+    text: Branch or tag ref is required.
+workflow.run.error.repository:
+    text: GitHub repository owner and name are required.
+workflow.run.error.server:
+    text: GitHub server URL is required.
+workflow.run.error.workflow:
+    text: Workflow file is required.
+workflow.run.field.owner:
+    text: 'Owner:'
+workflow.run.field.ref:
+    text: 'Ref:'
+workflow.run.field.repo:
+    text: 'Repository:'
+workflow.run.field.server:
+    text: 'Server:'
+workflow.run.field.workflow:
+    text: 'Workflow file:'
+workflow.run.fragment.name:
+    text: Workflow
+workflow.run.gutter.run:
+    text: Run workflow
+workflow.run.gutter.stop:
+    text: Stop workflow run
+workflow.run.gutter.stop.description:
+    text: Cancel this run
+workflow.run.gutter.stop.text:
+    text: Stop workflow run
+workflow.run.http.failed:
+    text: '{0} failed: {1}'
+workflow.run.inputs.empty:
+    text: No workflow_dispatch inputs
+workflow.run.inputs.title:
+    text: workflow_dispatch inputs
+workflow.run.interrupted:
+    text: Interrupted.
+workflow.run.job.fallbackName:
+    text: 'Job {0}'
+workflow.run.job.header:
+    text: 'Job: {0}'
+workflow.run.job.logs.later:
+    text: 'Job {0}: {1}'
+workflow.run.job.main:
+    text: 'Job: {0} {1} [{2}{3}{4}]'
+workflow.run.job.status:
+    text: 'Status: {0} {1}{2}{3}'
+workflow.run.job.url:
+    text: 'URL: {0}'
+workflow.run.jobs.root:
+    text: Workflow run
+workflow.run.link:
+    text: 'Run: {0}'
+workflow.run.log.failed:
+    text: 'Log download failed: {0}'
+workflow.run.log.failed.job:
+    text: 'Log download failed for {0}: {1}'
+workflow.run.logs.later:
+    text: Logs will appear when GitHub publishes them.
+workflow.run.notification.auth:
+    text: 'GitHub workflow dispatch needs an authenticated GitHub account for {0}.'
+workflow.run.notification.login:
+    text: Log in to GitHub
+workflow.run.operation.artifactDownload:
+    text: GitHub workflow artifact download
+workflow.run.operation.artifacts:
+    text: GitHub workflow artifacts
+workflow.run.operation.cancel:
+    text: GitHub workflow cancel
+workflow.run.operation.delete:
+    text: GitHub workflow run delete
+workflow.run.operation.discovery:
+    text: GitHub workflow run discovery
+workflow.run.operation.dispatch:
+    text: GitHub workflow dispatch
+workflow.run.operation.jobLogs:
+    text: GitHub workflow job logs
+workflow.run.operation.jobs:
+    text: GitHub workflow jobs
+workflow.run.operation.rerun:
+    text: GitHub workflow rerun
+workflow.run.operation.rerunFailed:
+    text: GitHub workflow failed jobs rerun
+workflow.run.operation.status:
+    text: GitHub workflow status
+workflow.run.overview:
+    text: 'Workflow run {0} {1}/{2} done, {3} running'
+workflow.run.refresh.tooltip:
+    text: Refresh run status
+workflow.run.repository.missing:
+    text: 'No GitHub repository found for {0}. Check the git remotes.'
+workflow.run.rerun.all.done:
+    text: 'Rerun queued: {0}.'
+workflow.run.rerun.all.requested:
+    text: 'Rerun requested: {0}.'
+workflow.run.rerun.all.tooltip:
+    text: Rerun workflow
+workflow.run.rerun.failed:
+    text: 'Rerun fizzled: {0}'
+workflow.run.rerun.failed.done:
+    text: 'Failed jobs queued: {0}.'
+workflow.run.rerun.failed.requested:
+    text: 'Failed jobs requested: {0}.'
+workflow.run.rerun.failed.tooltip:
+    text: Rerun failed jobs
+workflow.run.rerun.noRun:
+    text: No run id yet.
+workflow.run.state.fail:
+    text: '[FAIL]'
+workflow.run.state.ok:
+    text: '[OK]'
+workflow.run.state.running:
+    text: '[RUN]'
+workflow.run.state.waiting:
+    text: '[WAIT]'
+workflow.run.status:
+    text: 'Status: {0}{1}'
+workflow.run.stop.before.id:
+    text: Stop requested. No run id yet.

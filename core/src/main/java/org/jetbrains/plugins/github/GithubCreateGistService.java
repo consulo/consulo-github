@@ -128,7 +128,8 @@ public class GithubCreateGistService {
             .filter(it -> it instanceof GithubGistsFeature)
             .findFirst()
             .orElse(null);
-        if (gistsFeature != null && myAccountManager.getState(gistsFeature, account) == AccountFeatureState.AUTH_FAILED) {
+        AccountFeatureState state = gistsFeature == null ? null : myAccountManager.getState(gistsFeature, account);
+        if (state == AccountFeatureState.AUTH_FAILED || state == AccountFeatureState.MISSING_SCOPES) {
             return myAccountManager.requestAuthorization(account, gistsFeature, myProject, null);
         }
         return CompletableFuture.completedFuture(account);

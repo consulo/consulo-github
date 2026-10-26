@@ -1,0 +1,6 @@
+<consulo-plugin-requires>
+    <plugins>
+        <plugin>org.jetbrains.plugins.yaml</plugin>
+        <plugin>consulo.json</plugin>
+    </plugins>
+</consulo-plugin-requires>

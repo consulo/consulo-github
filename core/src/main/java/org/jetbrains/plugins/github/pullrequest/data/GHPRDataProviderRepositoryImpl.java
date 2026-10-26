@@ -19,7 +19,9 @@ package org.jetbrains.plugins.github.pullrequest.data;
 import consulo.application.util.concurrent.AppExecutorUtil;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.project.Project;
 import consulo.proxy.EventDispatcher;
+import consulo.review.async.ComputationState;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.versionControlSystem.log.Hash;
 import git4idea.GitRemoteBranch;
@@ -34,6 +36,7 @@ import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRBranchesRefs;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRChangesDataProviderImpl;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRCommentsDataProviderImpl;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDataOperationsListener;
+import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDataOperationsMessageBus;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDataProvider;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDataProviderImpl;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDetailsDataProviderImpl;
@@ -60,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class GHPRDataProviderRepositoryImpl implements GHPRDataProviderRepository {
+    private final Project myProject;
     private final Disposable myCs;
     private final GHPRRepositoryDataService myRepositoryService;
     private final GHPRDetailsService myDetailsService;
@@ -72,7 +76,8 @@ public class GHPRDataProviderRepositoryImpl implements GHPRDataProviderRepositor
     private final Map<GHPRIdentifier, AcquirableScopedValueOwner<GHPRDataProvider>> myCache = new HashMap<>();
     private final EventDispatcher<DetailsLoadedListener> myProviderDetailsLoadedEventDispatcher = EventDispatcher.create(DetailsLoadedListener.class);
 
-    public GHPRDataProviderRepositoryImpl(Disposable parentCs,
+    public GHPRDataProviderRepositoryImpl(Project project,
+                                          Disposable parentCs,
                                           GHPRRepositoryDataService repositoryService,
                                           GHPRDetailsService detailsService,
                                           GHPRTimelineService timelineService,
@@ -80,6 +85,7 @@ public class GHPRDataProviderRepositoryImpl implements GHPRDataProviderRepositor
                                           GHPRFilesService filesService,
                                           GHPRCommentService commentService,
                                           GHPRChangesService changesService) {
+        myProject = project;
         myCs = Disposable.newDisposable(getClass().getName());
         Disposer.register(parentCs, myCs);
         myRepositoryService = repositoryService;
@@ -105,14 +111,16 @@ public class GHPRDataProviderRepositoryImpl implements GHPRDataProviderRepositor
     }
 
     private GHPRDataProvider createDataProvider(Disposable cs, GHPRIdentifier id) {
-        EventDispatcher<GHPRDataOperationsListener> messageBus = EventDispatcher.create(GHPRDataOperationsListener.class);
+        GHPRDataOperationsMessageBus messageBus = new GHPRDataOperationsMessageBus(myProject);
 
         Disposable providerCs = Disposable.newDisposable(GHPRDataProviderImpl.class.getName());
         Disposer.register(cs, providerCs);
         GHPRDetailsDataProviderImpl detailsData = new GHPRDetailsDataProviderImpl(providerCs, myDetailsService, id, messageBus);
-        Runnable unsubscribeLoaded = detailsData.getLoadedDetailsState().addListener(details -> {
+        ComputationState<GHPullRequest> detailsComputation = detailsData.detailsComputationFlow(providerCs);
+        Runnable unsubscribeLoaded = detailsComputation.addListener(result -> {
+            GHPullRequest details = result == null ? null : result.getOrNull();
             if (details != null) {
-                myProviderDetailsLoadedEventDispatcher.getMulticaster().onDetailsLoaded(details);
+                messageBus.runOnUIThread(() -> myProviderDetailsLoadedEventDispatcher.getMulticaster().onDetailsLoaded(details));
             }
         });
         Disposer.register(providerCs, unsubscribeLoaded::run);
@@ -146,8 +154,13 @@ public class GHPRDataProviderRepositoryImpl implements GHPRDataProviderRepositor
         messageBus.addListener(new GHPRDataOperationsListener() {
             @Override
             public void onReviewsChanged() {
-                detailsData.signalDetailsNeedReload();
-                detailsData.signalMergeabilityNeedsReload();
+                AppExecutorUtil.getAppExecutorService().execute(() -> {
+                    if (Disposer.isDisposed(providerCs)) {
+                        return;
+                    }
+                    detailsData.signalDetailsNeedReload();
+                    detailsData.signalMergeabilityNeedsReload();
+                });
             }
         }, providerCs);
 

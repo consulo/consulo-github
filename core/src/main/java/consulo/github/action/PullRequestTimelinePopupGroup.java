@@ -18,7 +18,9 @@ package consulo.github.action;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionRef;
 import consulo.application.dumb.DumbAware;
+import consulo.ui.ex.action.AnSeparator;
 import consulo.ui.ex.action.DefaultActionGroup;
+import org.jetbrains.plugins.github.pullrequest.action.GHPRDeleteMergedHeadAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRUpdateTimelineAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPullRequestCopyURLAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPullRequestOpenURLAction;
@@ -28,7 +30,9 @@ import org.jetbrains.plugins.github.pullrequest.action.GHPullRequestOpenURLActio
     children = {
         @ActionRef(type = GHPRUpdateTimelineAction.class),
         @ActionRef(type = GHPullRequestOpenURLAction.class),
-        @ActionRef(type = GHPullRequestCopyURLAction.class)
+        @ActionRef(type = GHPullRequestCopyURLAction.class),
+        @ActionRef(type = AnSeparator.class),
+        @ActionRef(type = GHPRDeleteMergedHeadAction.class)
     }
 )
 public class PullRequestTimelinePopupGroup extends DefaultActionGroup implements DumbAware {

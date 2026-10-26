@@ -16,7 +16,6 @@
  */
 package org.jetbrains.plugins.github.pullrequest.data.provider;
 
-import consulo.proxy.EventDispatcher;
 import org.jetbrains.plugins.github.api.data.GithubIssueCommentWithHtml;
 import org.jetbrains.plugins.github.pullrequest.data.GHPRIdentifier;
 import org.jetbrains.plugins.github.pullrequest.data.service.GHPRCommentService;
@@ -26,11 +25,11 @@ import java.util.concurrent.CompletableFuture;
 public class GHPRCommentsDataProviderImpl implements GHPRCommentsDataProvider {
     private final GHPRCommentService myCommentService;
     private final GHPRIdentifier myPullRequestId;
-    private final EventDispatcher<GHPRDataOperationsListener> myMessageBus;
+    private final GHPRDataOperationsMessageBus myMessageBus;
 
     public GHPRCommentsDataProviderImpl(GHPRCommentService commentService,
                                         GHPRIdentifier pullRequestId,
-                                        EventDispatcher<GHPRDataOperationsListener> messageBus) {
+                                        GHPRDataOperationsMessageBus messageBus) {
         myCommentService = commentService;
         myPullRequestId = pullRequestId;
         myMessageBus = messageBus;
@@ -39,27 +38,23 @@ public class GHPRCommentsDataProviderImpl implements GHPRCommentsDataProvider {
     //TODO: switch to GQL
     @Override
     public CompletableFuture<GithubIssueCommentWithHtml> addComment(String body) {
-        return myCommentService.addComment(myPullRequestId, body).whenComplete((comment, error) -> {
-            if (error == null) {
-                myMessageBus.getMulticaster().onCommentAdded();
-            }
-        });
+        return myCommentService.addComment(myPullRequestId, body)
+            .thenCompose(comment -> myMessageBus.syncPublisher(GHPRDataOperationsListener::onCommentAdded).thenApply(ignored -> comment))
+            .copy();
     }
 
     @Override
     public CompletableFuture<String> updateComment(String commentId, String text) {
-        return myCommentService.updateComment(commentId, text).thenApply(comment -> {
-            myMessageBus.getMulticaster().onCommentUpdated(commentId, comment.getBody());
-            return comment.getBody();
-        });
+        return myCommentService.updateComment(commentId, text)
+            .thenCompose(comment -> myMessageBus.syncPublisher(it -> it.onCommentUpdated(commentId, comment.getBody()))
+                .thenApply(ignored -> comment.getBody()))
+            .copy();
     }
 
     @Override
     public CompletableFuture<?> deleteComment(String commentId) {
-        return myCommentService.deleteComment(commentId).whenComplete((result, error) -> {
-            if (error == null) {
-                myMessageBus.getMulticaster().onCommentDeleted(commentId);
-            }
-        });
+        return myCommentService.deleteComment(commentId)
+            .thenCompose(result -> myMessageBus.syncPublisher(it -> it.onCommentDeleted(commentId)).thenApply(ignored -> null))
+            .copy();
     }
 }

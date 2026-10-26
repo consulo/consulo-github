@@ -53,7 +53,7 @@ public class GHPRVirtualFileSystem extends ComplexPathVirtualFileSystem<GHPRVirt
             if (path.isDiff()) {
                 return new GHPRDiffVirtualFile(path.sessionId(), project, path.repository(), prId);
             }
-            return null;
+            return new GHPRTimelineVirtualFile(path.sessionId(), project, path.repository(), prId);
         }
         if (path.isDiff()) {
             return new GHNewPRDiffVirtualFile(path.sessionId(), project, path.repository());

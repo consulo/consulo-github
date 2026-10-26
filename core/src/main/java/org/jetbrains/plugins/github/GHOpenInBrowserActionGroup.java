@@ -23,6 +23,8 @@ import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.platform.Platform;
 import consulo.project.Project;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.lang.Range;
 import git4idea.remote.hosting.HostedGitRepositoriesManager;
 import git4idea.remote.hosting.action.GlobalHostedGitRepositoryReferenceActionGroup;
@@ -37,6 +39,8 @@ import java.net.URI;
     parents = @ActionParentRef(@ActionRef(id = "Git.Hosting.Open.In.Browser.Group"))
 )
 public class GHOpenInBrowserActionGroup extends GlobalHostedGitRepositoryReferenceActionGroup {
+    private static final String BOOKMARKS_POPUP = "BookmarksPopup";
+
     public GHOpenInBrowserActionGroup() {
         super(GithubLocalize.openOnGithubAction(), GithubLocalize.openOnGithubActionDescription(), GitHubIconGroup.github());
     }
@@ -63,5 +67,20 @@ public class GHOpenInBrowserActionGroup extends GlobalHostedGitRepositoryReferen
             return;
         }
         Platform.current().openInBrowser(uri.toString());
+    }
+
+    @Override
+    public void update(AnActionEvent e) {
+        super.update(e);
+        String place = e.getPlace();
+        if (ActionPlaces.ACTION_SEARCH.equals(place)) {
+            e.getPresentation().setText(GithubLocalize.groupGithubOpenInBrowserGotoactionText());
+        }
+        else if (ActionPlaces.EDITOR_TAB_POPUP.equals(place)
+            || ActionPlaces.PROJECT_VIEW_POPUP.equals(place)
+            || ActionPlaces.EDITOR_POPUP.equals(place)
+            || BOOKMARKS_POPUP.equals(place)) {
+            e.getPresentation().setText(GithubLocalize.groupGithubOpenInBrowserEditortabpopupText());
+        }
     }
 }

@@ -19,6 +19,7 @@ package org.jetbrains.plugins.github.pullrequest.data;
 import consulo.review.icon.AsyncImageLoader;
 import consulo.ui.image.Image;
 import consulo.util.lang.lazy.LazyValue;
+import org.jetbrains.plugins.github.api.GithubApiContentHelper;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutorFactory;
 import org.jetbrains.plugins.github.api.GithubApiRequests;
@@ -51,7 +52,7 @@ public class GHReactionImageLoader implements AsyncImageLoader<GHReactionContent
             GithubApiRequestExecutor exec = url.contains("githubassets") ? GithubApiRequestExecutorFactory.getInstance().create() : myRequestExecutor;
             return exec.execute(GithubApiRequests.Emojis.loadImage(url)).thenApply(bytes -> {
                 try {
-                    return Image.fromBytes(Image.ImageType.PNG, bytes);
+                    return GithubApiContentHelper.loadImage(bytes);
                 }
                 catch (Exception e) {
                     throw new CompletionException(e);

@@ -21,14 +21,11 @@ import consulo.accountManagement.AccountAuthorizeConfig;
 import consulo.accountManagement.AccountManager;
 import consulo.accountManagement.AccountType;
 import consulo.accountManagement.authorize.TokenAuthorizeConfig;
-import consulo.annotation.component.ActionImpl;
-import consulo.application.AccessToken;
 import consulo.application.progress.EmptyProgressIndicator;
 import consulo.application.progress.ProgressBuilderFactory;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressManager;
 import consulo.document.FileDocumentManager;
-import consulo.github.icon.GitHubIconGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
@@ -42,19 +39,12 @@ import consulo.ui.ex.dialog.DialogService;
 import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.util.concurrent.coroutine.step.CodeExecution;
 import consulo.versionControlSystem.VcsException;
-import consulo.versionControlSystem.distributed.DvcsUtil;
-import consulo.virtualFileSystem.VirtualFile;
-import git4idea.GitActivity;
 import git4idea.GitUtil;
 import git4idea.commands.Git;
-import git4idea.config.GitVcsSettings;
-import git4idea.rebase.GitRebaser;
 import git4idea.remote.hosting.GitHostingUrlUtil;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import git4idea.update.GitUpdateResult;
-import git4idea.util.GitPreservingProcess;
 import org.jetbrains.plugins.github.api.GHRepositoryPath;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutorFactory;
@@ -74,22 +64,27 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static git4idea.fetch.GitFetchSupport.fetchSupport;
 
-@ActionImpl(id = "Github.Sync.Fork")
-public class GithubSyncForkAction extends DumbAwareAction implements AnActionWithSyncUpdate {
+public abstract class GithubSyncForkAction extends DumbAwareAction implements AnActionWithSyncUpdate {
     private static final Logger LOG = GithubUtil.LOG;
     private static final String UPSTREAM_REMOTE_NAME = "upstream";
     private static final String ORIGIN_REMOTE_NAME = "origin";
 
-    public GithubSyncForkAction() {
-        super(GithubLocalize.actionSyncForkText(), GithubLocalize.actionSyncForkDescription(), GitHubIconGroup.github());
+    protected GithubSyncForkAction(LocalizeValue text, LocalizeValue description) {
+        super(text, description);
     }
+
+    protected abstract LocalizeValue getProgressTitle();
+
+    /**
+     * Integrates {@code upstreamBranch} - the fetched default branch of the parent repository - into the current branch.
+     */
+    protected abstract void integrate(Project project, Git git, GitRepository repository, ProgressIndicator indicator, String upstreamBranch);
 
     @Override
     public void update(AnActionEvent e) {
@@ -168,7 +163,7 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
                 return;
             }
 
-            new SyncForkTask(project, Git.getInstance(), account, GithubAccountType.toServerPath(accountManager.getServerUrl(account)),
+            new SyncForkTask(this, project, Git.getInstance(), account, GithubAccountType.toServerPath(accountManager.getServerUrl(account)),
                 mapping.getRemote().repository(),
                 mapping.getRepository().getRepositoryPath()).queue();
         }, UIAccess.current());
@@ -183,7 +178,7 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
         return null;
     }
 
-    private static boolean isEnabledAndVisible(AnActionEvent e) {
+    static boolean isEnabledAndVisible(AnActionEvent e) {
         Project project = e.getData(Project.KEY);
         if (project == null || project.isDefault()) {
             return false;
@@ -194,6 +189,7 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
     }
 
     private static class SyncForkTask {
+        private final GithubSyncForkAction myAction;
         private final Project myProject;
         private final Git myGit;
         private final Account myAccount;
@@ -201,12 +197,14 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
         private final GitRepository myRepository;
         private final GHRepositoryPath myRepoPath;
 
-        SyncForkTask(Project project,
+        SyncForkTask(GithubSyncForkAction action,
+                     Project project,
                      Git git,
                      Account account,
                      GithubServerPath server,
                      GitRepository repository,
                      GHRepositoryPath repoPath) {
+            myAction = action;
             myProject = project;
             myGit = git;
             myAccount = account;
@@ -217,7 +215,7 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
 
         void queue() {
             myProject.getApplication().getInstance(ProgressBuilderFactory.class)
-                .newProgressBuilder(myProject, GithubLocalize.rebaseProcess())
+                .newProgressBuilder(myProject, myAction.getProgressTitle())
                 .execute(myProject.getUIAccess(), () -> Coroutine.first(CodeExecution.<Object, Object>apply((input, continuation) -> {
                     ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
                     run(indicator != null ? indicator : new EmptyProgressIndicator());
@@ -252,7 +250,7 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
                 return;
             }
 
-            rebaseCurrentBranch(indicator, parentRemote, branchName);
+            myAction.integrate(myProject, myGit, myRepository, indicator, parentRemote.getName() + "/" + branchName);
         }
 
         private @Nullable GithubRepo validateRepoAndLoadParent(GithubApiRequestExecutor executor, ProgressIndicator indicator) {
@@ -336,39 +334,6 @@ public class GithubSyncForkAction extends DumbAwareAction implements AnActionWit
             LOG.info("Fetching upstream");
             indicator.setText(GithubLocalize.rebaseProcessFetchingUpstream());
             return fetchSupport(myProject).fetch(myRepository, remote).showNotificationIfFailed();
-        }
-
-        private void rebaseCurrentBranch(ProgressIndicator indicator,
-                                         GitRemote parentRemote,
-                                         String branch) {
-            String onto = parentRemote.getName() + "/" + branch;
-            LOG.info("Rebasing current branch");
-            indicator.setText(GithubLocalize.rebaseProcessRebasingBranchOnto(onto));
-            try (AccessToken ignore = DvcsUtil.workingTreeChangeStarted(myProject, "Rebase", GitActivity.Rebase)) {
-                List<VirtualFile> rootsToSave = Collections.singletonList(myRepository.getRoot());
-                GitVcsSettings.UpdateChangesPolicy saveMethod = GitVcsSettings.getInstance(myProject).updateChangesPolicy();
-                GitPreservingProcess process =
-                    new GitPreservingProcess(myProject, myGit, rootsToSave, GithubLocalize.rebaseProcessOperationTitle().get(), onto,
-                        saveMethod, indicator,
-                        () -> doRebaseCurrentBranch(indicator, onto));
-                process.execute();
-            }
-        }
-
-        private void doRebaseCurrentBranch(ProgressIndicator indicator, String onto) {
-            VirtualFile root = myRepository.getRoot();
-
-            GitUpdateResult result = new GitRebaser(myProject, myGit, indicator).rebase(root, Collections.singletonList(onto), null, null);
-            myRepository.update();
-
-            if (result == GitUpdateResult.NOTHING_TO_UPDATE ||
-                result == GitUpdateResult.SUCCESS ||
-                result == GitUpdateResult.SUCCESS_WITH_RESOLVED_CONFLICTS) {
-                root.refresh(false, true);
-                GithubNotifications.showInfo(myProject,
-                    GithubLocalize.rebaseProcessSuccess(),
-                    LocalizeValue.empty());
-            }
         }
     }
 }

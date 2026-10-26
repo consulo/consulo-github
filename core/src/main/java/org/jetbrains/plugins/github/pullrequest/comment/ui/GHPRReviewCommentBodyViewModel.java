@@ -28,6 +28,7 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.messageList.AsyncHtmlImageLoader;
 import consulo.util.concurrent.coroutine.MutableObservableValue;
 import consulo.util.concurrent.coroutine.ObservableValue;
+import consulo.versionControlSystem.change.patch.ApplyPatchStatus;
 import consulo.versionControlSystem.change.patch.TextFilePatch;
 import consulo.versionControlSystem.review.comment.CodeReviewCommentBodyViewModel;
 import consulo.versionControlSystem.review.comment.CodeReviewCommentBodyViewModelFactory;
@@ -45,6 +46,7 @@ import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequest;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReviewComment;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestReviewThread;
 import org.jetbrains.plugins.github.pullrequest.comment.GHMarkdownToHtmlConverter;
+import org.jetbrains.plugins.github.pullrequest.comment.GHSuggestedChangeApplier;
 import org.jetbrains.plugins.github.pullrequest.data.GHPRDataContext;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDataProvider;
 import org.jetbrains.plugins.github.pullrequest.data.provider.GHPRDetailsDataProvider;
@@ -247,6 +249,16 @@ public class GHPRReviewCommentBodyViewModel implements CodeReviewSuggestedChange
     @Override
     public VirtualFile getRepositoryRoot() {
         return myRepository.getRoot();
+    }
+
+    @Override
+    public boolean canCommit() {
+        return true;
+    }
+
+    @Override
+    public CompletableFuture<ApplyPatchStatus> commit(TextFilePatch patch, String commitMessage) {
+        return GHSuggestedChangeApplier.commitSuggestedChanges(myProject, myRepository, patch, commitMessage);
     }
 
     @Override

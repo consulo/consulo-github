@@ -16,13 +16,21 @@
  */
 package org.jetbrains.plugins.github.pullrequest.comment.ui;
 
+import consulo.codeEditor.Editor;
 import consulo.review.comment.CodeReviewNewCommentViewModel;
 import org.jetbrains.plugins.github.api.data.GHActor;
 import org.jetbrains.plugins.github.pullrequest.ui.comment.GHViewModelWithTextCompletion;
+
+import java.util.function.Consumer;
 
 public interface GHPRNewThreadCommentViewModel extends CodeReviewNewCommentViewModel, GHViewModelWithTextCompletion {
     GHActor getCurrentUser();
 
     @Override
     void submit();
+
+    @Override
+    default Consumer<Editor> getEditorSetup() {
+        return GHViewModelWithTextCompletion.editorSetup(this);
+    }
 }

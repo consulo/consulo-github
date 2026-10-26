@@ -30,6 +30,7 @@ import consulo.logging.Logger;
 import consulo.ui.image.Image;
 import consulo.ui.image.ImageEffects;
 import jakarta.inject.Singleton;
+import org.jetbrains.plugins.github.api.GithubApiContentHelper;
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor;
 import org.jetbrains.plugins.github.api.GithubApiRequests;
 import org.jspecify.annotations.Nullable;
@@ -91,7 +92,7 @@ public class CachingGHUserAvatarLoader implements Disposable {
             }, myLimitedIOExecutor), 0)
             .thenApply(bytes -> {
                 try {
-                    Image loadedImage = Image.fromBytes(Image.ImageType.PNG, bytes);
+                    Image loadedImage = GithubApiContentHelper.loadImage(bytes);
                     return loadedImage.getWidth() <= maximumSize && loadedImage.getHeight() <= maximumSize
                         ? loadedImage
                         : ImageEffects.resize(loadedImage, maximumSize, maximumSize);

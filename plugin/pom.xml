@@ -48,6 +48,8 @@
                 <configuration>
                     <dependencies>
                         <dependency>com.intellij.git</dependency>
+                        <dependency>org.jetbrains.plugins.yaml</dependency>
+                        <dependency>consulo.json</dependency>
                     </dependencies>
                     <packaging>
                         <skip>${dev.mode}</skip>
@@ -67,6 +69,12 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>org.jetbrains.plugins.github.workflow</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.jetbrains.plugins.github.core</artifactId>
@@ -306,10 +314,12 @@
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

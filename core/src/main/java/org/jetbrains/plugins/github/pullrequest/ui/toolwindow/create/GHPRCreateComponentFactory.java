@@ -19,6 +19,7 @@ package org.jetbrains.plugins.github.pullrequest.ui.toolwindow.create;
 import consulo.application.Application;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import consulo.github.action.PullRequestChangesPopupGroup;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.platform.base.icon.PlatformIconGroup;
@@ -39,6 +40,8 @@ import consulo.review.util.ReviewUIUtil;
 import consulo.review.util.popup.PopupItemPresentation;
 import consulo.ui.Button;
 import consulo.ui.ButtonStyle;
+import consulo.ui.Avatar;
+import consulo.ui.AvatarStyle;
 import consulo.ui.Component;
 import consulo.ui.DialogCancelledException;
 import consulo.ui.HorizontalAlignment;
@@ -55,6 +58,8 @@ import consulo.ui.StaticPosition;
 import consulo.ui.UIAccess;
 import consulo.ui.VerticalAlignment;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.ActionGroup;
+import consulo.ui.ex.action.ActionManager;
 import consulo.ui.color.RGBColor;
 import consulo.ui.event.ClickEvent;
 import consulo.ui.ex.popup.JBPopupFactory;
@@ -280,7 +285,8 @@ public final class GHPRCreateComponentFactory {
                     }
                     else {
                         content = changeListComponentFactory.createIn(changeListScope, changeListVm, null,
-                            GithubLocalize.pullRequestCommitDoesNotContainChanges());
+                            GithubLocalize.pullRequestCommitDoesNotContainChanges(),
+                            ActionManager.getInstance().getAction(PullRequestChangesPopupGroup.ID) instanceof ActionGroup group ? group : null);
                     }
                 }
                 panel.center(content);
@@ -492,10 +498,13 @@ public final class GHPRCreateComponentFactory {
 
     @RequiredUIAccess
     private static Component userLabel(GHPullRequestRequestedReviewer user, IconsProvider<String> avatarIconsProvider) {
-        Label label = Label.create(LocalizeValue.of(user.getShortName()));
-        label.setImage(avatarIconsProvider.getIcon(user.getAvatarUrl(), AVATAR_SIZE));
-        label.paddingBuilder().verticalSet(Space.SMALL).horizontalSet(Space.X_SMALL).apply();
-        return label;
+        Avatar avatar = Avatar.create(LocalizeValue.of(user.getPresentableName()), avatarIconsProvider.getIcon(user.getAvatarUrl(), AVATAR_SIZE));
+        avatar.addStyle(AvatarStyle.X_SMALL);
+        HorizontalLayout panel = HorizontalLayout.create(Space.X_SMALL);
+        panel.add(avatar);
+        panel.add(Label.create(LocalizeValue.of(user.getShortName())));
+        panel.paddingBuilder().verticalSet(Space.SMALL).horizontalSet(Space.X_SMALL).apply();
+        return panel;
     }
 
     @RequiredUIAccess

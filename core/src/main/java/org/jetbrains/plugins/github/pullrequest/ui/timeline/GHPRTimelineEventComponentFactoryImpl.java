@@ -23,6 +23,7 @@ import consulo.review.timeline.CodeReviewCommentViewModel;
 import consulo.review.timeline.CodeReviewTimelineItem;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import consulo.versionControlSystem.review.issue.IssueIdsProcessor;
 import org.jetbrains.plugins.github.api.data.GHActor;
 import org.jetbrains.plugins.github.api.data.GHCommitShort;
@@ -282,7 +283,8 @@ public class GHPRTimelineEventComponentFactoryImpl implements GHPRTimelineEventC
                     .replace("</b>", "**"));
                 String msg = dismissed.getDismissalMessageHTML();
                 if (msg != null) {
-                    text.append("\n\n").append(msg);
+                    String plainMessage = StringUtil.unescapeXml(StringUtil.stripHtml(msg.replaceAll("(?i)</p>", "<br/>"), true));
+                    text.append("\n\n").append(plainMessage == null ? "" : plainMessage.strip());
                 }
                 return eventItem(event, text.toString());
             }
@@ -367,8 +369,8 @@ public class GHPRTimelineEventComponentFactoryImpl implements GHPRTimelineEventC
         }
 
         @Override
-        public Date getCreatedAt() {
-            return myCreatedAt != null ? myCreatedAt : new Date(0);
+        public @Nullable Date getCreatedAt() {
+            return myCreatedAt;
         }
 
         @Override

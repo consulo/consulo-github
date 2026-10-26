@@ -44,6 +44,7 @@ import org.jetbrains.plugins.github.api.data.GithubIssueState;
 import org.jetbrains.plugins.github.api.data.pullrequest.GHPullRequestRestIdOnly;
 import org.jetbrains.plugins.github.api.data.request.GithubRequestPagination;
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
+import org.jetbrains.plugins.github.authentication.accounts.GithubProjectDefaultAccountHolder;
 import org.jetbrains.plugins.github.pullrequest.GHRepositoryConnectionManager;
 import org.jetbrains.plugins.github.pullrequest.action.GHOpenPullRequestExistingTabNotificationAction;
 import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestNotificationAction;
@@ -102,7 +103,7 @@ public class GHPushNotificationCustomizer implements GitPushNotificationCustomiz
                 remoteBranch.getRemote(),
                 accountManager.getAccounts(Objects.requireNonNull(accountManager.findAccountType(GithubAccountType.ID)), myProject),
                 savedUrlAndAccount == null ? null : savedUrlAndAccount.getSecond(),
-                null
+                GithubProjectDefaultAccountHolder.getInstance(myProject).getAccount()
             );
         }
         if (mappingAndAccount == null) {

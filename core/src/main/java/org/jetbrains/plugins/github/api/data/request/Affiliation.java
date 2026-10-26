@@ -1,7 +1,9 @@
 // Copyright 2000-2022 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 package org.jetbrains.plugins.github.api.data.request;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,6 @@ public enum Affiliation {
     }
 
     public static String combine(Affiliation... affiliations) {
-        return combine(Set.of(affiliations));
+        return combine(new LinkedHashSet<>(Arrays.asList(affiliations)));
     }
 }

@@ -12,11 +12,16 @@ open module org.jetbrains.plugins.github {
     requires consulo.datacontext.api;
     requires consulo.document.api;
     requires consulo.http.api;
+    requires consulo.diff.api;
+    requires consulo.account.management.api;
+    requires consulo.review.api;
+    requires consulo.version.control.system.review.api;
     requires consulo.language.api;
     requires consulo.localize.api;
     requires consulo.logging.api;
     requires consulo.platform.api;
     requires consulo.project.api;
+    requires consulo.proxy;
     requires consulo.project.ui.api;
     requires consulo.task.api;
     requires consulo.ui.api;
@@ -30,14 +35,17 @@ open module org.jetbrains.plugins.github {
     requires consulo.version.control.system.distributed.api;
     requires consulo.version.control.system.log.api;
     requires consulo.virtual.file.system.api;
+    requires consulo.file.chooser.api;
+    requires consulo.ide.api;
 
     requires com.intellij.git;
 
-    requires commons.httpclient;
+    requires com.google.common;
 
-    requires com.google.gson;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
+    requires com.fasterxml.jackson.annotation;
 
     // TODO [VISTALL] remove in future
     requires java.desktop;
-    requires forms.rt;
 }

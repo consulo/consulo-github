@@ -8,6 +8,32 @@ account.choose.not.selected:
     text: Account is not selected
 account.choose.title:
     text: Choose GitHub Account
+account.feature.gists.description:
+    text: Create gists from files and selections
+account.feature.gists.title:
+    text: Gists
+account.feature.pull.requests.description:
+    text: View, review and create pull requests
+account.feature.pull.requests.title:
+    text: Pull Requests
+account.feature.repositories.description:
+    text: Clone, share and push to GitHub repositories
+account.feature.repositories.title:
+    text: Repositories
+account.scope.gist:
+    text: Create gists
+account.scope.read.org:
+    text: Read organization and team membership
+account.scope.read.user:
+    text: Read the user profile
+account.scope.repo:
+    text: Full control of repositories
+account.scope.user.email:
+    text: Read the user email addresses
+account.scope.workflow:
+    text: Update GitHub Action workflows
+account.type.name:
+    text: GitHub
 accounts.add.button:
     text: Add Account
 accounts.add.dropdown.link:
@@ -40,6 +66,8 @@ action.Github.Create.Pull.Request.synonym2:
     text: Start Pull Request/Merge Request/Code Review
 action.Github.Create.Pull.Request.synonym3:
     text: Create Merge Request/Code Review
+action.Github.Create.Pull.Request.text:
+    text: Create Pull Request…
 action.Github.Open.Settings.MainMenu.text:
     text: Manage Accounts…
 action.Github.Open.Settings.popup.GoToAction.text:
@@ -54,12 +82,22 @@ action.Github.Pull.Request.Show.In.Toolwindow.text:
     text: Show Pull Request in the Tool Window
 action.Github.PullRequest.Changed.MarkViewed.Toggle.text:
     text: Toggle viewed/not viewed state
+action.Github.PullRequest.CheckoutBranch.description:
+    text: Fetch and checkout the pull request branch
+action.Github.PullRequest.CheckoutBranch.text:
+    text: Checkout Branch
 action.Github.PullRequest.Copy.Link.text:
     text: Copy Pull Request URL
+action.Github.PullRequest.List.Reload.text:
+    text: Refresh List
 action.Github.PullRequest.Open.Link.synonym:
     text: Open Pull Request in GitHub
 action.Github.PullRequest.Open.Link.text:
     text: View Pull Request in Browser
+action.Github.PullRequest.OpenInWorktree.description:
+    text: Fetch and open the pull request branch in a Git worktree
+action.Github.PullRequest.OpenInWorktree.text:
+    text: Open in Worktree
 action.Github.Share.Vcs.Toolbar.Widget.text:
     text: GitHub…
 action.Github.Share.description:
@@ -70,6 +108,8 @@ action.Github.View.Pull.Request.synonym1:
     text: View Merge Requests/Code Reviews
 action.Github.View.Pull.Request.text:
     text: View Pull Requests
+action.NotificationAction.GithubNotifications.text.configure:
+    text: Configure…
 action.comment.text:
     text: Comment
 action.create.gist.description:
@@ -84,6 +124,8 @@ action.sync.fork.description:
     text: Rebase your GitHub forked repository relative to the origin
 action.sync.fork.text:
     text: Sync Fork
+authorization.failed:
+    text: User authorization failed
 button.use.token:
     text: Use Token…
 cannot.configure.remote:
@@ -154,6 +196,10 @@ dialog.message.login.to.continue:
     text: Log in to GitHub to continue
 dialog.title.add.github.account:
     text: Add GitHub Account
+error.support.link.label:
+    text: read this article
+git.operation.oauth.restrictions.error:
+    text: 'Repository not found or access denied. This is likely due to OAuth App access restrictions within your organization. For more details: {0}'
 github.actions.action.file.json.schema:
     text: GitHub Action JSON Schema
 github.actions.file.promo.label:
@@ -198,12 +244,16 @@ login.token.cannot.be.empty:
     text: Token cannot be empty
 login.via.github.action:
     text: Log In via GitHub…
+oauth.restrictions.error:
+    text: Repository not found or access denied. This is likely due to OAuth App access restrictions within your organization. For more details
 open.on.github.action:
     text: View in browser
 open.on.github.action.description:
     text: View corresponding link in browser
 progress.text.loading.protected.branches:
     text: Loading GitHub branch protection rules
+pull.request.action.rerequest.review.from:
+    text: Re-request Review from {0}
 pull.request.adding.reviewers:
     text: Adding reviewers
 pull.request.adjustment.failed:
@@ -248,6 +298,8 @@ pull.request.create.error:
     text: Failed to create a pull request
 pull.request.create.error.details:
     text: Details
+pull.request.create.error.refresh:
+    text: Refresh
 pull.request.create.failed.to.check.branches:
     text: Failed to check pull request branches
 pull.request.create.failed.to.load.changes:
@@ -458,6 +510,10 @@ pull.request.review.submit.comment.description:
     text: Submit general feedback without explicit approval
 pull.request.review.submit.request.changes:
     text: Request Changes
+pull.request.reviewer.state.commented:
+    text: '{0} left comments'
+pull.request.reviewer.state.re.requested:
+    text: Re-requested review from {0}
 pull.request.reviewers:
     text: 'Reviewers:'
 pull.request.reviewers.popup:

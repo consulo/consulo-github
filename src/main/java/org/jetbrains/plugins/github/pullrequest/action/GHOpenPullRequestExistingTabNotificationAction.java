@@ -1,0 +1,62 @@
+// Copyright 2000-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+/*
+ * Copyright 2013-2026 consulo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jetbrains.plugins.github.pullrequest.action;
+
+import consulo.accountManagement.Account;
+import consulo.github.localize.GithubLocalize;
+import consulo.project.Project;
+import consulo.project.ui.notification.Notification;
+import consulo.project.ui.notification.NotificationAction;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnActionEvent;
+import org.jetbrains.plugins.github.pullrequest.data.GHPRIdentifier;
+import org.jetbrains.plugins.github.pullrequest.ui.GHPRProjectViewModel;
+import org.jetbrains.plugins.github.pullrequest.ui.selector.GHRepositoryAndAccountSelectorViewModel;
+import org.jetbrains.plugins.github.util.GHGitRepositoryMapping;
+
+// NOTE: no need to register in plugin.xml
+public class GHOpenPullRequestExistingTabNotificationAction extends NotificationAction {
+    private final Project myProject;
+    private final GHGitRepositoryMapping myProjectMapping;
+    private final Account myAccount;
+    private final GHPRIdentifier myExistingPrOrNull;
+
+    public GHOpenPullRequestExistingTabNotificationAction(Project project,
+                                                          GHGitRepositoryMapping projectMapping,
+                                                          Account account,
+                                                          GHPRIdentifier existingPrOrNull) {
+        super(GithubLocalize.pullRequestNotificationOpenAction());
+        myProject = project;
+        myProjectMapping = projectMapping;
+        myAccount = account;
+        myExistingPrOrNull = existingPrOrNull;
+    }
+
+    @RequiredUIAccess
+    @Override
+    public void actionPerformed(AnActionEvent e, Notification notification) {
+        GHPRProjectViewModel twVm = GHPRProjectViewModel.getInstance(myProject);
+        GHRepositoryAndAccountSelectorViewModel selectorVm = twVm.getSelectorVm();
+        selectorVm.selectRepoAndAccount(myProjectMapping, myAccount);
+        selectorVm.submitSelection();
+        openExistingTab(e, myExistingPrOrNull);
+    }
+
+    private static void openExistingTab(AnActionEvent event, GHPRIdentifier prId) {
+        GHPRProjectViewModel.getInstance(event.getRequiredData(Project.KEY)).activateAndAwaitProject(vm -> vm.viewPullRequest(prId));
+    }
+}

@@ -1,5 +1,6 @@
+// Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 /*
- * Copyright 2000-2011 JetBrains s.r.o.
+ * Copyright 2013-2026 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,109 +16,176 @@
  */
 package org.jetbrains.plugins.github.ui;
 
-import consulo.codeEditor.Editor;
+import consulo.accountManagement.Account;
+import consulo.accountManagement.AccountManager;
+import consulo.accountManagement.AccountType;
+import consulo.accountManagement.ui.AccountChooser;
+import consulo.accountManagement.ui.AccountComponentFactory;
+import consulo.disposer.Disposable;
+import consulo.github.localize.GithubLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.review.localize.ReviewLocalize;
+import consulo.review.snippet.PathHandlingMode;
+import consulo.ui.CheckBox;
+import consulo.ui.ComboBox;
+import consulo.ui.Component;
+import consulo.ui.TextArea;
+import consulo.ui.TextBox;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.awt.DialogWrapper;
-import consulo.virtualFileSystem.VirtualFile;
-import org.jetbrains.plugins.github.util.GithubSettings;
+import consulo.ui.ex.dialog.DialogDescriptor;
+import consulo.ui.layout.HorizontalLayout;
+import consulo.ui.util.FormBuilder;
+import org.jetbrains.plugins.github.authentication.accounts.GithubAccountType;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import javax.swing.*;
+import java.util.List;
+import java.util.Objects;
 
-/**
- * @author oleg
- * @since 2011-09-27
- */
-public class GithubCreateGistDialog extends DialogWrapper {
-    private final GithubCreateGistPanel myGithubCreateGistPanel;
+public class GithubCreateGistDialog extends DialogDescriptor {
+    private final Project myProject;
+
+    private @Nullable String myFileName;
+    private String myDescription = "";
+    private boolean myIsSecret;
+    private boolean myIsOpenInBrowser;
+    private boolean myIsCopyURL;
+    private @Nullable Account myAccount;
+    private @Nullable PathHandlingMode myPathMode = PathHandlingMode.RelativePaths;
+
+    private @Nullable TextArea myDescriptionField;
 
     public GithubCreateGistDialog(
-        @Nonnull final Project project,
-        @Nullable Editor editor,
-        @Nullable VirtualFile[] files,
-        @Nullable VirtualFile file
+        Project project,
+        @Nullable String fileName,
+        boolean secret,
+        boolean openInBrowser,
+        boolean copyLink
     ) {
-        super(project, true);
-        myGithubCreateGistPanel = new GithubCreateGistPanel();
-        // Use saved settings for controls
-        final GithubSettings settings = GithubSettings.getInstance();
-        myGithubCreateGistPanel.setAnonymous(settings.isAnonymousGist());
-        myGithubCreateGistPanel.setPrivate(settings.isPrivateGist());
-        myGithubCreateGistPanel.setOpenInBrowser(settings.isOpenInBrowserGist());
+        super(GithubLocalize.createGistDialogTitle());
+        myProject = project;
+        myFileName = fileName;
+        myIsSecret = secret;
+        myIsOpenInBrowser = openInBrowser;
+        myIsCopyURL = copyLink;
+    }
 
-        if (editor != null) {
-            if (file != null) {
-                myGithubCreateGistPanel.showFileNameField(file.getName());
-            }
-            else {
-                myGithubCreateGistPanel.showFileNameField("");
-            }
-        }
-        else if (files != null) {
-            if (files.length == 1 && !files[0].isDirectory()) {
-                myGithubCreateGistPanel.showFileNameField(files[0].getName());
-            }
-        }
-        else if (file != null && !file.isDirectory()) {
-            myGithubCreateGistPanel.showFileNameField(file.getName());
+    public @Nullable String getFileName() {
+        return myFileName;
+    }
+
+    public String getDescription() {
+        return myDescription;
+    }
+
+    public boolean isSecret() {
+        return myIsSecret;
+    }
+
+    public boolean isOpenInBrowser() {
+        return myIsOpenInBrowser;
+    }
+
+    public boolean isCopyURL() {
+        return myIsCopyURL;
+    }
+
+    public void setCopyURL(boolean copyURL) {
+        myIsCopyURL = copyURL;
+    }
+
+    public @Nullable Account getAccount() {
+        return myAccount;
+    }
+
+    public @Nullable PathHandlingMode getPathMode() {
+        return myPathMode;
+    }
+
+    public void setPathMode(@Nullable PathHandlingMode pathMode) {
+        myPathMode = pathMode;
+    }
+
+    @RequiredUIAccess
+    @Override
+    public Component createCenterComponent(Disposable uiDisposable) {
+        FormBuilder form = FormBuilder.create();
+
+        String fileName = myFileName;
+        if (fileName != null) {
+            TextBox fileNameField = TextBox.create(fileName);
+            fileNameField.addValueListener(event -> myFileName = Objects.requireNonNullElse(event.getValue(), ""));
+            form.addLabeled(GithubLocalize.createGistDialogFilenameField(), fileNameField);
         }
 
-        setTitle("Create Gist");
-        init();
+        TextArea descriptionField = TextArea.create(myDescription);
+        descriptionField.setMinRows(4);
+        descriptionField.addValueListener(event -> myDescription = Objects.requireNonNullElse(event.getValue(), ""));
+        myDescriptionField = descriptionField;
+        form.addLabeled(GithubLocalize.createGistDialogDescriptionField(), descriptionField);
+
+        ComboBox<PathHandlingMode> pathModeComboBox = ComboBox.create(PathHandlingMode.values());
+        pathModeComboBox.setTextRenderer(mode -> mode == null ? LocalizeValue.empty() : mode.getDisplayName());
+        pathModeComboBox.setToolTipText(ReviewLocalize.reviewSnippetCreatePathModeTooltip());
+        pathModeComboBox.setValue(myPathMode);
+        pathModeComboBox.addValueListener(event -> myPathMode = event.getValue());
+        form.addLabeled(ReviewLocalize.reviewSnippetCreatePathMode(), pathModeComboBox);
+
+        AccountManager accountManager = myProject.getApplication().getInstance(AccountManager.class);
+        AccountType<?> accountType = Objects.requireNonNull(accountManager.findAccountType(GithubAccountType.ID));
+        List<Account> accounts = accountManager.getAccounts(accountType, myProject);
+        if (accounts.size() != 1) {
+            AccountChooser accountChooser = myProject.getApplication()
+                .getInstance(AccountComponentFactory.class)
+                .createChooser(accountType, myProject, uiDisposable);
+            if (accountChooser.getValue() == null && !accounts.isEmpty()) {
+                accountChooser.setValue(accounts.get(0));
+            }
+            myAccount = accountChooser.getValue();
+            accountChooser.addValueListener(account -> {
+                myAccount = account;
+                updateOkButtonState();
+            });
+            form.addLabeled(GithubLocalize.createGistDialogCreateForField(), accountChooser.getComponent());
+        }
+        else {
+            myAccount = accounts.get(0);
+        }
+
+        CheckBox secretCheckBox = CheckBox.create(GithubLocalize.createGistDialogSecret(), myIsSecret);
+        secretCheckBox.addValueListener(event -> myIsSecret = Boolean.TRUE.equals(event.getValue()));
+        CheckBox browserCheckBox = CheckBox.create(GithubLocalize.createGistDialogOpenBrowser(), myIsOpenInBrowser);
+        browserCheckBox.addValueListener(event -> myIsOpenInBrowser = Boolean.TRUE.equals(event.getValue()));
+        CheckBox copyUrlCheckBox = CheckBox.create(GithubLocalize.createGistDialogCopyUrl(), myIsCopyURL);
+        copyUrlCheckBox.addValueListener(event -> myIsCopyURL = Boolean.TRUE.equals(event.getValue()));
+
+        HorizontalLayout checkBoxes = HorizontalLayout.create();
+        checkBoxes.add(secretCheckBox);
+        checkBoxes.add(browserCheckBox);
+        checkBoxes.add(copyUrlCheckBox);
+        form.addBottom(checkBoxes);
+
+        return form.build();
     }
 
     @Override
-    protected JComponent createCenterPanel() {
-        return myGithubCreateGistPanel.getPanel();
+    public boolean doUpdateOkButtonState() {
+        return myAccount != null;
     }
 
     @Override
-    protected String getHelpId() {
+    public @Nullable String getHelpId() {
         return "github.create.gist.dialog";
     }
 
     @Override
-    protected String getDimensionServiceKey() {
+    public @Nullable String getDimensionServiceKey() {
         return "Github.CreateGistDialog";
     }
 
-    @Override
-    protected void doOKAction() {
-        // Store settings
-        final GithubSettings settings = GithubSettings.getInstance();
-        settings.setAnonymousGist(myGithubCreateGistPanel.isAnonymous());
-        settings.setOpenInBrowserGist(myGithubCreateGistPanel.isOpenInBrowser());
-        settings.setPrivateGist(myGithubCreateGistPanel.isPrivate());
-        super.doOKAction();
-    }
-
-    @Override
     @RequiredUIAccess
-    public JComponent getPreferredFocusedComponent() {
-        return myGithubCreateGistPanel.getDescriptionTextArea();
-    }
-
-    public boolean isPrivate() {
-        return myGithubCreateGistPanel.isPrivate();
-    }
-
-    public boolean isAnonymous() {
-        return myGithubCreateGistPanel.isAnonymous();
-    }
-
-    @Nonnull
-    public String getDescription() {
-        return myGithubCreateGistPanel.getDescriptionTextArea().getText();
-    }
-
-    @Nullable
-    public String getFileName() {
-        return myGithubCreateGistPanel.getFileNameField().getText();
-    }
-
-    public boolean isOpenInBrowser() {
-        return myGithubCreateGistPanel.isOpenInBrowser();
+    @Override
+    public @Nullable Component getPreferredFocusedComponent() {
+        return myDescriptionField;
     }
 }

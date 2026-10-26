@@ -6,8 +6,9 @@ import consulo.annotation.component.ActionRef;
 import consulo.application.dumb.DumbAware;
 import consulo.localize.LocalizeValue;
 import consulo.ui.ex.action.DefaultActionGroup;
-import org.jetbrains.plugins.github.GithubCreatePullRequestAction;
-import org.jetbrains.plugins.github.GithubRebaseAction;
+import org.jetbrains.plugins.github.GithubSyncForkAction;
+import org.jetbrains.plugins.github.GithubViewPullRequestsAction;
+import org.jetbrains.plugins.github.pullrequest.action.GHPRCreatePullRequestAction;
 
 /**
  * @author UNV
@@ -16,8 +17,9 @@ import org.jetbrains.plugins.github.GithubRebaseAction;
 @ActionImpl(
     id = "Git.Menu.Github",
     children = {
-        @ActionRef(type = GithubRebaseAction.class),
-        @ActionRef(type = GithubCreatePullRequestAction.class)
+        @ActionRef(type = GithubSyncForkAction.class),
+        @ActionRef(type = GHPRCreatePullRequestAction.class),
+        @ActionRef(type = GithubViewPullRequestsAction.class)
     },
     parents = @ActionParentRef(@ActionRef(id = "Git.Menu"))
 )

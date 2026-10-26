@@ -1,5 +1,6 @@
+// Copyright 2000-2024 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2013-2026 consulo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +17,23 @@
 package org.jetbrains.plugins.github.tasks;
 
 import consulo.application.util.DateFormatUtil;
+import consulo.github.localize.GithubLocalize;
 import consulo.task.SimpleComment;
+import org.jspecify.annotations.Nullable;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Date;
 
-/**
- * @author Dennis.Ushakov
- */
-public class GithubComment extends SimpleComment {
-    @Nullable
-    private final String myGravatarId;
-    @Nonnull
+final class GithubComment extends SimpleComment {
+    private final @Nullable String myAvatarUrl;
     private final String myUserHtmlUrl;
 
-    public GithubComment(
-        @Nullable Date date,
-        @Nullable String author,
-        @Nonnull String text,
-        @Nullable String gravatarId,
-        @Nonnull String userHtmlUrl
-    ) {
+    public GithubComment(@Nullable Date date,
+                         @Nullable String author,
+                         String text,
+                         @Nullable String avatarUrl,
+                         String userHtmlUrl) {
         super(date, author, text);
-        myGravatarId = gravatarId;
+        myAvatarUrl = avatarUrl;
         myUserHtmlUrl = userHtmlUrl;
     }
 
@@ -48,17 +42,17 @@ public class GithubComment extends SimpleComment {
         builder.append("<hr>");
         builder.append("<table>");
         builder.append("<tr><td>");
-        if (myGravatarId != null) {
-            builder.append("<img src=\"").append("http://www.gravatar.com/avatar/").append(myGravatarId).append
-                ("?s=40\"/><br>");
+        if (myAvatarUrl != null) {
+            builder.append("<img src=\"").append(myAvatarUrl).append("\" height=\"40\" width=\"40\"/><br>");
         }
         builder.append("</td><td>");
         if (getAuthor() != null) {
-            builder.append("<b>Author:</b> <a href=\"").append(myUserHtmlUrl).append("\">").append(getAuthor())
-                .append("</a><br>");
+            builder.append("<b>").append(GithubLocalize.taskCommentAuthor().get()).append("</b> <a href=\"").append(myUserHtmlUrl)
+                .append("\">").append(getAuthor()).append("</a><br>");
         }
         if (getDate() != null) {
-            builder.append("<b>Date:</b> ").append(DateFormatUtil.formatDateTime(getDate())).append("<br>");
+            builder.append("<b>").append(GithubLocalize.taskCommentDate().get()).append("</b> ")
+                .append(DateFormatUtil.formatDateTime(getDate())).append("<br>");
         }
         builder.append("</td></tr></table>");
 

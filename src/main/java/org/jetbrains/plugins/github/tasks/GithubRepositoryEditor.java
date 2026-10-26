@@ -1,60 +1,73 @@
+// Copyright 2000-2024 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
+/*
+ * Copyright 2013-2026 consulo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jetbrains.plugins.github.tasks;
 
+import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.task.localize.TaskLocalize;
 import consulo.task.ui.BaseRepositoryEditor;
+import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.FormBuilder;
 import consulo.ui.ex.awt.GridBag;
+import consulo.ui.ex.awt.JBCheckBox;
 import consulo.ui.ex.awt.JBLabel;
 import consulo.ui.ex.awt.JBTextField;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.github.api.GithubApiUtil;
-import org.jetbrains.plugins.github.exceptions.GithubAuthenticationCanceledException;
-import org.jetbrains.plugins.github.util.GithubNotifications;
-import org.jetbrains.plugins.github.util.GithubUtil;
+import org.jspecify.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.io.IOException;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.function.Consumer;
 
-/**
- * @author Dennis.Ushakov
- */
-public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepository> {
-    private MyTextField myHost;
+final class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepository> {
     private MyTextField myRepoAuthor;
     private MyTextField myRepoName;
     private MyTextField myToken;
+    private JBCheckBox myShowNotAssignedIssues;
     private JButton myTokenButton;
     private JBLabel myHostLabel;
     private JBLabel myRepositoryLabel;
     private JBLabel myTokenLabel;
 
-    public GithubRepositoryEditor(
-        Project project,
-        GithubRepository repository,
-        Consumer<GithubRepository> changeListener
-    ) {
+    GithubRepositoryEditor(final Project project, final GithubRepository repository, Consumer<GithubRepository> changeListener) {
         super(project, repository, changeListener);
         myUrlLabel.setVisible(false);
-        myURLText.setVisible(false);
         myUsernameLabel.setVisible(false);
         myUserNameText.setVisible(false);
         myPasswordLabel.setVisible(false);
         myPasswordText.setVisible(false);
         myUseHttpAuthenticationCheckBox.setVisible(false);
 
-        myHost.setText(repository.getUrl());
         myRepoAuthor.setText(repository.getRepoAuthor());
         myRepoName.setText(repository.getRepoName());
-        myToken.setText(repository.getToken());
+        myToken.setText(repository.getPassword());
+        myShowNotAssignedIssues.setSelected(!repository.isAssignedIssuesOnly());
 
         DocumentListener buttonUpdater = new DocumentAdapter() {
             @Override
@@ -63,25 +76,22 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
             }
         };
 
-        myHost.getDocument().addDocumentListener(buttonUpdater);
+        myURLText.getDocument().addDocumentListener(buttonUpdater);
         myRepoAuthor.getDocument().addDocumentListener(buttonUpdater);
         myRepoName.getDocument().addDocumentListener(buttonUpdater);
-        myURLText.getDocument().addDocumentListener(buttonUpdater);
     }
 
-    @Nullable
     @Override
-    protected JComponent createCustomPanel() {
-        myHostLabel = new JBLabel("Host:", SwingConstants.RIGHT);
-        myHost = new MyTextField("Github host");
+    protected @Nullable JComponent createCustomPanel() {
+        myHostLabel = new JBLabel(GithubLocalize.taskRepoHostField().get(), SwingConstants.RIGHT);
 
         JPanel myHostPanel = new JPanel(new BorderLayout(5, 0));
-        myHostPanel.add(myHost, BorderLayout.CENTER);
+        myHostPanel.add(myURLText, BorderLayout.CENTER);
         myHostPanel.add(myShareUrlCheckBox, BorderLayout.EAST);
 
-        myRepositoryLabel = new JBLabel("Repository:", SwingConstants.RIGHT);
-        myRepoAuthor = new MyTextField("Repository Owner");
-        myRepoName = new MyTextField("Repository Name");
+        myRepositoryLabel = new JBLabel(GithubLocalize.taskRepoRepositoryField().get(), SwingConstants.RIGHT);
+        myRepoAuthor = new MyTextField(GithubLocalize.taskRepoOwnerFieldEmptyHint());
+        myRepoName = new MyTextField(GithubLocalize.taskRepoNameFieldEmptyHint());
         myRepoAuthor.setPreferredSize("SomelongNickname");
         myRepoName.setPreferredSize("SomelongReponame-with-suffixes");
 
@@ -91,63 +101,54 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
         myRepoPanel.add(new JLabel("/"), bag.next().fillCellNone().insets(0, 5, 0, 5).weightx(0));
         myRepoPanel.add(myRepoName, bag.next());
 
-        myTokenLabel = new JBLabel("API Token:", SwingConstants.RIGHT);
-        myToken = new MyTextField("OAuth2 token");
-        myTokenButton = new JButton("Create API token");
-        myTokenButton.addActionListener(e -> {
-            generateToken();
-            doApply();
-        });
+        myTokenLabel = new JBLabel(GithubLocalize.taskRepoTokenField().get(), SwingConstants.RIGHT);
+        myToken = new MyTextField(GithubLocalize.taskRepoTokenFieldEmptyHint());
+        myTokenButton = new JButton(GithubLocalize.taskRepoTokenCreateButton().get());
+        myTokenButton.addActionListener(e -> generateToken());
 
         JPanel myTokenPanel = new JPanel();
         myTokenPanel.setLayout(new BorderLayout(5, 5));
         myTokenPanel.add(myToken, BorderLayout.CENTER);
         myTokenPanel.add(myTokenButton, BorderLayout.EAST);
 
-        installListener(myHost);
+        myShowNotAssignedIssues = new JBCheckBox(TaskLocalize.checkboxIncludeIssuesNotAssignedToMe().get());
+
         installListener(myRepoAuthor);
         installListener(myRepoName);
         installListener(myToken);
+        installListener(myShowNotAssignedIssues);
 
         return FormBuilder.createFormBuilder()
             .setAlignLabelOnRight(true)
             .addLabeledComponent(myHostLabel, myHostPanel)
             .addLabeledComponent(myRepositoryLabel, myRepoPanel)
             .addLabeledComponent(myTokenLabel, myTokenPanel)
+            .addComponentToRightColumn(myShowNotAssignedIssues)
             .getPanel();
     }
 
     @Override
     public void apply() {
+        super.apply();
         myRepository.setRepoName(getRepoName());
         myRepository.setRepoAuthor(getRepoAuthor());
-        myRepository.setToken(getToken());
-        super.apply();
+        myRepository.setPassword(getToken());
+        myRepository.setAssignedIssuesOnly(isAssignedIssuesOnly());
     }
 
     @RequiredUIAccess
     private void generateToken() {
-        try {
-            myToken.setText(GithubUtil.computeValueInModal(
-                myProject,
-                "Access to GitHub",
-                indicator -> GithubUtil.runWithValidBasicAuthForHost(
-                    myProject,
-                    indicator,
-                    getHost(),
-                    auth -> GithubApiUtil.getReadOnlyToken(auth, getRepoAuthor(), getRepoName(), "Intellij tasks plugin")
-                )
-            ));
-        }
-        catch (GithubAuthenticationCanceledException ignore) {
-        }
-        catch (IOException e) {
-            GithubNotifications.showErrorDialog(myProject, LocalizeValue.localizeTODO("Can't get access token"), e);
-        }
+        UIAccess uiAccess = UIAccess.current();
+        GHRepositoryEditor.askToken(myProject, getHost()).whenCompleteAsync((token, error) -> {
+            if (token != null) {
+                myToken.setText(token);
+            }
+            doApply();
+        }, uiAccess);
     }
 
     @Override
-    public void setAnchor(@Nullable JComponent anchor) {
+    public void setAnchor(final @Nullable JComponent anchor) {
         super.setAnchor(anchor);
         myHostLabel.setAnchor(anchor);
         myRepositoryLabel.setAnchor(anchor);
@@ -165,39 +166,34 @@ public class GithubRepositoryEditor extends BaseRepositoryEditor<GithubRepositor
         }
     }
 
-    @Override
-    public JComponent getPreferredFocusedComponent() {
-        return myHost;
-    }
-
-    @Nonnull
     private String getHost() {
-        return myHost.getText().trim();
+        return myURLText.getText().trim();
     }
 
-    @Nonnull
     private String getRepoAuthor() {
         return myRepoAuthor.getText().trim();
     }
 
-    @Nonnull
     private String getRepoName() {
         return myRepoName.getText().trim();
     }
 
-    @Nonnull
     private String getToken() {
         return myToken.getText().trim();
+    }
+
+    private boolean isAssignedIssuesOnly() {
+        return !myShowNotAssignedIssues.isSelected();
     }
 
     public static class MyTextField extends JBTextField {
         private int myWidth = -1;
 
-        public MyTextField(@Nonnull String hintCaption) {
+        public MyTextField(LocalizeValue hintCaption) {
             getEmptyText().setText(hintCaption);
         }
 
-        public void setPreferredSize(@Nonnull String sampleSizeString) {
+        public void setPreferredSize(String sampleSizeString) {
             myWidth = getFontMetrics(getFont()).stringWidth(sampleSizeString);
         }
 

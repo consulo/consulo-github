@@ -50,7 +50,7 @@ import java.util.function.Consumer;
 
 @ExtensionImpl
 public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
-    private static final BadgeIconSupplier TOOL_WINDOW_ICON = new BadgeIconSupplier(ReviewIconGroup.pullrequestopen());
+    private static final BadgeIconSupplier TOOL_WINDOW_ICON = new BadgeIconSupplier(ReviewIconGroup.pullrequests());
 
     public static final String ID = "Pull Requests";
 

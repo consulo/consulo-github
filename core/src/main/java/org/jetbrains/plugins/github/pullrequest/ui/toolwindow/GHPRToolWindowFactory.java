@@ -21,13 +21,13 @@ import consulo.application.dumb.DumbAware;
 import consulo.disposer.Disposer;
 import consulo.github.localize.GithubLocalize;
 import consulo.localize.LocalizeValue;
-import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.project.ui.wm.ToolWindowFactory;
 import consulo.review.icon.ReviewIconGroup;
 import consulo.review.toolwindow.ReviewToolwindowTabsManager;
 import consulo.review.toolwindow.ToolwindowUtils;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.BadgeIconSupplier;
 import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.CommonShortcuts;
@@ -36,7 +36,6 @@ import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.toolWindow.ToolWindow;
 import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.image.Image;
-import consulo.ui.image.ImageEffects;
 import consulo.util.concurrent.coroutine.ObservableValue;
 import jakarta.inject.Inject;
 import org.jspecify.annotations.Nullable;
@@ -51,6 +50,8 @@ import java.util.function.Consumer;
 
 @ExtensionImpl
 public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
+    private static final BadgeIconSupplier TOOL_WINDOW_ICON = new BadgeIconSupplier(ReviewIconGroup.pullrequestopen());
+
     public static final String ID = "Pull Requests";
 
     private final ReviewToolwindowTabsManager myTabsManager;
@@ -107,8 +108,7 @@ public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
             if (project.isDisposed()) {
                 return;
             }
-            Image icon = ReviewIconGroup.pullrequestopen();
-            toolWindow.setIcon(hasUpdates == null || !hasUpdates ? icon : ImageEffects.layered(icon, PlatformIconGroup.greenbadge()));
+            toolWindow.setIcon(TOOL_WINDOW_ICON.getInfoIcon(hasUpdates != null && hasUpdates));
         });
     }
 
@@ -152,7 +152,7 @@ public class GHPRToolWindowFactory implements ToolWindowFactory, DumbAware {
 
     @Override
     public Image getIcon() {
-        return ReviewIconGroup.pullrequestopen();
+        return ReviewIconGroup.pullrequests();
     }
 
     @Override

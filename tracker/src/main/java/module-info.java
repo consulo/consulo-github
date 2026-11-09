@@ -37,7 +37,6 @@ module org.jetbrains.plugins.github.tracker {
     requires consulo.task.api;
     requires consulo.ui.api;
     requires consulo.ui.ex.api;
-    requires consulo.ui.ex.awt.api;
     requires consulo.util.collection;
     requires consulo.util.dataholder;
     requires consulo.util.lang;
@@ -49,9 +48,10 @@ module org.jetbrains.plugins.github.tracker {
     requires consulo.file.chooser.api;
     requires consulo.ide.api;
     requires com.intellij.git;
-    requires java.desktop;
 
     requires org.jetbrains.plugins.github.core;
 
     exports org.jetbrains.plugins.github.tasks;
+
+    opens org.jetbrains.plugins.github.tasks to consulo.util.xml.serializer;
 }

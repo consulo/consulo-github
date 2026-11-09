@@ -12,6 +12,10 @@ account.feature.gists.description:
     text: Create gists from files and selections
 account.feature.gists.title:
     text: Gists
+account.feature.issues.description:
+    text: Browse issues of GitHub repositories and open them as tasks
+account.feature.issues.title:
+    text: Issues
 account.feature.pull.requests.description:
     text: View, review and create pull requests
 account.feature.pull.requests.title:
@@ -752,3 +756,19 @@ unknown.host.error:
     text: 'Unknown host: {0}'
 unknown.loading.error:
     text: Unknown loading error
+tracker.owner:
+    text: 'Owner:'
+tracker.repository:
+    text: 'Repository:'
+tracker.assigned.only:
+    text: Assigned to me only
+tracker.field.author:
+    text: Author
+tracker.field.assignees:
+    text: Assignees
+tracker.field.labels:
+    text: Labels
+tracker.state.open:
+    text: Open
+tracker.state.closed:
+    text: Closed

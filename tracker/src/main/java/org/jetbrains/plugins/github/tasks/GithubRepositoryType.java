@@ -74,6 +74,11 @@ public final class GithubRepositoryType extends TaskRepositoryType<GithubTaskRep
     }
 
     @Override
+    public Image getToolWindowIcon() {
+        return GitHubIconGroup.toolwindowgithub();
+    }
+
+    @Override
     public String getAccountTypeId() {
         return GithubAccountType.ID;
     }

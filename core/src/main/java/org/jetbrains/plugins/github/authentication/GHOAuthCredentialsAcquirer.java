@@ -24,6 +24,7 @@ import consulo.accountManagement.oauth.SimpleOAuthCredentials;
 import consulo.util.io.Url;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class GHOAuthCredentialsAcquirer implements OAuthCredentialsAcquirer<OAuthCredentials> {
     private final Url myServiceUrl;
@@ -41,7 +42,7 @@ public class GHOAuthCredentialsAcquirer implements OAuthCredentialsAcquirer<OAut
             "code_verifier", myCodeVerifier
         ));
 
-        return OAuthCredentialsAcquirerHttp.requestToken(tokenUrl, (body, headers) ->
-            new SimpleOAuthCredentials(headers.firstValue("X-OAuth-Token").orElseThrow()));
+        return OAuthCredentialsAcquirerHttp.requestToken(tokenUrl, response ->
+            new SimpleOAuthCredentials(Objects.requireNonNull(response.header("X-OAuth-Token"))));
     }
 }

@@ -21,9 +21,11 @@ import consulo.application.util.concurrent.AppExecutorUtil;
 import consulo.application.util.registry.Registry;
 import consulo.component.ProcessCanceledException;
 import consulo.github.localize.GithubLocalize;
+import consulo.http.HttpMethod;
+import consulo.http.HttpRequest;
+import consulo.http.HttpRequestBuilder;
 import consulo.http.client.CompoundRequestConfigurer;
 import consulo.http.client.HttpApiHelper;
-import consulo.http.client.HttpClientFactoryBase;
 import consulo.http.client.HttpClientUtil;
 import consulo.http.client.HttpRequestConfigurer;
 import consulo.http.client.HttpStatusErrorException;
@@ -43,8 +45,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -142,9 +142,9 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
         checkBreaker();
 
         CompletableFuture<T> result = new CompletableFuture<>();
-        CompletableFuture<HttpRequest> httpRequestFuture = createHttpRequest(request);
-        HttpClientUtil.cancelWith(result, httpRequestFuture);
-        httpRequestFuture.whenComplete((builtRequest, buildError) -> {
+        CompletableFuture<HttpRequestBuilder> builderFuture = createHttpRequest(request);
+        HttpClientUtil.cancelWith(result, builderFuture);
+        builderFuture.whenComplete((builder, buildError) -> {
             if (buildError != null) {
                 result.completeExceptionally(FutureUtil.unwrap(buildError));
                 return;
@@ -152,8 +152,7 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
             if (result.isDone()) {
                 return;
             }
-            HttpRequest httpRequest = HttpClientUtil.forceAcceptGzipEncoding(builtRequest);
-            String requestName = HttpApiHelper.logName(httpRequest);
+            String requestName = HttpApiHelper.logName(builder);
             try {
                 logRequestBody(request, requestName);
             }
@@ -162,30 +161,17 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
                 return;
             }
 
-            CompletableFuture<HttpResponse<InputStream>> sent =
-                myHelper.sendAndAwait(httpRequest, requestName, HttpResponse.BodyHandlers.ofInputStream());
+            CompletableFuture<T> sent = send(null, request, requestName, builder);
             HttpClientUtil.cancelWith(result, sent);
-            sent.whenCompleteAsync((response, sendError) -> {
+            sent.whenComplete((value, sendError) -> {
                 if (sendError != null) {
                     Throwable cause = FutureUtil.unwrap(sendError);
                     result.completeExceptionally(cause instanceof IOException ioException ? mapSendError(requestName, ioException) : cause);
-                    return;
                 }
-                result.whenComplete((value, error) -> {
-                    if (result.isCancelled()) {
-                        closeQuietly(response.body());
-                    }
-                });
-                if (result.isDone()) {
-                    return;
+                else {
+                    result.complete(value);
                 }
-                try {
-                    result.complete(handleResponse(null, request, requestName, response));
-                }
-                catch (Throwable e) {
-                    result.completeExceptionally(e);
-                }
-            }, AppExecutorUtil.getAppExecutorService());
+            });
         });
         return result;
     }
@@ -193,19 +179,26 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
     private <T> T doExecute(@Nullable ProgressIndicator indicator, GithubApiRequest<T> request) throws IOException {
         checkBreaker();
 
-        HttpRequest httpRequest = HttpClientUtil.forceAcceptGzipEncoding(await(createHttpRequest(request)));
-        String requestName = HttpApiHelper.logName(httpRequest);
+        HttpRequestBuilder builder = await(createHttpRequest(request));
+        String requestName = HttpApiHelper.logName(builder);
         logRequestBody(request, requestName);
 
-        HttpResponse<InputStream> response;
         try {
-            response = await(myHelper.sendAndAwait(httpRequest, requestName, HttpResponse.BodyHandlers.ofInputStream()));
+            return await(send(indicator, request, requestName, builder));
         }
         catch (IOException e) {
             throw mapSendError(requestName, e);
         }
+    }
 
-        return handleResponse(indicator, request, requestName, response);
+    private static <T> CompletableFuture<T> send(@Nullable ProgressIndicator indicator,
+                                                 GithubApiRequest<T> request,
+                                                 String requestName,
+                                                 HttpRequestBuilder builder) {
+        LOG.debug(requestName);
+        return builder.allowErrorCodes(true)
+            .gzip(true)
+            .connectAsync(response -> handleResponse(indicator, request, requestName, response));
     }
 
     private static void checkBreaker() {
@@ -238,30 +231,29 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
     private static <T> T handleResponse(@Nullable ProgressIndicator indicator,
                                         GithubApiRequest<T> request,
                                         String requestName,
-                                        HttpResponse<InputStream> response) throws IOException {
+                                        HttpRequest response) throws IOException {
         try {
-            HttpClientUtil.checkStatusCodeWithLoggingBlocking(response, LOG, requestName);
-            if (indicator != null) {
-                indicator.checkCanceled();
-            }
-            checkServerVersion(response);
+            Map<String, List<String>> headers = response.responseHeaders();
+            return HttpClientUtil.readResponse(response, LOG, requestName, (stream, mimeType, charset) -> {
+                if (indicator != null) {
+                    indicator.checkCanceled();
+                }
+                checkServerVersion(headers);
 
-            return HttpClientUtil.readBodyWithLoggingBlocking(response, LOG, requestName, (stream, mimeType, charset) -> {
-                GithubApiResponse apiResponse = createResponse(response, stream, charset);
+                GithubApiResponse apiResponse = createResponse(headers, stream, charset);
                 if (request instanceof GithubApiRequest.Post.GQLQuery<T> gqlQuery) {
                     Pair<T, @Nullable GHGQLRateLimit> result = gqlQuery.extractResultWithCost(apiResponse);
                     return result.getFirst();
                 }
                 return request.extractResult(apiResponse);
-            });
+            }).body();
         }
         catch (HttpStatusErrorException e) {
             if (request instanceof GithubApiRequest.Get.Optional<?> && e.getStatusCode() == HttpURLConnection.HTTP_NOT_FOUND) {
                 return null;
             }
 
-            String responseContentType = response.headers().firstValue(HttpClientUtil.CONTENT_TYPE_HEADER).orElse(null);
-            throw createApiException(requestName, e.getStatusCode(), e.getBody(), responseContentType);
+            throw createApiException(requestName, e.getStatusCode(), e.getBody(), response.getContentType());
         }
         catch (GithubConfusingException e) {
             String operationName = request.getOperationName();
@@ -274,64 +266,68 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
         }
     }
 
-    private static void closeQuietly(InputStream stream) {
-        try {
-            stream.close();
+    private CompletableFuture<HttpRequestBuilder> createHttpRequest(GithubApiRequest<?> request) {
+        HttpMethod method;
+        if (request instanceof GithubApiRequest.Get<?>) {
+            method = HttpMethod.GET;
         }
-        catch (IOException ignored) {
+        else if (request instanceof GithubApiRequest.Head<?>) {
+            method = HttpMethod.HEAD;
         }
-    }
+        else if (request instanceof GithubApiRequest.Patch<?>) {
+            method = HttpMethod.PATCH;
+        }
+        else if (request instanceof GithubApiRequest.Post<?>) {
+            method = HttpMethod.POST;
+        }
+        else if (request instanceof GithubApiRequest.Put<?>) {
+            method = HttpMethod.PUT;
+        }
+        else if (request instanceof GithubApiRequest.Delete<?>) {
+            method = HttpMethod.DELETE;
+        }
+        else {
+            return CompletableFuture.failedFuture(new UnsupportedOperationException(request.getClass() + " is not supported"));
+        }
 
-    private CompletableFuture<HttpRequest> createHttpRequest(GithubApiRequest<?> request) {
-        return myHelper.request(URI.create(request.getUrl())).thenApply(builder -> {
+        return myHelper.request(request.getUrl(), method).thenApply(builder -> {
             String acceptMimeType = request.getAcceptMimeType();
             if (acceptMimeType != null) {
                 builder.header(HttpClientUtil.ACCEPT_HEADER, acceptMimeType);
             }
             for (Map.Entry<String, String> entry : request.getAdditionalHeaders().entrySet()) {
-                // the client computes the length from the body publisher
+                // the client computes the length from the body
                 if (entry.getKey().equalsIgnoreCase(HttpClientUtil.CONTENT_LENGTH_HEADER)) {
                     continue;
                 }
                 builder.header(entry.getKey(), entry.getValue());
             }
-            try {
-                if (request instanceof GithubApiRequest.Get<?>) {
-                    return builder.GET().build();
+            if (request instanceof GithubApiRequest.WithBody<?> withBody) {
+                try {
+                    withBody(builder, method, withBody);
                 }
-                else if (request instanceof GithubApiRequest.Head<?>) {
-                    return builder.HEAD().build();
+                catch (IOException e) {
+                    throw new CompletionException(e);
                 }
-                else if (request instanceof GithubApiRequest.Patch<?> patch) {
-                    return withBody(builder, "PATCH", patch).build();
-                }
-                else if (request instanceof GithubApiRequest.Post<?> post) {
-                    return withBody(builder, "POST", post).build();
-                }
-                else if (request instanceof GithubApiRequest.Put<?> put) {
-                    return withBody(builder, "PUT", put).build();
-                }
-                else if (request instanceof GithubApiRequest.Delete<?> delete) {
-                    return withBody(builder, "DELETE", delete).build();
-                }
-                throw new UnsupportedOperationException(request.getClass() + " is not supported");
             }
-            catch (IOException e) {
-                throw new CompletionException(e);
-            }
+            return builder;
         });
     }
 
-    private static HttpRequest.Builder withBody(HttpRequest.Builder builder, String method, GithubApiRequest.WithBody<?> request)
-        throws IOException {
+    private static void withBody(HttpRequestBuilder builder, HttpMethod method, GithubApiRequest.WithBody<?> request) throws IOException {
         builder.header(HttpClientUtil.CONTENT_TYPE_HEADER, request.getBodyMimeType());
         String body = request.getBody();
-        return builder.method(method, body == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body));
+        if (body != null) {
+            builder.body(body.getBytes(StandardCharsets.UTF_8));
+        }
+        else if (method != HttpMethod.DELETE) {
+            builder.body(new byte[0]);
+        }
     }
 
-    private static void checkServerVersion(HttpResponse<?> response) {
+    private static void checkServerVersion(Map<String, List<String>> headers) {
         // let's assume it's not ghe if header is missing or it's *.ghe.com
-        String versionHeader = response.headers().firstValue(GHEServerVersionChecker.ENTERPRISE_VERSION_HEADER).orElse(null);
+        String versionHeader = findHeader(headers, GHEServerVersionChecker.ENTERPRISE_VERSION_HEADER);
         if (versionHeader == null) {
             return;
         }
@@ -343,11 +339,20 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
         GHEServerVersionChecker.checkVersionSupported(versionHeader);
     }
 
-    private static GithubApiResponse createResponse(HttpResponse<?> response, InputStream body, @Nullable Charset charset) {
+    private static @Nullable String findHeader(Map<String, List<String>> headers, String name) {
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (name.equalsIgnoreCase(entry.getKey()) && !entry.getValue().isEmpty()) {
+                return entry.getValue().get(0);
+            }
+        }
+        return null;
+    }
+
+    private static GithubApiResponse createResponse(Map<String, List<String>> headers, InputStream body, @Nullable Charset charset) {
         return new GithubApiResponse() {
             @Override
             public @Nullable String findHeader(String headerName) {
-                return response.headers().firstValue(headerName).orElse(null);
+                return GithubApiHelperRequestExecutor.findHeader(headers, headerName);
             }
 
             @Override
@@ -402,33 +407,30 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
         if (authHeadersSupplier != null) {
             configurers.add(new GHAuthorizationConfigurer(authHeadersSupplier));
         }
-        return HttpApiHelper.create(LOG, new GHHttpClientFactory(useProxy), new CompoundRequestConfigurer(configurers));
+        configurers.add(new GHConnectionConfigurer(useProxy));
+        return HttpApiHelper.create(LOG, new CompoundRequestConfigurer(configurers));
     }
 
-    private static class GHHttpClientFactory extends HttpClientFactoryBase {
+    private static class GHConnectionConfigurer implements HttpRequestConfigurer {
         private final boolean myUseProxy;
 
-        GHHttpClientFactory(boolean useProxy) {
+        GHConnectionConfigurer(boolean useProxy) {
             myUseProxy = useProxy;
         }
 
         @Override
-        protected boolean useProxy() {
-            return myUseProxy;
-        }
-
-        @Override
-        protected long getConnectionTimeoutMillis() {
-            return GithubSettings.getInstance().getConnectionTimeout();
+        public CompletableFuture<HttpRequestBuilder> configureAsync(HttpRequestBuilder builder) {
+            return CompletableFuture.completedFuture(
+                builder.useProxy(myUseProxy).connectTimeout(GithubSettings.getInstance().getConnectionTimeout())
+            );
         }
     }
 
     private static class GHHeadersConfigurer implements HttpRequestConfigurer {
         @Override
-        public HttpRequest.Builder configure(HttpRequest.Builder builder) {
-            builder.header(HttpClientUtil.ACCEPT_ENCODING_HEADER, HttpClientUtil.CONTENT_ENCODING_GZIP);
+        public CompletableFuture<HttpRequestBuilder> configureAsync(HttpRequestBuilder builder) {
             builder.header(HttpClientUtil.USER_AGENT_HEADER, HttpClientUtil.getUserAgentValue(PLUGIN_USER_AGENT_NAME));
-            return builder;
+            return CompletableFuture.completedFuture(builder);
         }
     }
 
@@ -440,12 +442,12 @@ class GithubApiHelperRequestExecutor extends GithubApiRequestExecutor {
         }
 
         @Override
-        public CompletableFuture<HttpRequest.Builder> configureAsync(HttpRequest.Builder builder) {
+        public CompletableFuture<HttpRequestBuilder> configureAsync(HttpRequestBuilder builder) {
             URL url;
             try {
-                url = builder.copy().build().uri().toURL();
+                url = URI.create(builder.getUrl()).toURL();
             }
-            catch (MalformedURLException e) {
+            catch (MalformedURLException | IllegalArgumentException e) {
                 return CompletableFuture.failedFuture(e);
             }
             return myAuthHeadersSupplier.apply(url).thenApply(headers -> {
